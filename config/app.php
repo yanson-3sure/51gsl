@@ -144,6 +144,13 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Viky88\Sms\SmsServiceprovider::class,
+        Gensee\GenseeServiceProvider::class,
+
+        Jenssegers\Agent\AgentServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
+        Ixudra\Curl\CurlServiceProvider::class,
+
     ],
 
     /*
@@ -191,6 +198,13 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
+
+        'Sms'  => Viky88\Sms\Facades\Sms::class,
+        'Gensee' => \Gensee\Facades\Gensee::class,
+
+        'Agent' => Jenssegers\Agent\Facades\Agent::class, //https://github.com/jenssegers/agent
+        'Image' => Intervention\Image\Facades\Image::class, //https://github.com/Intervention/image
+        'Curl'      => Ixudra\Curl\Facades\Curl::class, //https://github.com/ixudra/curl
 
     ],
 
