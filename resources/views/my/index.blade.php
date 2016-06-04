@@ -13,7 +13,7 @@
                         <a href="{{ url('/my/info')  }}">
                             <div class="myimg"><img src="{{  getAvatar($user['avatar'],80) }}"></div>
                         </a>
-                        <p><a href="{{ url('/analyst/'.$user['id'])  }}">{{ $user['name'] }} </a>{{getTime()}}
+                        <p><a href="{{ url('/user/'.$user['id'])  }}">{{ $user['name'] }} </a>{{getTime()}}
                         </p>
                     @else
                         <a href="/my/info">
@@ -30,7 +30,7 @@
 
         <!--liebiao-->
         @if($isLogin && $user['role']==1)
-            <a href="{{ url('/analyst/'.$user['id'])  }}">
+            <a href="{{ url('/user/'.$user['id'])  }}">
                 <div class="wdzy gz">
                     <div class="wdzy-l"><img src="/img/zy.png">
 

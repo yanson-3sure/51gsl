@@ -7,11 +7,13 @@ return [
     'author' => 'hx',
 
     'admin_user_ids' =>[4],
+    'home_timeline_size' => env('HOME_TIMELINE_SIZE',1000),
+    'posts_per_pass'=>env('POSTS_PER_PASS',1000),
 
     'posts_per_page' => 10,
     'page_size' => 10,
     'rss_size' => 25,
-    'contact_email' => env('MAIL_FROM'),
+    'contact_email' => env('MAIL_FROM',''),
     'uploads' => [
         'storage' => 'local',
         'webpath' => '/uploads/',
@@ -24,7 +26,7 @@ return [
         'image_prefix'=>'',
         'key'=>'dyxc',
         'users'=>[
-            '5'=>'福牛歌',
+            '7'=>'福牛歌',
         ],
     ],
     'auto_remember_me' => env('AUTO_REMEMBER_ME','true'),

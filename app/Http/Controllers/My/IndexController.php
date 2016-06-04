@@ -22,10 +22,10 @@ class IndexController extends Controller
             //$messageService = new MessageService();
             //$this->data['noreadcount'] = $messageService->getNoreadCount($this->userid);
             //var_dump($this->data);
-
         } else {
             $this->data['noreadcount'] = 0;
         }
         return view('my.index', $this->data);
     }
+
 }

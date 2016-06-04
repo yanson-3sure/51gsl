@@ -19,10 +19,10 @@ class ImageService extends AbstractService
     protected $model = Image::class;
     protected $noCacheAttributes = ['created_at','updated_at'];
 
-    public function save($userid,$path,$ext,$type,$url='')
+    public function save($uid,$path,$ext,$type,$url='')
     {
         $model = new Image();
-        $model->userid = $userid;
+        $model->uid = $uid;
         $model->path = $path;
         $model->ext = $ext;
         $model->valid = 1;

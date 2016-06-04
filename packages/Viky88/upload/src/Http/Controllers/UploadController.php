@@ -101,7 +101,7 @@ class UploadController extends Controller
                 // 'image' => [
                 //     'size' =>$img->getSize(),
                 // ],
-                'imageid' => $image['imageid'],
+                'image_id' => $image['id'],
                 'name' => $filename,
                 'path' => $file_path,
             ];

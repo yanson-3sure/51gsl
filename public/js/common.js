@@ -124,9 +124,9 @@ var sendSms = function (fasongClass) {
     });
 }
 var focus1 = function(obj,focusclass,unfocusclass){
-    var url = '/my/focus';
+    var url = '/my/follow/focus';
     if($(obj).attr('data-type')=='1'){//已经 关注
-        url = '/my/un-focus';
+        url = '/my/follow/un-focus';
     }
     $.ajax({
         type: "post",

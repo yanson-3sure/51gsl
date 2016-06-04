@@ -152,6 +152,7 @@ return [
         'securities_certificate'=> '证券从业资格编号',
         'role_name'             => '认证内容',
         'feature'               => '个人简介',
+        'message'               => '直播内容',
     ],
 
 ];
