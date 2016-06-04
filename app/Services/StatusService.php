@@ -156,6 +156,7 @@ class StatusService extends AbstractService
         Redis::pipeline(function ($pipe) use($uid ,$statuses) {
             foreach ($statuses as $k => $v) {
                 Redis::zadd('profile:' . $uid, strtotime($v->created_at), $v->id);
+                Redis::zadd('all_home', strtotime($v->created_at), $v->id);
             }
             Redis::hset('user:'.$uid,'posts',count($statuses));
             Redis::zadd('zanalyst:status',count($statuses),$uid);
@@ -186,7 +187,7 @@ class StatusService extends AbstractService
             //放到自己主页的时间线上
             Redis::ZADD('profile:' . $uid, $post);
             //放到总时间线上
-            Redis::ZADD('all_home:' . $uid, $post);
+            Redis::ZADD('all_home', $post);
             //统计排行+1
             Redis::ZINCRBY('zanalyst:status', 1, $uid);
             //用户的posts+1

@@ -1,8 +1,7 @@
 <?php
 namespace App\Services\API;
 
-
-use App\Jobs\DyxcSync;
+use App\Jobs\DyxcSyncJob;
 use App\Services\ImageService;
 use App\Services\StatusService;
 use App\Services\UserService;
@@ -60,7 +59,7 @@ class DyxcService
         }
         if(isset($this->users[$uid])){
             //推送到队列中
-            $this->dispatch(new DyxcSync($status_id,$newsType));
+            $this->dispatch(new DyxcSyncJob($status_id,$newsType));
         }
     }
 
