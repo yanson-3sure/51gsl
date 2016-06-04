@@ -12,7 +12,6 @@
     <script src="/js/layer/layer.js"></script>
     <script src="/js/common.js"></script>
     <link href="/css/login.css" type="text/css" rel="stylesheet">
-
 </head>
 @yield('body')
 </html>

@@ -30,7 +30,7 @@ abstract class Controller extends BaseController
             $this->data['user'] = $this->user;
         }
         $this->data['uid'] = $this->uid;
-        $this->data['is_login'] = $this->uid > 0;
+        $this->data['isLogin'] = $this->uid > 0;
         $url = Request::getRequestUri();
         if(starts_with($url,'/my') or starts_with($url,'/auth')){
             $this->data['isMy'] = true;

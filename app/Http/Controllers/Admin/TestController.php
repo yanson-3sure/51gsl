@@ -17,9 +17,9 @@ class TestController extends Controller
      */
     public function getRegUser()
     {
-        $mobile = '13141469448';
+        $mobile = '13141469450';
         $password = '123456';
-        $name = 'viky';
+        $name = 'viky50';
         $userService = new UserService();
         $result = $userService->save($mobile,$password,$name);
         dd($result);
@@ -27,9 +27,21 @@ class TestController extends Controller
 
     public function getUser()
     {
-        $uid = 1;
+        $uid = 4;
         $userService = new UserService();
-        dd($userService->get($uid));
+        dd($userService->find($uid));
+    }
+    public function getUsers()
+    {
+        $userService = new UserService();
+        dd($userService->gets([4,7]));
+    }
+    public function getTestCache()
+    {
+        $uid = 4;
+        $userService = new UserService();
+        $user = $userService->find($uid);
+        dd($userService->getCacheModel($user));
     }
 
 

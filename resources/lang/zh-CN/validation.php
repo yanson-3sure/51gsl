@@ -147,6 +147,11 @@ return [
         'vip'                   => '是否收费',
         'intro'                 => '简介',
         'risk'                  => '风险提示',
+
+        'id_number'             => '身份证',
+        'securities_certificate'=> '证券从业资格编号',
+        'role_name'             => '认证内容',
+        'feature'               => '个人简介',
     ],
 
 ];

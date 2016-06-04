@@ -29,7 +29,8 @@
         "psr-4": {
             "App\\": "app/",
             "Viky88\\Sms\\" : "packages/viky88/sms/src/",
-            "Gensee\\" : "packages/viky88/gensee/src"
+            "Gensee\\" : "packages/viky88/gensee/src",
+            "Viky88\\Upload\\":"packages/viky88/upload/src"
         },
         "files": [
             "app/Helpers.php",

@@ -146,6 +146,7 @@ return [
 
         Viky88\Sms\SmsServiceprovider::class,
         Gensee\GenseeServiceProvider::class,
+        Viky88\Upload\UploadServiceProvider::class,
 
         Jenssegers\Agent\AgentServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,

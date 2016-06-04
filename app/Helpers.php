@@ -144,10 +144,10 @@ function getTime()
     $strWenhou = array('夜深了，','凌晨了，','早上好！','上午好！','中午好！','下午好！','晚上好！','夜深了，');
     return $strWenhou[(int)$strTimeToString[(int)date('G',time())]];
 }
-function hidePhone($phone)
+function hideMobile($mobile)
 {
-    if(strlen($phone) != 11) return $phone;
-    return substr($phone,0,3) . '*****' . substr($phone,-3,3);
+    if(strlen($mobile) != 11) return $mobile;
+    return substr($mobile,0,3) . '*****' . substr($mobile,-3,3);
 }
 function n2br($str)
 {

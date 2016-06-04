@@ -8,7 +8,14 @@ Route::group(['prefix' => 'home', 'namespace'=>'Home'], function () {
     Route::get('/', 'IndexController@index');
     Route::controller('index', 'IndexController');
 });
-
-Route::group(['prefix' => 'admin', 'namespace'=>'Admin'], function () {
+Route::get('my', 'My\IndexController@index');
+Route::group(['prefix' => 'my', 'namespace'=>'My', 'middleware' => 'oauth'], function () {
+    //Route::controller('Status', 'StatusController');
+    Route::get('info','InfoController@index');
+    Route::controller('info','InfoController');
+    Route::Resource('apply','ApplyController');
+});
+Route::group(['prefix' => 'admin', 'namespace'=>'Admin','middleware'=>'oauth.admin'], function () {
     Route::controller('test', 'TestController');
+    Route::controller('index', 'IndexController');
 });
