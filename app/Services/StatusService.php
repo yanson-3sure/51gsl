@@ -182,7 +182,7 @@ class StatusService extends AbstractService
     {
         $cacheModel = $this->save($uid,$message,$image_id,$forward_id,$forward_type);
         if(!$cacheModel)return false;
-        $post = [$cacheModel['id'],strtotime($cacheModel['created_at'])];
+        $post = [$cacheModel['id']=>strtotime($cacheModel['created_at'])];
         Redis::pipeline(function ($pipe) use($uid ,$post) {
             //放到自己主页的时间线上
             Redis::ZADD('profile:' . $uid, $post);
@@ -204,8 +204,8 @@ class StatusService extends AbstractService
         $followers = Redis::zrangebyscore('followers:'.$uid,$start,'+inf',array('limit' => array($start, $posts_per_pass)));
         Redis::pipeline(function ($pipe) use($followers ,$post,$home_timeline_size) {
             foreach($followers as $k => $v){
-                Redis::zadd('home:'.$k,$post);
-                Redis::zremrangebyrank('home:'.$k,0,-$home_timeline_size-1);
+                Redis::zadd('home:'.$v,$post);
+                Redis::zremrangebyrank('home:'.$v,0,-$home_timeline_size-1);
             }
         });
         if(count($followers)>=$posts_per_pass){//如果关注用户大于 posts_per_pass ,放到队列中处理...

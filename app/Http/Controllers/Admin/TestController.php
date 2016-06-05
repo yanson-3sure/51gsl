@@ -49,7 +49,7 @@ class TestController extends Controller
     public function getRedis()
     {
         $service = new StatusService();
-        $service->loadProfileCache(7);
+        $service->loadProfileCache(9);
     }
 
 
