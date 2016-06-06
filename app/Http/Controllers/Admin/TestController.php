@@ -52,5 +52,13 @@ class TestController extends Controller
         $service->loadProfileCache(9);
     }
 
+    public function getGetStatus()
+    {
+        $service = new StatusService();
+        //dd($service->getStatusMessage(7));
+
+        dd($service->zrevrangebyscore('all_home',0,5));
+    }
+
 
 }

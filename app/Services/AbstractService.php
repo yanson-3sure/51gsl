@@ -49,6 +49,59 @@ abstract class AbstractService
         return [];
     }
 
+    public function zrevrange($key,$page=1,$count=10,$WITHSCORES=false)
+    {
+        $start = ($page-1)*$count;
+        $stop = $page*$count-1;
+        if($WITHSCORES){
+            $result = Redis::zrevrange($key,$start,$stop,'WITHSCORES');
+        }else{
+            $result = Redis::zrevrange($key,$start,$stop);
+        }
+        return $result;
+    }
+    public function zrange($key,$page=1,$count=10,$WITHSCORES=false,$isGets=true)
+    {
+        $start = ($page-1)*$count;
+        $stop = $page*$count-1;
+        if($WITHSCORES){
+            $result = Redis::zrange($key,$start,$stop,'WITHSCORES');
+        }else{
+            $result = Redis::zrange($key,$start,$stop);
+        }
+        if($isGets)
+        {
+            return $this->gets($result);
+        }
+        return $result;
+    }
+
+    public function zrevrangebyscore($key,$start,$length,$max=0,$isEqual=false,$WITHSCORES=false)
+    {
+        if(!$max) {
+            $max = '+inf';
+        }
+        if(!$isEqual){
+            $max = '(' . $max;
+        }
+        $arguments = ['limit' => [$start, $length]];
+        if($WITHSCORES){
+            $arguments = ['WITHSCORES'=>true];
+        }
+        return Redis::ZREVRANGEBYSCORE($key,$max,'-inf',$arguments);
+    }
+    public function zrangebyscore($key,$start,$length,$min='-inf',$isEqual=false,$WITHSCORES=false)
+    {
+        if(!$isEqual){
+            $min = '(' . $min;
+        }
+        $arguments = ['limit' => [$start, $length]];
+        if($WITHSCORES){
+            $arguments = ['WITHSCORES'=>true];
+        }
+        return Redis::ZRANGEBYSCORE($key,$min,'+inf',$arguments);
+    }
+
     public function loadCache($id)
     {
         $model = $this->find($id);

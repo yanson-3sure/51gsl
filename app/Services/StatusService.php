@@ -1,17 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2016/4/14
- * Time: 16:23
- */
-
 namespace App\Services;
-
 
 use App\Models\Status;
 use Illuminate\Support\Facades\Redis;
-use Carbon\Carbon;
 Use App\Services\UserService;
 
 class StatusService extends AbstractService
@@ -21,133 +12,70 @@ class StatusService extends AbstractService
     protected $noCacheAttributes = [];
 
     /*
-     * 获取用户的文章
+     * 直播消息列表
+     * type:   all_home=>全部  home=>关注   profile=>个人主页
      */
-    function getRevUserStatus($userid,$start,$end,$maxscore=0,$contains=false){
-        if(!$maxscore) {
-            $maxscore = strtotime(Carbon::now());
+    public function getRevStatus($type,$start,$length,$max,$uid=0)
+    {
+        switch($type){
+            case 'all_home':
+                return $this->getRevAllHome($start,$length,$max);
+            case 'home':
+                return $this->getRevHome($uid,$start,$length,$max);
+            case 'profile':
+                return $this->getRevProfile($uid,$start,$length,$max);
         }
-        if(!$contains){
-            $maxscore = '(' . $maxscore;
-        }
-        $ids = Redis::ZREVRANGEBYSCORE('zstatus:list:'.$userid,$maxscore,-1,array('limit' => array($start, $end)));
-
-        return $this->gets($ids,true) ;
+        return [];
     }
-    function getUserStatus($userid,$start,$end,$minscore=0,$contains=false){
-        if(!$contains){
-            $minscore = '(' . $minscore;
-        }
-        $ids = Redis::ZRANGEBYSCORE('zstatus:list:'.$userid,$minscore,'+inf',array('limit' => array($start, $end)));
-        return $this->gets($ids,true) ;
-    }
-
-    function getRevStatusFollow($userid,$start,$length,$maxid=0,$contains=false){
-        $followingService =new FollowingService();
-        $followingids = $followingService->get($userid);
-        //var_dump($followingids);
-        if(!$followingids)return[];
-        //var_dump($followingids);
-        $statusids = Redis::mget(addPrefix($followingids,'user:status:'));
-        //var_dump($statusids);
-        if($statusids){
-            $all_statusids = [];
-            foreach ($statusids as $k => $v) {
-                if ($v) {
-                    $all_statusids = array_merge($all_statusids, json_decode($v));
-                }
-            }
-            rsort($all_statusids);
-            if($maxid>0){
-                $count = count($all_statusids);
-                for($i = 0 ; $i < $count ;$i++){
-                    if($contains) {
-                        if ($all_statusids[$i] > $maxid) {
-                            unset($all_statusids[$i]);
-                        } else {
-                            break;
-                        }
-                    }else{
-                        if ($all_statusids[$i] >= $maxid) {
-                            unset($all_statusids[$i]);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            $all_statusids = array_slice($all_statusids,$start,$length);
-            if($all_statusids){
-                return $this->gets($all_statusids,true);
-            }
+    /*
+     * 直播消息列表
+     * type:   all_home=>全部  home=>关注   profile=>个人主页
+     */
+    public function getStatus($type,$start,$length,$min,$uid=0)
+    {
+        switch($type){
+            case 'all_home':
+                return $this->getAllHome($start,$length,$min);
+            case 'home':
+                return $this->getHome($uid,$start,$length,$min);
+            case 'profile':
+                return $this->getProfile($uid,$start,$length,$min);
         }
         return [];
     }
 
-    function getStatusFollow($userid,$start,$length,$minid=0,$contains=false){
-        $followingService =new FollowingService();
-        $followingids = $followingService->get($userid);
-        //var_dump($followingids);
-        if(!$followingids)return[];
-        //var_dump($followingids);
-        $statusids = Redis::mget(addPrefix($followingids,'user:status:'));
-        //var_dump($statusids);
-        if($statusids){
-            $all_statusids = [];
-            foreach ($statusids as $k => $v) {
-                if ($v) {
-                    $all_statusids = array_merge($all_statusids, json_decode($v));
-                }
-            }
-            sort($all_statusids);
-            if($minid>0){
-                $count = count($all_statusids);
-                for($i = 0 ; $i < $count ;$i++){
-                    if($contains) {
-                        if ($all_statusids[$i] < $minid) {
-                            unset($all_statusids[$i]);
-                        } else {
-                            break;
-                        }
-                    }else{
-                        if ($all_statusids[$i] <= $minid) {
-                            unset($all_statusids[$i]);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            $all_statusids = array_slice($all_statusids,$start,$length);
-            if($all_statusids){
-                return $this->gets($all_statusids,true);
-            }
-        }
-        return [];
+    public function getRevAllHome($start,$length,$max=0,$isEqual=false){
+        $result = $this->zrevrangebyscore('all_home',$start,$length,$max,$isEqual);
+        return $this->gets($result) ;
+    }
+    public function getAllHome($start,$length,$min=0,$isEqual=false)
+    {
+        $result = $this->zrangebyscore('all_home',$start,$length,$min,$isEqual);
+        return $this->gets($result);
     }
 
-
-    public function getRevAll($start,$length,$maxscore=0,$contains=false){
-        if(!$maxscore) {
-            $maxscore = strtotime(Carbon::now());
-        }
-        if(!$contains){
-            $maxscore = '(' . $maxscore;
-        }
-        $ids = Redis::ZREVRANGEBYSCORE('zstatus:all',$maxscore,-1,array('limit' => array($start, $length)));
-//dd($ids);
-        return $this->gets($ids,true) ;
+    public function getRevHome($uid,$start,$length,$max=0,$isEqual=false)
+    {
+        $result = $this->zrevrangebyscore('home:'.$uid,$start,$length,$max,$isEqual);
+        return $this->gets($result) ;
     }
-    public function getAll($start,$length,$minscore=0,$contains=false){
-        if(!$contains){
-            $minscore = '(' . $minscore;
-        }
-        //var_dump($minscore);
-        $ids = Redis::ZRANGEBYSCORE('zstatus:all',$minscore,'+inf',array('limit' => array($start, $length)));
-        //dd($ids);
-        return $this->gets($ids,true) ;
+
+    public function getHome($uid,$start,$length,$min=0,$isEqual=false)
+    {
+        $result = $this->zrangebyscore('home:'.$uid,$start,$length,$min,$isEqual);
+        return $this->gets($result) ;
+    }
+
+    public function getRevProfile($uid,$start,$length,$max=0,$isEqual=false)
+    {
+        $result = $this->zrevrangebyscore('profile:'.$uid,$start,$length,$max,$isEqual);
+        return $this->gets($result) ;
+    }
+
+    public function getProfile($uid,$start,$length,$min=0,$isEqual=false)
+    {
+        $result = $this->zrangebyscore('profile:'.$uid,$start,$length,$min,$isEqual);
+        return $this->gets($result) ;
     }
 
     public function loadProfileCache($uid)
