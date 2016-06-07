@@ -14,14 +14,22 @@ class PraiseService extends AbstractService
 
 
 
-    public function gets($ids,$object_type='status',$length=0)
+    public function zgets($ids,$object_type='status',$length=10)
     {
         $this->prefix = $this->prefix.$object_type.':';
-        $result = $this->zrevranges($ids,$length);
+        $result = $this->zrevranges($ids,1,$length);
         $all_user_id = [];
         foreach($result as $k => $v){
             $all_user_id = array_merge($all_user_id,$v);
         }
+        $userService = new UserService();
+        $all_user = $userService->gets($all_user_id);
+        foreach($result as $k => $v){
+            foreach($v as $uid){
+                $result[$k][$uid] = $all_user[$uid];
+            }
+        }
+        return $result;
     }
 
     /*

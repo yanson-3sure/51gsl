@@ -10,6 +10,8 @@ return [
     'black_role' => [-1],
     'home_timeline_size' => env('HOME_TIMELINE_SIZE',1000),
     'posts_per_pass'=>env('POSTS_PER_PASS',1000),
+    'status_praise_size' => env('STATUS_PRAISE_SIZE',30),
+    'status_comment_size' => env('STATUS_COMMENT_SIZE',20),
 
     'posts_per_page' => 10,
     'page_size' => 10,

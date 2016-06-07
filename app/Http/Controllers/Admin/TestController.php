@@ -72,4 +72,9 @@ class TestController extends Controller
         dd($service->gets([100,1,2,4,3000]));
     }
 
+    public function getUnique()
+    {
+        $arr = [1,2,3,4,5,1,2,6];
+        dd(array_unique($arr));
+    }
 }

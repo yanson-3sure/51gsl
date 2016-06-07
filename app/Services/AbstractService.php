@@ -12,6 +12,7 @@ abstract class AbstractService
     protected $noCacheAttributes = [];
     protected $onlyCacheTrue = true;
     protected $onlyCacheTrueExcept = [];
+    protected $object_type;//用于cache前缀
 
     public function __construct()
     {
@@ -63,14 +64,13 @@ abstract class AbstractService
     }
     public function gets(array $ids,$unique=true){
         if($ids) {
-            if($unique){
+            if($unique) {
                 $ids = array_unique($ids);
-                sort($ids);
             }
-            $prefix = $this->prefix;
-            $result = Redis::pipeline(function ($pipe) use($ids,$prefix){
-                foreach($ids as $k => $v){
-                    $pipe->HGETALL($prefix.$v);
+            $keys = $this->getkeys($ids);
+            $result = Redis::pipeline(function ($pipe) use($keys){
+                foreach($keys as $key){
+                    $pipe->HGETALL($key);
                 }
             });
             return array_combine($ids,$result);
@@ -104,18 +104,18 @@ abstract class AbstractService
         return Redis::zscroe($key,$member);
     }
 
-    public function zrevranges($ids,$length=0,$WITHSCORES=false)
+    public function zrevranges($ids,$page=1,$count=10,$WITHSCORES=false)
     {
-        $result = Redis::pipeline(function($pipe)use($ids,$length,$WITHSCORES){
+        $ids = array_unique($ids);
+        $start = ($page-1)*$count;
+        $stop = $page*$count-1;
+        $result = Redis::pipeline(function($pipe)use($ids,$start,$stop,$WITHSCORES){
             foreach($ids as $id){
                 $key = $this->prefix . $id;
-                if($length==0){
-                    $length = 1000;
-                }
                 if($WITHSCORES){
-                    $pipe->zrevrange($key,0,$length-1,'WITHSCORES');
+                    $pipe->zrevrange($key,$start,$stop,'WITHSCORES');
                 }else{
-                    $pipe->revrange($key,0,$length-1);
+                    $pipe->zrevrange($key,$start,$stop);
                 }
             }
         });
@@ -148,6 +148,22 @@ abstract class AbstractService
         return $result;
     }
 
+    public function zrevrangebyscores($ids,$length,$WITHSCORES=false)
+    {
+        $max = '+inf';
+        $arguments = ['limit' => [0, $length]];
+        if($WITHSCORES){
+            $arguments = ['WITHSCORES'=>true];
+        }
+        $ids = array_unique($ids);
+        $keys = $this->getKeys($ids);
+        $result = Redis::pipeline(function($pipe)use($keys,$max,$arguments,$WITHSCORES) {
+            foreach ($keys as $key) {
+                $pipe->ZREVRANGEBYSCORE($key,$max,'-inf',$arguments);
+            }
+        });
+        return array_combine($ids, $result);
+    }
     public function zrevrangebyscore($key,$start,$length,$max=0,$isEqual=false,$WITHSCORES=false)
     {
         if(!$max) {
@@ -224,19 +240,21 @@ abstract class AbstractService
         if($object_type){
             return $this->prefix.$object_type.':'.$id;
         }
+        if($this->object_type){
+            return $this->prefix.$this->object_type.':'.$id;
+        }
         return $this->prefix.$id;
     }
-    public function getKeys($ids,$unique = false)
+    public function getKeys($ids,$object_type=null,$unique = false)
     {
         if(!is_array($ids)) return [];
         $result = [];
         //删除重复值
         if($unique) {
             $ids = array_unique($ids);
-            sort($ids);
         }
         foreach($ids as $k=>$v){
-            $result[$v] = $this->getKey($v);
+            $result[$v] = $this->getKey($v,$object_type);
         }
         return $result;
     }

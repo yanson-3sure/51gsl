@@ -12,10 +12,47 @@ class CommentService extends AbstractService
     protected $model = Comment::class;
     protected $onlyCacheTrueExcept = ['comment'];
 
+    public function zgets($ids,$object_type='status',$length=10)
+    {
+        $this->object_type = $object_type;
+        $result = $this->zrevrangebyscores($ids,$length);
+        $all_uid = [];
+        $all_reply_comment_id = [];
+        $all_comment_id = [];
+        foreach($result as $k => $v){
+            $all_comment_id = array_merge($all_comment_id,$v);
+        }
+        $models = $this->gets($all_comment_id);
+        foreach($models as $k => $v){
+            $all_uid[] = $v['uid'];
+            if(isset($v['reply_uid']) && $v['reply_uid']>0){
+                $all_uid[] = $v['reply_uid'];
+                $all_reply_comment_id[] = $v['reply_comment_id'];
+            }
+        }
+        //获取所有相关用户
+        $userService = new UserService();
+        $all_user = $userService->gets($all_uid);
+        //处理所有的reply
+        $reply_comments = $this->gets($all_reply_comment_id);
+        foreach($result as $k => $v){
+            foreach($v as $comment_id) {
+                $comment = $models[$comment_id];
+                $result[$k][$comment_id] = $comment;
+                $result[$k][$comment_id]['user'] = $all_user[$comment['uid']];
+                if (isset($comment['reply_uid']) && $comment['reply_uid'] > 0) {
+                    $result[$k][$comment_id]['reply_user'] = $all_user[$comment['reply_uid']];
+                    $result[$k][$comment_id]['reply_comment'] = $reply_comments[$comment['reply_comment_id']];
+                }
+            }
+        }
+        return $result;
+    }
+
     public function getForwardComment($ids)
     {
         if(!$ids) return [];
-        $models = $this->gets($ids);
+        $models = $this->gets($ids,true);
         $all_uid = [];
         $all_reply_comment_id = [];
         $all_object_id = [];
@@ -32,9 +69,9 @@ class CommentService extends AbstractService
         }
         //获取所有相关用户
         $userService = new UserService();
-        $all_user = $userService->gets($all_uid);
+        $all_user = $userService->gets($all_uid,true);
         //处理所有的reply
-        $reply_comments = $this->gets($all_reply_comment_id);
+        $reply_comments = $this->gets($all_reply_comment_id,true);
         //处理所有object_id
         $all_object = [];
         foreach($all_object_id as $k => $v){
@@ -47,8 +84,10 @@ class CommentService extends AbstractService
         }
         foreach($models as $k => $v){
             $models[$k]['user'] = $all_user[$v['uid']];
-            $models[$k]['reply_user'] = $all_user[$v['reply_uid']];
-            $models[$k]['reply_comment'] = $reply_comments[$v['reply_comment_id']];
+            if(isset($v['reply_uid']) && $v['reply_uid']>0) {
+                $models[$k]['reply_user'] = $all_user[$v['reply_uid']];
+                $models[$k]['reply_comment'] = $reply_comments[$v['reply_comment_id']];
+            }
             $models[$k]['object'] = $all_object[$v['object_type']][$v['object_id']];
         }
         return $models;
@@ -115,26 +154,5 @@ class CommentService extends AbstractService
             }
         }
         return $cacheModel;
-
-    }
-
-    /*
-     * $all_user_ids = array_merge($all_user_ids, $comment_user_ids);
-     */
-    public function getCommentUserIds($all_comments)
-    {
-        if ($all_comments) {
-            $comment_user_ids = [];
-            foreach ($all_comments as $k => $v) {
-                $comment = json_decode($v);
-                $comment_user_ids[] = $comment->userid;
-                if ($comment->reply_userid && $comment->reply_userid > 0) {
-                    $comment_user_ids[] = $comment->reply_userid;
-                }
-            }
-            return $comment_user_ids;
-
-        }
-        return [];
     }
 }
