@@ -9,6 +9,7 @@ class UserService extends AbstractService
     protected $prefix = 'user:';
     protected $model = User::class;
     protected $noCacheAttributes = ['email','mobile','password','remember_token','created_at','updated_at'];
+    protected $onlyCacheTrueExcept = ['name','avatar','role'];
 
     public function save($mobile,$password,$name)
     {

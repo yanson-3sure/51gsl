@@ -33,7 +33,7 @@ class OAuthAdminAuthenticate
                 return redirect()->guest('auth/login');
             }
         }
-        if(!in_array(Auth::user()->id,config('base.admin_user_ids'))){
+        if(!isAdmin(Auth::user()->id)){
             if ($request->ajax()) {
                 return response('Unauthorized.', 403);//权限不足
             }else{

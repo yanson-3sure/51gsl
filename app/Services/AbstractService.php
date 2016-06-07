@@ -9,7 +9,9 @@ abstract class AbstractService
 
     protected $prefix;
     protected $model;
-    protected $noCacheAttributes;
+    protected $noCacheAttributes = [];
+    protected $onlyCacheTrue = true;
+    protected $onlyCacheTrueExcept = [];
 
     public function __construct()
     {
@@ -21,6 +23,30 @@ abstract class AbstractService
         $class = '\\'.ltrim($this->model, '\\');
 
         return new $class;
+    }
+    /*
+     * 获取对象所属用户
+     */
+    public function getObjectUid($object_type,$object_id)
+    {
+        $object_uid = 0;
+        switch($object_type) {
+            case 'status':
+                $statusService = new StatusService();
+                $object = $statusService->get($object_id);
+                if(!$object){
+                    return false;
+                }
+                $object_uid = $object['uid'];
+                break;
+        }
+        return $object_uid;
+    }
+    public function isBlackRole($uid)
+    {
+        $userService = new UserService();
+        $user = $userService->get($uid);
+        return isBlackRole($user['role']);
     }
     public function find($id)
     {
@@ -35,20 +61,66 @@ abstract class AbstractService
             return $model;
         }
     }
-    public function gets(array $ids){
+    public function gets(array $ids,$unique=true){
         if($ids) {
-            $result = [];
+            if($unique){
+                $ids = array_unique($ids);
+                sort($ids);
+            }
             $prefix = $this->prefix;
-            Redis::pipeline(function ($pipe) use($ids,$prefix,&$result){
+            $result = Redis::pipeline(function ($pipe) use($ids,$prefix){
                 foreach($ids as $k => $v){
-                    $result[$v] = Redis::HGETALL($prefix.$v);
+                    $pipe->HGETALL($prefix.$v);
                 }
             });
-            return $result;
+            return array_combine($ids,$result);
         }
         return [];
     }
 
+    public function hget($key,$field)
+    {
+        return Redis::hget($key,$field);
+    }
+    public function hgetall($key)
+    {
+        return Redis::HGETALL($key);
+    }
+
+    public function zadd($key,$score,$member=null)
+    {
+        if($member){
+            return Redis::zadd($key,$score,$member);
+        }
+        return Redis::zadd($key,$score);
+    }
+
+    public function zexist($key,$member)
+    {
+        return $this->zscroe($key,$member);
+    }
+    public function zscroe($key,$member)
+    {
+        return Redis::zscroe($key,$member);
+    }
+
+    public function zrevranges($ids,$length=0,$WITHSCORES=false)
+    {
+        $result = Redis::pipeline(function($pipe)use($ids,$length,$WITHSCORES){
+            foreach($ids as $id){
+                $key = $this->prefix . $id;
+                if($length==0){
+                    $length = 1000;
+                }
+                if($WITHSCORES){
+                    $pipe->zrevrange($key,0,$length-1,'WITHSCORES');
+                }else{
+                    $pipe->revrange($key,0,$length-1);
+                }
+            }
+        });
+        return array_combine($ids,$result);
+    }
     public function zrevrange($key,$page=1,$count=10,$WITHSCORES=false)
     {
         $start = ($page-1)*$count;
@@ -132,10 +204,26 @@ abstract class AbstractService
     }
     public function getCacheModel(Model $model)
     {
-        return array_diff_key($model->getAttributes(),array_flip($this->noCacheAttributes));
+        $result = array_diff_key($model->getAttributes(),array_flip($this->noCacheAttributes));
+
+        if($this->onlyCacheTrue){
+            $delKey = [];
+            foreach($result as $k => $v){
+                if(!$v){
+                    if(!in_array($k,$this->onlyCacheTrueExcept)){
+                        $delKey[$k] = '';
+                    }
+                }
+            }
+            $result = array_diff_key($result,$delKey);
+        }
+        return $result;
     }
-    public function getKey($id)
+    public function getKey($id,$object_type=null)
     {
+        if($object_type){
+            return $this->prefix.$object_type.':'.$id;
+        }
         return $this->prefix.$id;
     }
     public function getKeys($ids,$unique = false)

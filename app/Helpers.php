@@ -10,26 +10,37 @@ function previous()
 {
     return URL::previous();
 }
-function getAvatar($url,$size=46){
-    $realSize = getRealSize($size);
-    if($url){
-        return Config::get( 'avatar.url-pre').$url.'/'.$realSize.'.png';
-    }
-    return Config::get('avatar.size.'.$size)[1];
+
+function admin_user_ids()
+{
+    return config('base.admin_user_ids');
 }
-
-function getAvatarDefault($size=46){
-    return Config::get('avatar.size.'.$size)[1];
+function isAdmin($uid)
+{
+    return in_array($uid,admin_user_ids());
 }
-
-
+function isBlackRole($role)
+{
+    return in_array($role,config('base.black_role'));
+}
 function getRealSize($size)
 {
-    $sizes = Config::get('avatar.size');
+    $sizes = config('avatar.size');
     if(array_key_exists($size,$sizes)) {
         return $sizes[$size][0];
     }
     return dd('size error');
+}
+function getAvatar($url,$size=46){
+    $realSize = getRealSize($size);
+    if($url){
+        return config( 'avatar.url-pre').$url.'/'.$realSize.'.png';
+    }
+    return config('avatar.size.'.$size)[1];
+}
+
+function getAvatarDefault($size=46){
+    return config('avatar.size.'.$size)[1];
 }
 
 function getImageUrl($image,$size=''){

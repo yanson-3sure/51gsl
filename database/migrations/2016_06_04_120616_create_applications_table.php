@@ -23,6 +23,7 @@ class CreateApplicationsTable extends Migration
             $table->tinyInteger('status')->default(1)->comment('状态 0：申请  1：通过，正在使用 2:未通过');
             $table->timestamp('audit_at'); ///审核 时间  用户申请后，通过审核时间
             $table->string('audit_name',20);
+            $table->string('audit_reason')->comment('原因');
             $table->timestamps();
 
         });

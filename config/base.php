@@ -7,6 +7,7 @@ return [
     'author' => 'hx',
 
     'admin_user_ids' =>[4],
+    'black_role' => [-1],
     'home_timeline_size' => env('HOME_TIMELINE_SIZE',1000),
     'posts_per_pass'=>env('POSTS_PER_PASS',1000),
 

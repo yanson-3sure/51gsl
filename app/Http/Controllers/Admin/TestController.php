@@ -59,6 +59,17 @@ class TestController extends Controller
 
         dd($service->zrevrangebyscore('all_home',0,5));
     }
+    public function getCacheModel()
+    {
+        $service = new StatusService();
+        $model = $service->find(2);
+        dd($service->getCacheModel($model));
+    }
 
+    public function getGets()
+    {
+        $service = new StatusService();
+        dd($service->gets([100,1,2,4,3000]));
+    }
 
 }

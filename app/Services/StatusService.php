@@ -2,15 +2,15 @@
 namespace App\Services;
 
 use App\Models\Status;
+use App\Services\ImageService;
 use Illuminate\Support\Facades\Redis;
-Use App\Services\UserService;
+use App\Services\UserService;
 
 class StatusService extends AbstractService
 {
     protected $prefix = 'status:';
     protected $model = Status::class;
-    protected $noCacheAttributes = [];
-
+    protected $noCacheAttributes = ['updated_at'];
     /*
      * 直播消息列表
      * type:   all_home=>全部  home=>关注   profile=>个人主页
@@ -83,11 +83,11 @@ class StatusService extends AbstractService
         $statuses = Status::where('uid',$uid)->get();
         Redis::pipeline(function ($pipe) use($uid ,$statuses) {
             foreach ($statuses as $k => $v) {
-                Redis::zadd('profile:' . $uid, strtotime($v->created_at), $v->id);
-                Redis::zadd('all_home', strtotime($v->created_at), $v->id);
+                $pipe->zadd('profile:' . $uid, strtotime($v->created_at), $v->id);
+                $pipe->zadd('all_home', strtotime($v->created_at), $v->id);
             }
-            Redis::hset('user:'.$uid,'posts',count($statuses));
-            Redis::zadd('zanalyst:status',count($statuses),$uid);
+            $pipe->hset('user:'.$uid,'posts',count($statuses));
+            $pipe->zadd('zanalyst:status',count($statuses),$uid);
         });
     }
 
@@ -113,13 +113,13 @@ class StatusService extends AbstractService
         $post = [$cacheModel['id']=>strtotime($cacheModel['created_at'])];
         Redis::pipeline(function ($pipe) use($uid ,$post) {
             //放到自己主页的时间线上
-            Redis::ZADD('profile:' . $uid, $post);
+            $pipe->ZADD('profile:' . $uid, $post);
             //放到总时间线上
-            Redis::ZADD('all_home', $post);
+            $pipe->ZADD('all_home', $post);
             //统计排行+1
-            Redis::ZINCRBY('zanalyst:status', 1, $uid);
+            $pipe->ZINCRBY('zanalyst:status', 1, $uid);
             //用户的posts+1
-            Redis::HINCRBY('user:' . $uid, 'posts', 1);
+            $pipe->HINCRBY('user:' . $uid, 'posts', 1);
         });
         //将消息状态,推送给关注者
         $this->syndicate_status($uid,$post);
@@ -132,8 +132,8 @@ class StatusService extends AbstractService
         $followers = Redis::zrangebyscore('followers:'.$uid,$start,'+inf',array('limit' => array($start, $posts_per_pass)));
         Redis::pipeline(function ($pipe) use($followers ,$post,$home_timeline_size) {
             foreach($followers as $k => $v){
-                Redis::zadd('home:'.$v,$post);
-                Redis::zremrangebyrank('home:'.$v,0,-$home_timeline_size-1);
+                $pipe->zadd('home:'.$v,$post);
+                $pipe->zremrangebyrank('home:'.$v,0,-$home_timeline_size-1);
             }
         });
         if(count($followers)>=$posts_per_pass){//如果关注用户大于 posts_per_pass ,放到队列中处理...
@@ -141,31 +141,120 @@ class StatusService extends AbstractService
         }
     }
 
-    public function delete($statusid){
-        $status = Status::find($statusid);
+    public function delete_status($uid,$id)
+    {
+        $key = $this->getKey($id);
+        $status = $this->get($id);
         if($status){
-            $userid = $status->userid;
-            //程序中删除
-            if($status->delete()) {
-                //缓存中删除
+            //非消息发布者本人,不能删除 .管理员除外
+            if($status->uid != $uid && !isAdmin($uid)){
+                return false;
+            }
+            if($status->delete()){//软删除
                 $prefix = $this->prefix;
-                Redis::pipeline(function ($pipe) use($userid,$statusid,$prefix) {
-                    Redis::ZREM('zstatus:all',$statusid);
-                    Redis::ZREM('zstatus:list:'.$userid,$statusid);
-                    Redis::ZINCRBY('zstatus:count',-1,$userid);
-                    Redis::DECR('status:count:' . $userid); //直播数量
-                    Redis::DEL($prefix . $statusid);
-
+                Redis::pipeline(function ($pipe) use($uid,$id,$key) {
+                    $pipe->DEL($key);
+                    $pipe->ZREM('all_home',$id);//全部
+                    $pipe->ZREM('home:'.$uid,$id);//关注
+                    $pipe->ZREM('profile:'.$uid,$id);//个人主页
+                    $pipe->ZINCRBY('zanalyst:status',-1,$uid);//排行
+                    $pipe->HINCRBY('user:' . $uid, 'posts', -1);//用户直播总数量
                 });
-                redis_unset('user:status:'.$userid,$statusid);
-
-                return true;
             }
         }
-        return false;
     }
+    //恢复删除的评论
+    public function restore($uid,$id)
+    {
+
+    }
+    //过滤删除的
+//    public function filter()
+//    {
+//
+//    }
 
     public function getViewListInfo($statuses)
+    {
+        $tempResult = [
+            [
+                'id'=>10,
+                'praises_count'=>0,
+                'comments_count'=>20,
+                'praises'=>[],
+                'comments'=>[],
+                'forward_id'=>[],
+                'forward_type'=>'status',
+                'image'=>[],
+            ]
+        ];
+        if(!$statuses) return [];
+        //收集各type数据
+        $all_user_id = [];
+        $all_status_id = [];
+        $all_comment_id = [];
+        $all_image_id = [];
+        $all_forward_id = [];
+
+        $all_status = [];
+
+        foreach ($statuses as $k => $v) {
+            $all_user_id[] = $v['uid'];
+            $all_status_id[] = $v['id'];
+            if(isset($v['image_id']) && $v['image_id']>0){
+                $all_image_id[] = $v['image_id'];
+            }
+            if(isset($v['forward_id']) && $v['forward_id']>0){
+                $forward_type = !isset($v['forward_type']) ? 'status' : $v['forward_type'];
+                $all_forward_id[$forward_type][] = $v['forward_id'];
+            }
+        }
+        //获取所有图片
+        $imageService = new ImageService();
+        $all_images = $imageService->gets($all_image_id);
+
+        //处理转发
+        $commentService = new CommentService();
+        $all_forward = [];
+        foreach($all_forward_id as $k => $v){
+            switch($k){
+                case 'status':
+                    $all_forward[$k] = $this->getForwardStatus($v);
+                    break;
+                case 'comment':
+                    $all_forward[$k] = $commentService->getForwardComment($v);
+                    break;
+            }
+        }
+        //获取所有赞
+
+        //获取所有评论
+    }
+    public function getForwardStatus($ids){
+        if(!$ids) return [];
+        $models = $this->gets($ids);
+        $all_uid = [];
+        $all_image_id = [];
+        foreach ($models as $k => $v) {
+            $all_uid[] = $v['uid'];
+            if(isset($v['image_id']) && $v['image_id']>0){
+                $all_image_id[] = $v['image_id'];
+            }
+        }
+        //获取所有图片
+        $imageService = new ImageService();
+        $all_images = $imageService->gets($all_image_id);
+        //获取所有相关用户
+        $userService = new UserService();
+        $all_user = $userService->gets($all_uid);//获取所有用户
+        foreach ($models as $k => $v) {
+            $models[$k]['user'] = $all_user[$v['uid']];
+            $models[$k]['image'] = $all_images[$v['image_id']];
+        }
+        return $models;
+    }
+
+    public function getViewListInfo1($statuses)
     {
         if(!$statuses) return [];
         //收集各type数据

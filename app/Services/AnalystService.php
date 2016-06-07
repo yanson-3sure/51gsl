@@ -56,9 +56,10 @@ class AnalystService extends AbstractService
 
     public function initCache($uid)
     {
-        Redis::ZADD('zanalyst:comment', 0, $uid);
-        Redis::ZADD('zanalyst:status', 0, $uid); //直播排行列表
-        Redis::ZADD('zanalyst:followers', 0, $uid);
-
+        Redis::pipeline(function ($pipe) use($uid) {
+            $pipe->ZADD('zanalyst:comment', 0, $uid);
+            $pipe->ZADD('zanalyst:status', 0, $uid); //直播排行列表
+            $pipe->ZADD('zanalyst:followers', 0, $uid);
+        });
     }
 }

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStatusesTable extends Migration
+class CreateMessagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,15 +12,13 @@ class CreateStatusesTable extends Migration
      */
     public function up()
     {
-        //
-        Schema::create('statuses', function (Blueprint $table) {
+        Schema::create('messages',function(Blueprint $table){
             $table->increments('id');
-            $table->integer('uid')->index();
             $table->text('message');
-            $table->integer('image_id')->default(0);
-            $table->integer('forward_id')->default(0);
-            $table->string('forward_type')->comment('comment status strategy train');
-            $table->softDeletes();
+            $table->integer('event_id'); //status_id comment_id
+            $table->string('event_type',20);//事件类型 praise:status comment:status
+            $table->integer('from_uid');
+            $table->integer('to_uid')->index();
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ class CreateStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('statuses');
+        Schema::drop('messages');
     }
 }
