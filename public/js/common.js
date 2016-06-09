@@ -32,7 +32,7 @@ $(document).ajaxError(function( event, jqxhr, settings, thrownError ){
 var getNoreadcount = function(){
     $.ajax({
         type: "get",
-        url: '/my/noreadcount',
+        url: '/my/message/noreadcount',
         dataType: 'json',
         headers: {  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  },
         success: function(data){
@@ -84,6 +84,12 @@ function ScrollPagination(obj, url, type, heightOffset, loading)
         }
     });
 }
+$(document).ready(function(){
+    $("#thelist li").hover(function(){
+        $(this).css("background-color","#f7f7f9").siblings().css("background","#ffffff");
+    });	//hover改变背景颜色
+
+});
 var smsTiming = function(fasongClass){
     var tleft = $(fasongClass).attr('tleft');
     //console.log(tleft);
@@ -123,6 +129,7 @@ var sendSms = function (fasongClass) {
         });
     });
 }
+
 var focus1 = function(obj,focusclass,unfocusclass){
     var url = '/my/follow/focus';
     if($(obj).attr('data-type')=='1'){//已经 关注
@@ -166,92 +173,28 @@ var focus1 = function(obj,focusclass,unfocusclass){
         }
     });
 }
-var praise =function(statusid){
-    var userid = $('#userid').val();
-    var a = $('#btn_praise_'+statusid);
-    var span = a.find('span').first();
-    var span2 = a.find('span').first().find('span');
-    var count = span2.text();
-    if(count==""){
-        count = 0;
-    }else{
-        count = parseInt(count);
-    }
-    //console.log(a.html());
-    //console.log(count);
-    //console.log(span.attr('class'));
-    if(span.attr('class')==""){
-        $.ajax({
-            type: "post",
-            url: '/praise',
-            dataType: 'json',
-            data: {"statusid":statusid},
-            success: function(data){
-                if(data.result.error) {
-                    layer.msg(data.result.error);
-                    return false;
-                }
-                //console.log(data);
-                span.attr('class','red');
-                $('#icon_p_'+statusid).attr('class','icon-heart');
-                count++;
-                if(count==1){
-                    $('#zan-l-'+statusid).show();
-                }
-                span2.text(count);//prepend
-                $('#zan-r_'+statusid).append("<a href='javascript:;'><div  class='zan-r-a' id='praise_"+statusid + "_"+ userid+"'><img src='"+$("#avatar").val()+"' width='28px' height='28px'></div></a>");
-            }
-        });
-    }else{
-        $.ajax({
-            type: "DELETE",
-            url: '/praise/0',
-            data: {"statusid":statusid},
-            success: function(data){
-                if(data.result.error) {
-                    layer.msg('ERROR:'+data.result.error);
-                    return false;
-                }
-                //console.log(data);
-                span.attr('class','');
-                count--;
-                if(count==0){
-                    span2.text('');
-                }else {
-                    span2.text(count);
-                }
-                if(count==0){
-                    $('#zan-l-'+statusid).hide();
-                }
-                $('#icon_p_'+statusid).attr('class','icon-heart-empty');
-                //console.log("praise_"+statusid + "_"+ userid);
-                $("#praise_"+statusid + "_"+ userid).remove();
-            },
-        });
-    }
-}
-var showcomment = function(statusid,reply_commentid,replay_nickname){
-    if($('#plk').length==0){layer.msg('请先登录',function(){location.href='/auth/login'});}
-    //var userid = $('#userid').val();
-    $('#comment_statusid').val(statusid);
-    $('#reply_commentid').val(reply_commentid);
-    $('#comment_body').val('');
-    $('#r_comment').attr("checked", false);
-    if(replay_nickname==""){
-        $('#comment_body').attr('placeholder','');
-    }else{
-        $('#comment_body').attr('placeholder','回复'+replay_nickname);
-    }
-    //$("#plk").css({bottom:0, left:0 });//设置弹出层位置
-    //	$("#plk").show().focus();//动画显示
-    //	$(".textarea-control").trigger("select");
-    $("#plk").css({bottom:0, left:0 });//设置弹出层位置
-    $('#plk').show().focus();
-    $(".textarea-control").trigger("select");
-}
-var hideComment = function(){
-    $('#plk').hide();
-}
+//var showcomment = function(statusid,reply_commentid,replay_nickname){
+//    if($('#plk').length==0){layer.msg('请先登录',function(){location.href='/auth/login'});}
+//    //var userid = $('#userid').val();
+//    $('#comment_statusid').val(statusid);
+//    $('#reply_commentid').val(reply_commentid);
+//    $('#comment_body').val('');
+//    $('#r_comment').attr("checked", false);
+//    if(replay_nickname==""){
+//        $('#comment_body').attr('placeholder','');
+//    }else{
+//        $('#comment_body').attr('placeholder','回复'+replay_nickname);
+//    }
+//    //$("#plk").css({bottom:0, left:0 });//设置弹出层位置
+//    //	$("#plk").show().focus();//动画显示
+//    //	$(".textarea-control").trigger("select");
+//    $("#plk").css({bottom:0, left:0 });//设置弹出层位置
+//    $('#plk').show().focus();
+//    $(".textarea-control").trigger("select");
+//}
+//var hideComment = function(){
+//    $('#plk').hide();
+//}
 var comment = function(){
     if($('#comment_body').val()==""){layer.msg('评论内容不能为空');return;}
     $.ajax({

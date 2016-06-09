@@ -15,13 +15,14 @@ class CommentService extends AbstractService
     public function zgets($ids,$object_type='status',$length=10)
     {
         $this->object_type = $object_type;
-        $result = $this->zrevrangebyscores($ids,$length);
+        $result = $this->zrangebyscores($ids,$length);
         $all_uid = [];
         $all_reply_comment_id = [];
         $all_comment_id = [];
         foreach($result as $k => $v){
             $all_comment_id = array_merge($all_comment_id,$v);
         }
+        $this->object_type = '';
         $models = $this->gets($all_comment_id);
         foreach($models as $k => $v){
             $all_uid[] = $v['uid'];
@@ -32,19 +33,21 @@ class CommentService extends AbstractService
         }
         //获取所有相关用户
         $userService = new UserService();
-        $all_user = $userService->gets($all_uid);
+        $all_user = $userService->getNames($all_uid);
         //处理所有的reply
         $reply_comments = $this->gets($all_reply_comment_id);
         foreach($result as $k => $v){
+            $comment_info = [];
             foreach($v as $comment_id) {
                 $comment = $models[$comment_id];
-                $result[$k][$comment_id] = $comment;
-                $result[$k][$comment_id]['user'] = $all_user[$comment['uid']];
+                $comment_info[$comment_id] = $comment;
+                $comment_info[$comment_id]['user'] = $all_user[$comment['uid']];
                 if (isset($comment['reply_uid']) && $comment['reply_uid'] > 0) {
-                    $result[$k][$comment_id]['reply_user'] = $all_user[$comment['reply_uid']];
-                    $result[$k][$comment_id]['reply_comment'] = $reply_comments[$comment['reply_comment_id']];
+                    $comment_info[$comment_id]['reply_user'] = $all_user[$comment['reply_uid']];
+                    $comment_info[$comment_id]['reply_comment'] = $reply_comments[$comment['reply_comment_id']];
                 }
             }
+            $result[$k] = $comment_info;
         }
         return $result;
     }
@@ -69,9 +72,9 @@ class CommentService extends AbstractService
         }
         //获取所有相关用户
         $userService = new UserService();
-        $all_user = $userService->gets($all_uid,true);
+        $all_user = $userService->getNames($all_uid);
         //处理所有的reply
-        $reply_comments = $this->gets($all_reply_comment_id,true);
+        $reply_comments = $this->gets($all_reply_comment_id);
         //处理所有object_id
         $all_object = [];
         foreach($all_object_id as $k => $v){
@@ -85,8 +88,8 @@ class CommentService extends AbstractService
         foreach($models as $k => $v){
             $models[$k]['user'] = $all_user[$v['uid']];
             if(isset($v['reply_uid']) && $v['reply_uid']>0) {
-                $models[$k]['reply_user'] = $all_user[$v['reply_uid']];
                 $models[$k]['reply_comment'] = $reply_comments[$v['reply_comment_id']];
+                $models[$k]['reply_comment']['user'] = $all_user[$v['reply_uid']];
             }
             $models[$k]['object'] = $all_object[$v['object_type']][$v['object_id']];
         }

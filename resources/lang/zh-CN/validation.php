@@ -82,6 +82,7 @@ return [
     'url'                  => ':attribute 格式不正确。',
 
     'sms'                  => ':attribute 不正确',
+    'object_type'          => ':attribute 不正确',
 
     /*
     |--------------------------------------------------------------------------
@@ -153,6 +154,11 @@ return [
         'role_name'             => '认证内容',
         'feature'               => '个人简介',
         'message'               => '直播内容',
+
+        'object_type'           => '对象类型',
+        'comment_object_id'     => '评论对象',
+        'comment_object_type'   => '评论类型',
+        'comment_body'          => '评论内容',
     ],
 
 ];

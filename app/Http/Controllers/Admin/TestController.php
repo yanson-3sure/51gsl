@@ -77,4 +77,14 @@ class TestController extends Controller
         $arr = [1,2,3,4,5,1,2,6];
         dd(array_unique($arr));
     }
+    public function getHmget()
+    {
+        $service = new UserService();
+        dd($service->hmget(7,['id','avatar']));
+    }
+    public function getHmgets()
+    {
+        $service = new UserService();
+        dd($service->hmgets([7,9],['id','avatar']));
+    }
 }

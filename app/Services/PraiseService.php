@@ -17,17 +17,19 @@ class PraiseService extends AbstractService
     public function zgets($ids,$object_type='status',$length=10)
     {
         $this->prefix = $this->prefix.$object_type.':';
-        $result = $this->zrevranges($ids,1,$length);
+        $result = $this->zrangebyscores($ids,$length);
         $all_user_id = [];
         foreach($result as $k => $v){
             $all_user_id = array_merge($all_user_id,$v);
         }
         $userService = new UserService();
-        $all_user = $userService->gets($all_user_id);
+        $all_user = $userService->getAvatars($all_user_id);
         foreach($result as $k => $v){
+            $praise_user = [];
             foreach($v as $uid){
-                $result[$k][$uid] = $all_user[$uid];
+                $praise_user[$uid] = $all_user[$uid];
             }
+            $result[$k] = $praise_user;
         }
         return $result;
     }
@@ -71,7 +73,7 @@ class PraiseService extends AbstractService
                 //如果赞 是 软删除,则,不发送消息
                 if(!$isSoftDelete) {
                     $messageService = new MessageService();
-                    $messageService->createByPraise($uid, $object_id, $object_id);
+                    $messageService->createByPraise($uid, $object_uid, $object_id);
                 }
             }
             return true;

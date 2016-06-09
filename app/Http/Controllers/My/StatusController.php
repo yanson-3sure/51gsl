@@ -42,7 +42,7 @@ class StatusController extends Controller
         $message = Input::get('message','');
         $image_id = Input::get('image_id',0);
 
-        $message = filterImg(filterCss(filterJs($message)));
+        $message = $message;// filterImg(filterCss(filterJs($message)));
         $result = $this->service->post($this->uid,$message,$image_id);
         if($result){
             try {

@@ -11,6 +11,22 @@ class UserService extends AbstractService
     protected $noCacheAttributes = ['email','mobile','password','remember_token','created_at','updated_at'];
     protected $onlyCacheTrueExcept = ['name','avatar','role'];
 
+    public function getAvatars(array $ids)
+    {
+        return $this->hmgets($ids,['id','avatar']);
+    }
+    public function getNames(array $ids)
+    {
+        return $this->hmgets($ids,['id','name']);
+    }
+    public function getAvatarAndName(array $ids)
+    {
+        return $this->hmgets($ids,['id','avatar','name']);
+    }
+    public function getBases(array $ids)
+    {
+        return $this->hmgets($ids,['id','avatar','name','role']);
+    }
     public function save($mobile,$password,$name)
     {
         $user = new User();

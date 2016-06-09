@@ -17,6 +17,9 @@ abstract class Controller extends BaseController
     use DispatchesJobs, ValidatesRequests;
     public $data = [];
     public $uid = 0;
+    public $name = '';
+    public $role = 0;
+    public $avatar = '';
     public $user = [];
     public $service;
     public $isWechat = false;
@@ -28,8 +31,14 @@ abstract class Controller extends BaseController
             $this->uid = Auth::user()->id;
             $this->user = $userService->get($this->uid);
             $this->data['user'] = $this->user;
+            $this->role = $this->user['role'];
+            $this->avatar = $this->user['avatar'];
+            $this->name = $this->user['name'];
         }
         $this->data['uid'] = $this->uid;
+        $this->data['name'] = $this->name;
+        $this->data['role'] = $this->role;
+        $this->data['avatar'] = $this->avatar;
         $this->data['isLogin'] = $this->uid > 0;
         $url = Request::getRequestUri();
         if(starts_with($url,'/my') or starts_with($url,'/auth')){

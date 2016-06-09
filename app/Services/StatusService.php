@@ -108,7 +108,7 @@ class StatusService extends AbstractService
 
     public function post($uid,$message,$image_id=0,$forward_type=null,$forward_id=0)
     {
-        $cacheModel = $this->save($uid,$message,$image_id,$forward_id,$forward_type);
+        $cacheModel = $this->save($uid,$message,$image_id,$forward_type,$forward_id);
         if(!$cacheModel)return false;
         $post = [$cacheModel['id']=>strtotime($cacheModel['created_at'])];
         Redis::pipeline(function ($pipe) use($uid ,$post) {
@@ -213,7 +213,7 @@ class StatusService extends AbstractService
         }
         //获取所有相关用户
         $userService = new UserService();
-        $all_user = $userService->gets($all_uid,true);
+        $all_user = $userService->getBases($all_uid);
         //获取所有赞
         $praiseService = new PraiseService();
         $all_praise = $praiseService->zgets($all_status_id,'status',config('base.status_praise_size'));
@@ -256,13 +256,15 @@ class StatusService extends AbstractService
         }
         //获取所有图片
         $imageService = new ImageService();
-        $all_images = $imageService->gets($all_image_id,true);
+        $all_images = $imageService->gets($all_image_id);
         //获取所有相关用户
         $userService = new UserService();
-        $all_user = $userService->gets($all_uid,true);//获取所有用户
+        $all_user = $userService->getBases($all_uid);//获取所有用户
         foreach ($models as $k => $v) {
             $models[$k]['user'] = $all_user[$v['uid']];
-            $models[$k]['image'] = $all_images[$v['image_id']];
+            if(isset($v['image_id']) && $v['image_id']>0) {
+                $models[$k]['image'] = $all_images[$v['image_id']];
+            }
         }
         return $models;
     }

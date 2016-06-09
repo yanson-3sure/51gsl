@@ -62,7 +62,38 @@ abstract class AbstractService
             return $model;
         }
     }
-    public function gets(array $ids,$unique=true){
+    public function hmget($id,array $fields)
+    {
+        $result = Redis::hmget($this->getKey($id),$fields);
+        return array_combine($fields,$result);
+    }
+    public function hmgets(array $ids,array $fields,$unique=true)
+    {
+        if($ids) {
+            if($unique) {
+                $ids = array_unique($ids);
+            }
+            $keys = $this->getkeys($ids);
+            $result = Redis::pipeline(function ($pipe) use($keys,$fields){
+                foreach($keys as $key){
+                    $pipe->HMGET($key,$fields);
+                }
+            });
+            foreach($result as $k => $v){
+                $result[$k] = array_combine($fields,$v);
+            }
+            return array_combine($ids,$result);
+        }
+        return [];
+    }
+    public function gets($ids,$unique=true){
+        return $this->hgetalls($ids,$unique);
+    }
+
+
+
+    public function hgetalls(array $ids,$unique=true)
+    {
         if($ids) {
             if($unique) {
                 $ids = array_unique($ids);
@@ -82,7 +113,7 @@ abstract class AbstractService
     {
         return Redis::hget($key,$field);
     }
-    public function hgetall($key)
+    public function hgetall(array $key)
     {
         return Redis::HGETALL($key);
     }
@@ -101,7 +132,7 @@ abstract class AbstractService
     }
     public function zscroe($key,$member)
     {
-        return Redis::zscroe($key,$member);
+        return Redis::zscore($key,$member);
     }
 
     public function zrevranges($ids,$page=1,$count=10,$WITHSCORES=false)
@@ -177,6 +208,22 @@ abstract class AbstractService
             $arguments = ['WITHSCORES'=>true];
         }
         return Redis::ZREVRANGEBYSCORE($key,$max,'-inf',$arguments);
+    }
+    public function zrangebyscores($ids,$length,$WITHSCORES=false)
+    {
+        $min = '-inf';
+        $arguments = ['limit' => [0, $length]];
+        if($WITHSCORES){
+            $arguments = ['WITHSCORES'=>true];
+        }
+        $ids = array_unique($ids);
+        $keys = $this->getKeys($ids);
+        $result = Redis::pipeline(function($pipe)use($keys,$min,$arguments,$WITHSCORES) {
+            foreach ($keys as $key) {
+                $pipe->ZRANGEBYSCORE($key,$min,'+inf',$arguments);
+            }
+        });
+        return array_combine($ids, $result);
     }
     public function zrangebyscore($key,$start,$length,$min='-inf',$isEqual=false,$WITHSCORES=false)
     {

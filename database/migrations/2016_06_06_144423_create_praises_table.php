@@ -16,7 +16,7 @@ class CreatePraisesTable extends Migration
             $table->increments('id');
             $table->integer('uid')->index();
             $table->integer('object_id')->index();
-            $table->string('object_type',20)->comment('commit status strategy train aq');
+            $table->string('object_type',20)->comment('comment status strategy train aq');
             $table->timestamp('created_at');
             $table->softDeletes();
         });

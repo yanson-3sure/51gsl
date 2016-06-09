@@ -29,7 +29,7 @@
 <script src="/js/common.js?v={{config('base.version.js')}}"></script>
 @if($uid>0)
     <script>
-        //getNoreadcount();
+        getNoreadcount();
     </script>
 @endif
 @yield('footer')

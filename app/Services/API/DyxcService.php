@@ -68,7 +68,7 @@ class DyxcService
         $statusService = new StatusService();
         $status = $statusService->get($status_id);
         if($status) {
-            $content = $status['message'];
+            $content = nl2p($status['message']);
             $userid = $status['uid'];
             $username = $this->users[$userid];
             $token = md5($username.$this->key);

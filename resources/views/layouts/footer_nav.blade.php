@@ -1,6 +1,6 @@
 <!--底部导航-->
 <div class="footer">
-    <a href="/{{ $isLogin ? '/home?type=my' : '/home'  }}" class="fot-zb">
+    <a href="{{ $isLogin ? '/home?type=my' : '/home'  }}" class="fot-zb">
         @if(isset($isFirst))
             <div class="img_zb1 img_gy"></div>
             <p class="fot-nav red">直播</p>

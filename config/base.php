@@ -13,6 +13,11 @@ return [
     'status_praise_size' => env('STATUS_PRAISE_SIZE',30),
     'status_comment_size' => env('STATUS_COMMENT_SIZE',20),
 
+    'object_type' => [
+        'praise'=>['status'],
+        'comment'=>['status'],
+    ],
+
     'posts_per_page' => 10,
     'page_size' => 10,
     'rss_size' => 25,

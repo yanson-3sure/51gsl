@@ -10,7 +10,23 @@ function previous()
 {
     return URL::previous();
 }
-
+function showMsg($string)
+{
+    return nl2br(str_replace(" ","&nbsp;",$string));
+}
+function nl2p($string)
+{
+    $string = '<p>' .$string .'</p>';
+    return str_replace(array("\r\n", "\r", "\n"),'</p><p>',$string);
+}
+function nl2br2($string) {
+    $string = str_replace(array("\r\n", "\r", "\n"), "<br />", $string);
+    return $string;
+}
+function validObjectType($object_type,$type_name)
+{
+    return in_array($object_type,config('base.object_type.'.$type_name));
+}
 function admin_user_ids()
 {
     return config('base.admin_user_ids');
@@ -18,6 +34,10 @@ function admin_user_ids()
 function isAdmin($uid)
 {
     return in_array($uid,admin_user_ids());
+}
+function isAnalyst($role)
+{
+    return $role == 1;
 }
 function isBlackRole($role)
 {

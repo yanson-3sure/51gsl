@@ -17,6 +17,9 @@ Route::group(['prefix' => 'my', 'namespace'=>'My', 'middleware' => 'oauth'], fun
     Route::Resource('apply','ApplyController');
     Route::Resource('status','StatusController');
     Route::controller('follow','FollowController');
+    Route::controller('message','MessageController');
+    Route::Resource('praise','PraiseController');
+    Route::Resource('comment','CommentController');
 });
 Route::group(['prefix' => 'admin', 'namespace'=>'Admin','middleware'=>'oauth.admin'], function () {
     Route::controller('test', 'TestController');
