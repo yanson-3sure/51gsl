@@ -24,7 +24,6 @@
 @show
 <script src="/js/jquery.min.js"></script>
 <script src="/js/jquery.form.js"></script>
-<script src="/js/jquery.scrollPagination.js"></script>
 <script src="/js/layer/layer.js"></script>
 <script src="/js/common.js?v={{config('base.version.js')}}"></script>
 @if($uid>0)

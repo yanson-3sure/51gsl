@@ -33,6 +33,31 @@ class PraiseService extends AbstractService
         }
         return $result;
     }
+//    public function gets($ids,$unique=true)
+//    {
+//        return Praise::whereIn('id',$ids)
+//            ->orderby('id','desc')
+//            ->get();
+//    }
+//    public function getMessagePraises($ids)
+//    {
+//        if(!$ids) return [];
+//        $models = $this->gets($ids);
+//        //$all_uid = [];
+//        $all_object_id = [];
+//        $all_model = [];
+//        foreach($models as $k => $v){
+//            $all_model[$v->id] = $this->getCacheModel($v);
+//            $model = $all_model[$v->id];
+//            //$all_uid[] = $model['uid'];
+//            $all_object_id[$model['object_type']][] = $model['object_id'];
+//
+//        }
+//        //获取所有相关用户
+//        //$userService = new UserService();
+//        //$all_user = $userService->getNames($all_uid);
+//
+//    }
 
     /*
      * object_type : status
@@ -73,7 +98,7 @@ class PraiseService extends AbstractService
                 //如果赞 是 软删除,则,不发送消息
                 if(!$isSoftDelete) {
                     $messageService = new MessageService();
-                    $messageService->createByPraise($uid, $object_uid, $object_id);
+                    $messageService->createByPraise($uid, $object_uid, $object_id,'praise:'.$object_type);
                 }
             }
             return true;

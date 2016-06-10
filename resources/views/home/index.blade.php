@@ -4,8 +4,8 @@
     <nav class="navbar-default navbar-fixed-top">
         <div class="nav">
             <ul class="nav_ul">
-                <li {{ empty($type) ? '' : 'class=tabin'  }} ><a href="{{url('/?type=my')}}">关注</a></li>
-                <li {{ !empty($type) ? '' : 'class=tabin'  }}><a href="{{url('/')}}">全部</a></li>
+                <li {{ $type=="all_home" ? '' : 'class=tabin'  }} ><a href="{{url('/home?type=home')}}">关注</a></li>
+                <li {{ $type=='home' ? '' : 'class=tabin'  }}><a href="{{url('/')}}">全部</a></li>
                 <li style="width:34%;"><a href="{{url('/analyst')}}">名师</a></li>
             </ul>
         </div>
@@ -48,22 +48,33 @@
                 $('.fenxiang-pl').comment();
                 $('.reply_comment').comment();
             });
+            var success = function(data){
+                if(parseInt(data.max)>0) {
+                    scroll_lock = false;
+                    $('#pullUp').attr('data-max',data.max);
+                    $('#thelist').append(data.content);
+                    var ids = data.ids;
+                    for(var i = 0;i<ids.length;i++){
+                        //console.log(ids[i]);
+                        $('#gz_'+ids[i]).find('.btn_praise').praise({uid:"{{$uid}}",avatar:"{{getAvatar($avatar)}}"});
+                        $('#gz_'+ids[i]).find('.fenxiang-pl').comment();
+                        $('#gz_'+ids[i]).find('.reply_comment').comment();
+                    }
+                    fancybox();
+                }
+            }
             /**
              * 下拉刷新 （自定义实现此方法）
              */
             function pullDownAction () {
                     scroll_lock = true;
                     $.ajax({
-                        url: "/home/status-list",
+                        url: "/status/list",
                         data:{"type":"{{$type}}","min":$('#pullDown').attr('data-min')},
                         type: "get",
                         dataType:'json',
                         success:function(data){
-                            if(parseInt(data.min)>0) {
-                                $('#pullDown').attr('data-min',data.min);
-                                $('#thelist').prepend(data.content);
-                                fancybox();
-                            }
+                            success(data);
                             myScroll.refresh();
                             scroll_lock = false;
                         },
@@ -81,17 +92,12 @@
             function pullUpAction () {
                     scroll_lock = true;
                     $.ajax({
-                        url: "/home/rev-status-list",
+                        url: "/status/rev-list",
                         data:{"type":"{{$type}}","max":$('#pullUp').attr('data-max')},
                         type: "get",
                         dataType:'json',
                         success:function(data){
-                            if(parseInt(data.max)>0) {
-                                scroll_lock = false;
-                                $('#pullUp').attr('data-max',data.max);
-                                $('#thelist').append(data.content);
-                                fancybox();
-                            }
+                            success(data);
                             scroll_lock = false;
                             myScroll.refresh();
                         },

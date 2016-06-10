@@ -20,12 +20,12 @@ class IndexController extends Controller
      */
     public function index()
     {
-        $type = Input::get('type', '');
+        $type = Input::get('type', 'all_home');
         $page_size = config('base.page_size');
         $this->data['type'] = $type;
-        $start = 0;
+        $start = 3;
         $statusService = new StatusService();
-        if ($type == 'my') {
+        if ($type == 'home') {
             if (Auth::check()) {
                 $all_status = $statusService->getRevHome($this->uid, $start, $page_size);
             } else {

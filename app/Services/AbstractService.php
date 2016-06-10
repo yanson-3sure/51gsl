@@ -200,7 +200,7 @@ abstract class AbstractService
         if(!$max) {
             $max = '+inf';
         }
-        if(!$isEqual){
+        if(!$isEqual && $max!='+inf'){
             $max = '(' . $max;
         }
         $arguments = ['limit' => [$start, $length]];

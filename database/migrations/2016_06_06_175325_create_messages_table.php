@@ -16,7 +16,7 @@ class CreateMessagesTable extends Migration
             $table->increments('id');
             $table->text('message');
             $table->integer('event_id'); //status_id comment_id
-            $table->string('event_type',20);//事件类型 praise:status comment:status
+            $table->string('event_type',20);//事件类型 praise:status(默认赞的status) praise:other comment
             $table->integer('from_uid');
             $table->integer('to_uid')->index();
             $table->timestamps();

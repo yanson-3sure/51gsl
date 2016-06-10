@@ -74,7 +74,7 @@
                     <!--内容END-->
     </div>
     <div class="hr_1"></div>
-    <div class="gz">
+    <div class="gz" id="gz_{{$model['id']}}">
         <div class="fenxiang">
             <div class="fenxiang-zan">
                 <a href="javascript:;" class="btn_praise" data-object-id="{{$model['id']}}" data-object-type="status">

@@ -18,7 +18,8 @@ class MessageService extends AbstractService
     protected $prefix_zmessage_noread_old = 'zmessage:noread:old:';
 
     protected $model = Message::class;
-    protected $onlyCacheTrueExcept = 'message';
+    protected $onlyCacheTrueExcept = ['message'];
+    protected $noCacheAttributes = ['updated_at'];
 
 
     public function getNoreadCount($uid)
@@ -32,14 +33,12 @@ class MessageService extends AbstractService
     /*
      * 赞消息  如果赞过,消息不变
      */
-    public function createByPraise($from_uid,$to_uid,$event_id)
+    public function createByPraise($from_uid,$to_uid,$event_id,$event_type='praise')
     {
-        $event_type = 'praise';
         return $this->create($from_uid,$to_uid,$event_id,$event_type);
     }
-    public function createByComment($from_uid,$to_uid,$event_id)
+    public function createByComment($from_uid,$to_uid,$event_id,$event_type = 'comment')
     {
-        $event_type = 'comment';
         return $this->create($from_uid,$to_uid,$event_id,$event_type);
     }
     protected function create($from_uid,$to_uid,$event_id,$event_type,$msg=null)
@@ -82,14 +81,14 @@ class MessageService extends AbstractService
 //        Redis::HINCRBY('user:'. $to_uid,$this->prefix_message_noread,-1);
 //    }
 
-    public function getNoread($uid)
-    {
-        $count = Redis::hget('user:'. $uid ,$this->prefix_message_noread);
-        if($count && $count>0){
-            return $count;
-        }
-        return 0;
-    }
+//    public function getNoread($uid)
+//    {
+//        $count = Redis::hget('user:'. $uid ,$this->prefix_message_noread);
+//        if($count && $count>0){
+//            return $count;
+//        }
+//        return 0;
+//    }
 
     public function getNoreadBefore($uid)
     {
@@ -110,14 +109,14 @@ class MessageService extends AbstractService
     public function getList($to_uid,$length,$maxid=0)
     {
         if($maxid){
-            return Message::where('to_userid',$to_uid)
-                ->where('message_id','<',$maxid)
-                ->orderby('message_id','desc')
+            return Message::where('to_uid',$to_uid)
+                ->where('id','<',$maxid)
+                ->orderby('id','desc')
                 ->take($length)
                 ->get();
         }else{
-            return Message::where('to_userid',$to_uid)
-                ->orderby('message_id','desc')
+            return Message::where('to_uid',$to_uid)
+                ->orderby('id','desc')
                 ->take($length)
                 ->get();
         }
@@ -125,12 +124,51 @@ class MessageService extends AbstractService
 
     public function gets($ids,$unique=true)
     {
-        return Message::whereIn('message_id',$ids)
-            ->orderby('message_id','desc')
+        return Message::whereIn('id',$ids)
+            ->orderby('id','desc')
             ->get();
     }
 
     public function getListDetail($messages)
+    {
+        //收集各type数据
+        $all_uid = [];
+        $all_event_id = [];
+        $all_message = [];
+        //dd($messages);
+        foreach($messages as $k => $v)
+        {
+            $all_message[$v->id] = $this->getCacheModel($v);
+            $all_uid[] = $v->from_uid;
+            $all_uid[] = $v->to_uid;
+            $all_event_id[$v->event_type][] = $v['event_id'];
+        }
+        //获取所有相关用户
+        $userService = new UserService();
+        $all_user = $userService->getAvatarAndName($all_uid);
+        //处理event
+        $all_event = [];
+        $statusService = new StatusService();
+        $commentService = new CommentService();
+        foreach($all_event_id as $k => $v){
+            switch($k){
+                case 'praise:status':
+                    $all_event[$k] = $statusService->getForwardStatus($v);
+                    break;
+                case 'comment':
+                    $all_event[$k] = $commentService->getForwardComment($v);
+                    break;
+            }
+        }
+        foreach($all_message as $k => $v){
+            $all_message[$k]['from_user'] = $all_user[$v['from_uid']];
+            $all_message[$k]['to_user'] = $all_user[$v['to_uid']];
+            $all_message[$k]['event'] = $all_event[$v['event_type']][$v['event_id']];
+        }
+        return $all_message;
+    }
+
+    public function getListDetail1($messages)
     {
         //收集各type数据
         $all_user_ids = [];

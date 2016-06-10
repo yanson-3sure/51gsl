@@ -4,6 +4,9 @@ Route::get('/',  function()
 {
     return Redirect::to('home');
 });
+Route::get('status/list','StatusController@getList');
+Route::get('status/rev-list','StatusController@getRevList');
+Route::Resource('status','StatusController');
 Route::group(['prefix' => 'home', 'namespace'=>'Home'], function () {
     Route::get('/', 'IndexController@index');
     Route::controller('index', 'IndexController');
@@ -17,6 +20,7 @@ Route::group(['prefix' => 'my', 'namespace'=>'My', 'middleware' => 'oauth'], fun
     Route::Resource('apply','ApplyController');
     Route::Resource('status','StatusController');
     Route::controller('follow','FollowController');
+    Route::get('message','MessageController@index');
     Route::controller('message','MessageController');
     Route::Resource('praise','PraiseController');
     Route::Resource('comment','CommentController');
