@@ -85,6 +85,4 @@ class StatusController extends Controller
         }
         return ['min'=>$min,'ids'=>$ids,'content'=>view('status.common.list',$this->data)->render()];
     }
-
-
 }
