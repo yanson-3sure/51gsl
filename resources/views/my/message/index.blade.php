@@ -15,7 +15,7 @@
         </div>
     </div>
 @endsection
-@section('footerscript')
+@section('footer')
     <script src="/js/iscroll.js"></script>
     <script src="/js/iscroll_load.js"></script>
     <link href="/css/jquery.fancybox.css" rel="stylesheet" type="text/css">
@@ -27,7 +27,7 @@
         function pullUpAction () {
             scroll_lock = true;
             $.ajax({
-                url: "/my/message",
+                url: "/my/message/rev-list",
                 data:{"type":"{{$type}}","max":$('#pullUp').attr('data-max')},
                 type: "get",
                 dataType:'json',

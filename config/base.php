@@ -19,7 +19,7 @@ return [
     ],
 
     'posts_per_page' => 10,
-    'page_size' => 4,
+    'page_size' => 5,
     'rss_size' => 25,
     'contact_email' => env('MAIL_FROM',''),
     'uploads' => [

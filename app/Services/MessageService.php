@@ -163,6 +163,26 @@ class MessageService extends AbstractService
         foreach($all_message as $k => $v){
             $all_message[$k]['from_user'] = $all_user[$v['from_uid']];
             $all_message[$k]['to_user'] = $all_user[$v['to_uid']];
+//            switch($v['event_type']){
+//                case 'praise:status':
+//                    if(isset($all_event[$v['event_type']][$v['event_id']]['message'])) {
+//                        $all_message[$k]['event']['id'] = $v['event_id'];
+//                        $all_message[$k]['event']['message'] = $all_event[$v['event_type']][$v['event_id']]['message'];
+//                        if (isset($all_event[$v['event_type']][$v['event_id']]['image'])) {
+//                            $all_message[$k]['event']['image'] = $all_event[$v['event_type']][$v['event_id']]['image'];
+//                        }
+//                    }
+//                    break;
+//                case 'comment':
+//                    if(isset($all_event[$v['event_type']][$v['event_id']]['comment'])) {
+//                        $all_message[$k]['event']['id'] = $v['event_id'];
+//                        $all_message[$k]['event']['message'] = $all_event[$v['event_type']][$v['event_id']]['comment'];
+//                        if(isset($all_event[$v['event_type']][$v['event_id']]['object']['image'])){
+//                            $all_message[$k]['event']['image'] = $all_event[$v['event_type']][$v['event_id']]['object']['image'];
+//                        }
+//                    }
+//                    break;
+//            }
             $all_message[$k]['event'] = $all_event[$v['event_type']][$v['event_id']];
         }
         return $all_message;

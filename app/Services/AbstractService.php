@@ -184,7 +184,7 @@ abstract class AbstractService
         $max = '+inf';
         $arguments = ['limit' => [0, $length]];
         if($WITHSCORES){
-            $arguments = ['WITHSCORES'=>true];
+            $arguments['WITHSCORES'] = true;
         }
         $ids = array_unique($ids);
         $keys = $this->getKeys($ids);
@@ -205,7 +205,7 @@ abstract class AbstractService
         }
         $arguments = ['limit' => [$start, $length]];
         if($WITHSCORES){
-            $arguments = ['WITHSCORES'=>true];
+            $arguments['WITHSCORES'] = true;
         }
         return Redis::ZREVRANGEBYSCORE($key,$max,'-inf',$arguments);
     }
@@ -232,7 +232,7 @@ abstract class AbstractService
         }
         $arguments = ['limit' => [$start, $length]];
         if($WITHSCORES){
-            $arguments = ['WITHSCORES'=>true];
+            $arguments['WITHSCORES'] = true;
         }
         return Redis::ZRANGEBYSCORE($key,$min,'+inf',$arguments);
     }

@@ -13,26 +13,25 @@
                 </div>
             </div>
         </div><!--用户END-->
-
+        <a href="{{ url('/status/'.$model['id'])  }}">
         @if(isset($model['forward_id']) && $model['forward_id']>0)
-            @if($model['forward_type']=='comment' && isset($model['forward']['reply_comment']))
-            <a href="{{ url('/status/'.$model['id'])  }}">
+            @if($model['forward_type']=='comment')
+                @if(isset($model['forward']['reply_comment']))
                 <div class="huifu fans"><span class="blue_1">回复</span>
                     <span>{{$model['message']}}</span><span>//</span>
                     <span class="blue_1 cursor"> {{ $model['forward']['reply_comment']['user']['name']}}</span>
                     <span>:</span><span>{{ $model['forward']['reply_comment']['comment']}}</span>
                 </div>
-            </a>
+                @else
+                        {{$model['message']}}
+                @endif
             @elseif($model['forward_type']=='status')
-            <a href="{{ url('/status/'.$model['id'])  }}">
                 <div class="fx_content fans ">{!!nl2p($model['message']) !!}</div>
-            </a>
             @endif
         @else
-            <a href="{{ url('/status/'.$model['id'])  }}">
                 <div class="fx_content fans ">{!!nl2p($model['message']) !!}</div>
-            </a>
         @endif
+        </a>
         @if(isset($model['image']))
             <div class="neirong-img">
                 <a href="{{getImageUrl($model['image'],0)}}" class="fancybox-effects">
