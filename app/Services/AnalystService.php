@@ -29,28 +29,48 @@ class AnalystService extends AbstractService
         return [];
     }
 
-    public function getsByStatusCount($followerid=0)
+
+    public function getList($ids,$follower_id = 0)
     {
-        //$ids = Redis::ZREVRANGE('zstatus:count',0,-1,'WITHSCORES');
-        $ids = Redis::ZREVRANGE('zstatus:count',0,-1);
+        $userService = new UserService();
+        $users = $userService->gets($ids);
+        $feature = $this->hmgets($ids,['feature']);
+        foreach($users as $k => $v){
+            $users[$k]['feature'] = $feature[$k]['feature'];
+        }
+        if($follower_id){
+            $followService = new FollowService();
+            $ids = $followService->getFollowingIds($follower_id);
+            foreach($users as $k => $v){
+                if(in_array($v['id'],$ids)){
+                    $users[$k]['following'] = true;
+                }else{
+                    $users[$k]['following'] = false;
+                }
+            }
+        }
+        return $users;
+    }
+
+    public function getRankByStatus($followerid=0)
+    {
+        $ids = Redis::ZREVRANGE('zanalyst:status',0,-1);
         if($ids)
-            return $this->gets($ids,$followerid);
+            return $this->getList($ids,$followerid);
         return [];
     }
-    public function getsByFollowerCount($followerid=0)
+    public function getRankByFollower($followerid=0)
     {
-        //$ids = Redis::ZREVRANGE('zstatus:count',0,-1,'WITHSCORES');
-        $ids = Redis::ZREVRANGE('zfollowers:count',0,-1);
+        $ids = Redis::ZREVRANGE('zanalyst:followers',0,-1);
         if($ids)
-            return $this->gets($ids,$followerid);
+            return $this->getList($ids,$followerid);
         return [];
     }
-    public function getsByReplyCommentCount($followerid=0)
+    public function getRankByComment($followerid=0)
     {
-        //$ids = Redis::ZREVRANGE('zstatus:count',0,-1,'WITHSCORES');
-        $ids = Redis::ZREVRANGE('zanalyst:comment:count',0,-1);
+        $ids = Redis::ZREVRANGE('zanalyst:comment',0,-1);
         if($ids)
-            return $this->gets($ids,$followerid);
+            return $this->getList($ids,$followerid);
         return [];
     }
 

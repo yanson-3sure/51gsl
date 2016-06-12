@@ -29,8 +29,6 @@
     </div>
     <div id="ly" style="display:none"></div>
     @include('comment.common.create_div')<!--zhuanfa-->
-
-    @include('user.common.userinfo')
 @endsection
 @section('footer')
         @parent

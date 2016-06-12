@@ -17,6 +17,13 @@ class FollowController extends Controller
         parent::__construct();
         $this->service = new FollowService();
     }
+    public function index()
+    {
+        $result = $this->service->getFollowing($this->uid,100);
+        $this->data['following_users'] = $result;
+        //dd($this->data);
+        return view('my.follow.index',$this->data);
+    }
     public function postFocus()
     {
         $fuserid = Input::get('fuserid',0);

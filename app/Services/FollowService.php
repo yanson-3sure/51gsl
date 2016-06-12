@@ -29,6 +29,39 @@ class FollowService
         return $this->prefix_er . $uid;
     }
 
+    public function getFollowers($uid)
+    {
+
+    }
+    public function getFollowingIds($uid)
+    {
+        return $this->zrevrangebyscore($this->getKey1($uid),0,-1,0);
+    }
+    public function getFollowing($uid,$length,$max=0)
+    {
+        $all_uid = $this->zrevrangebyscore($this->getKey1($uid),0,$length,$max);
+        if(!$all_uid){
+            return [];
+        }
+        $analystService = new AnalystService();
+        $users = $analystService->getList($all_uid);
+        return $users;
+    }
+    protected function zrevrangebyscore($key,$start,$length,$max=0,$isEqual=false,$WITHSCORES=false)
+    {
+        if(!$max) {
+            $max = '+inf';
+        }
+        if(!$isEqual && $max!='+inf'){
+            $max = '(' . $max;
+        }
+        $arguments = ['limit' => [$start, $length]];
+        if($WITHSCORES){
+            $arguments['WITHSCORES'] = true;
+        }
+        return Redis::ZREVRANGEBYSCORE($key,$max,'-inf',$arguments);
+    }
+
     public function isFollowing($uid, $f_uid)
     {
         return Follow::where('uid', $uid)->where('f_uid', $f_uid)->count();

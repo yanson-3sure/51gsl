@@ -90,7 +90,25 @@ abstract class AbstractService
         return $this->hgetalls($ids,$unique);
     }
 
+    public function hgets($ids,$field)
+    {
+        if($ids) {
+            $ids = array_unique($ids);
+            $keys = $this->getkeys($ids);
+            $result = Redis::pipeline(function ($pipe) use($keys,$field){
+                foreach($keys as $key){
+                    $pipe->hget($key,$field);
+                }
+            });
+            return array_combine($ids,$result);
+        }
+        return [];
+    }
 
+    public function hget($key,$field)
+    {
+        return Redis::hget($key,$field);
+    }
 
     public function hgetalls(array $ids,$unique=true)
     {
@@ -109,10 +127,7 @@ abstract class AbstractService
         return [];
     }
 
-    public function hget($key,$field)
-    {
-        return Redis::hget($key,$field);
-    }
+
     public function hgetall(array $key)
     {
         return Redis::HGETALL($key);

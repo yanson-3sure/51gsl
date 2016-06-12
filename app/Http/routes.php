@@ -14,12 +14,13 @@ Route::group(['prefix' => 'home', 'namespace'=>'Home'], function () {
 Route::get('my', 'My\IndexController@index');
 Route::Resource('user','UserController');
 Route::group(['prefix' => 'my', 'namespace'=>'My', 'middleware' => 'oauth'], function () {
-    //Route::controller('Status', 'StatusController');
     Route::get('info','InfoController@index');
     Route::controller('info','InfoController');
     Route::Resource('apply','ApplyController');
     Route::Resource('status','StatusController');
-    Route::controller('follow','FollowController');
+    Route::post('follow/focus','FollowController@postFocus');
+    Route::post('follow/un-focus','FollowController@postUnFocus');
+    Route::Resource('follow','FollowController');
     Route::get('message','MessageController@index');
     Route::controller('message','MessageController');
     Route::Resource('praise','PraiseController');

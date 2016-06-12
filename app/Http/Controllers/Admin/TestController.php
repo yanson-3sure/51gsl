@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Services\AnalystService;
 use App\Services\StatusService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -87,4 +88,10 @@ class TestController extends Controller
         $service = new UserService();
         dd($service->hmgets([7,9],['id','avatar']));
     }
+
+//    public function getHgets()
+//    {
+//        $service = new AnalystService();
+//        dd($service->hgets([4,7],['feature','role_name']));
+//    }
 }

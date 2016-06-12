@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
 
 class UserController extends Controller
 {
@@ -24,7 +25,22 @@ class UserController extends Controller
      */
     public function index()
     {
-
+        $type = Input::get('type','');
+        $this->data['type'] = $type;
+        $analystService = new AnalystService();
+        switch($type){
+            case 2:
+                $this->data['users'] = $analystService->getRankByFollower($this->uid);
+                break;
+            case 3:
+                $this->data['users'] = $analystService->getRankByComment($this->uid);
+                break;
+            default :
+                $this->data['users'] = $analystService->getRankByStatus($this->uid);
+                break;
+        }
+        //dd($this->data);
+        return view('user.index',$this->data);
     }
 
     /**

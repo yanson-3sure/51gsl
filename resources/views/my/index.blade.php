@@ -55,7 +55,7 @@
                 <div class="wdzy-r"><img src="/img/dj.png"></div>
             </div>
         </a>
-        <a href="{{ url('/my/following')  }}">
+        <a href="{{ url('/my/follow')  }}">
             <div class="wdzy gz">
                 <div class="wdzy-l"><img src="/img/gz.png">
 
