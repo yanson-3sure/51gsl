@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Services\AnalystService;
 use App\Services\StatusService;
 use App\Services\UserService;
+use App\Services\WechatService;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -94,4 +95,10 @@ class TestController extends Controller
 //        $service = new AnalystService();
 //        dd($service->hgets([4,7],['feature','role_name']));
 //    }
+
+    public function getWechat()
+    {
+        $service = new WechatService();
+        dd($service);
+    }
 }

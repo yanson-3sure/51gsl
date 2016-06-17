@@ -122,7 +122,7 @@ class StatusService extends AbstractService
             $pipe->HINCRBY('user:' . $uid, 'posts', 1);
         });
         //将消息状态,推送给关注者
-        $this->syndicate_status($uid,$post);
+        //$this->syndicate_status($uid,$post);
         return $cacheModel;
     }
     public function syndicate_status($uid,$post,$start=0)

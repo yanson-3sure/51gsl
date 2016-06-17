@@ -23,7 +23,7 @@ class AnalystService extends AbstractService
         $model->audit_at = Carbon::now();
         if($model->save()){
             $cacheModel = $this->getCacheModel($model);
-            $this->setCacheModel($model->uid,$cacheModel);
+            $this->setCacheModel($cacheModel,$model->uid);
             return $cacheModel;
         }
         return [];
@@ -80,6 +80,7 @@ class AnalystService extends AbstractService
             $pipe->ZADD('zanalyst:comment', 0, $uid);
             $pipe->ZADD('zanalyst:status', 0, $uid); //直播排行列表
             $pipe->ZADD('zanalyst:followers', 0, $uid);
+            $pipe->ZADD('zanalyst:praises', 0, $uid);
         });
     }
 }

@@ -20,6 +20,7 @@ class CreateStatusesTable extends Migration
             $table->integer('image_id')->default(0);
             $table->integer('forward_id')->default(0);
             $table->string('forward_type')->comment('comment status strategy train');
+            $table->smallInteger('isComment')->default(1)->comment('是否允许评论,0:否,1:是');
             $table->softDeletes();
             $table->timestamps();
         });

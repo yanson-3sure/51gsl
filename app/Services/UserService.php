@@ -27,17 +27,19 @@ class UserService extends AbstractService
     {
         return $this->hmgets($ids,['id','avatar','name','role']);
     }
-    public function save($mobile,$password,$name)
+    public function save($mobile,$password,$name,$avatar=null)
     {
         $user = new User();
         $user->mobile = $mobile;
-        $user->password = bcrypt($password);
+        if($password) {
+            $user->password = bcrypt($password);
+        }
         $user->name = $name;
-        $user->avatar = '';
+        $user->avatar = $avatar;
         $user->role = 0;
         if($user->save()){
             $cacheModel = $this->getCacheModel($user);
-            $this->setCacheModel($user->id,$cacheModel);
+            $this->setCacheModel($cacheModel,$user->id);
             return $cacheModel;
         }
         return [];

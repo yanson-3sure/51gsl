@@ -6,7 +6,7 @@
             <ul class="nav_ul">
                 <li {{ $type=="all_home" ? '' : 'class=tabin'  }} ><a href="{{url('/home?type=home')}}">关注</a></li>
                 <li {{ $type=='home' ? '' : 'class=tabin'  }}><a href="{{url('/')}}">全部</a></li>
-                <li style="width:34%;"><a href="{{url('/analyst')}}">名师</a></li>
+                <li style="width:34%;"><a href="{{url('/user')}}">名师</a></li>
             </ul>
         </div>
     </nav>

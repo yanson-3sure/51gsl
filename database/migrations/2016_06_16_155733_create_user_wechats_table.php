@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateStatusesTable extends Migration
+class CreateUserWechatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,11 @@ class UpdateStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::table('statuses',function(Blueprint $table) {
-            $table->smallInteger('isComment')->default(0)->comment('是否允许评论,0:否,1:是');
+        Schema::create('user_wechats', function (Blueprint $table) {
+            $table->integer('uid');
+            $table->string('unionid',30)->unique();
+            $table->primary('uid');
+            $table->timestamp('created_at');
         });
     }
 
@@ -25,5 +28,6 @@ class UpdateStatusesTable extends Migration
     public function down()
     {
         //
+        Schema::drop('user_wechats');
     }
 }

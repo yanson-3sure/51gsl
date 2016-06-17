@@ -92,6 +92,8 @@ class PraiseService extends AbstractService
                 $pipe->HINCRBY($object_type . ':' . $object_id, 'praises', 1);
                 //对象所属人,总赞数+1
                 $pipe->HINCRBY('user:' . $object_uid, 'praises', 1);
+                //总赞排行+1
+                $pipe->ZINCRBY('zanalyst:praises', 1, $uid);
             });
             //添加到消息列表
             if($uid!=$object_uid) {//如果自己给自己点赞,不需要消息
@@ -146,6 +148,8 @@ class PraiseService extends AbstractService
                 $pipe->HINCRBY($object_type . ':' . $object_id, 'praises', -1);
                 //对象所属人,总赞数-1
                 $pipe->HINCRBY('user:' . $object_uid, 'praises', -1);
+                //总赞排行-1
+                $pipe->ZINCRBY('zanalyst:praises', -1, $uid);
             });
         }
         return true;

@@ -21,6 +21,7 @@ class CreateCommentsTables extends Migration
             $table->integer('reply_uid');
             $table->integer('reply_comment_id');
             $table->timestamp('created_at');
+            $table->softDeletes();
         });
     }
 

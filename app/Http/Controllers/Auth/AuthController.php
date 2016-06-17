@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use App\Services\UserService;
+use Socialite;
 
 class AuthController extends Controller
 {
@@ -43,6 +44,19 @@ class AuthController extends Controller
     protected $redirectPath = '/?type=my';
 
     protected $loginPath = '/auth/login';
+
+    public function redirectToProvider(Request $request)
+    {
+        $service = 'wechat';
+        return Socialite::driver($service)->redirect();
+    }
+
+    public function handleProviderCallback(Request $request)
+    {
+        $service = 'wechat';
+        $user = Socialite::driver($service)->user();
+        dd($user);
+    }
 
     public function getReg1()
     {
@@ -139,7 +153,6 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->has('remember'))) {
             $auth = true; // Success
         }
-
         if ($request->ajax()) {
             return response()->json([
                 'auth' => $auth,

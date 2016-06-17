@@ -14,6 +14,10 @@ function showMsg($string)
 {
     return nl2br(str_replace(" ","&nbsp;",$string));
 }
+function showMsgNoHtml($string)
+{
+    return strip_tags(nl2br(str_replace(" ","&nbsp;",$string)));
+}
 function nl2p($string)
 {
     $string = '<p>' .$string .'</p>';

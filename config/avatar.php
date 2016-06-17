@@ -6,11 +6,11 @@ return [
     'uploads'=> [
         'path'=>'/uploads/avatar/'
     ],
-    'wecaht-size'=>[
-        '0' => '0',
+    'wechat-size'=>[
+        '0' => '640',
         '46'=> '46',
         '64'=> '64',
-        '96'=> '80',
+        '96'=> '96',
     ],
 
     'size'=>[

@@ -34,5 +34,16 @@ return [
         'key' => '',
         'secret' => '',
     ],
+    'weixin' => [
+        'client_id' => env('WEIXIN_KEY'),
+        'client_secret' => env('WEIXIN_SECRET'),
+        'redirect' => env('WEIXIN_REDIRECT_URI'),
+        'auth_base_uri' => env('WEIXIN_BASE_URI'),
+    ],
+    'weixinweb' => [
+        'client_id' => env('WEIXINWEB_KEY'),
+        'client_secret' => env('WEIXINWEB_SECRET'),
+        'redirect' => env('WEIXINWEB_REDIRECT_URI'),
+    ],
 
 ];

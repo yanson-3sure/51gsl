@@ -6,7 +6,7 @@ return [
     'description' => '股思录',
     'author' => 'hx',
 
-    'admin_user_ids' =>[4],
+    'admin_user_ids' =>[1],
     'black_role' => [-1],
     'home_timeline_size' => env('HOME_TIMELINE_SIZE',1000),
     'posts_per_pass'=>env('POSTS_PER_PASS',1000),
@@ -34,7 +34,13 @@ return [
         'image_prefix'=>'',
         'key'=>'dyxc',
         'users'=>[
+            '2'=>'黄蓉儿',
+            '3'=>'股海侠客',
+            '5'=>'段誉',
+            '6'=>'杨过',
             '7'=>'福牛歌',
+            '8'=>'风清扬',
+            '61'=>'财富至尊'
         ],
     ],
     'auto_remember_me' => env('AUTO_REMEMBER_ME','true'),

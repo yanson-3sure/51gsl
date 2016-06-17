@@ -131,7 +131,7 @@ class CommentService extends AbstractService
             $object_uid = $this->getObjectUid($object_type, $object_id);
         }
         $cacheModel = $this->getCacheModel($model);
-        $this->setCacheModel($comment_id,$cacheModel);
+        $this->setCacheModel($cacheModel,$comment_id);
 
         $key = $this->getKey($object_id,$object_type);
         Redis::pipeline(function ($pipe)use($key,$now,$comment_id,$object_uid,$object_type,$object_id) {

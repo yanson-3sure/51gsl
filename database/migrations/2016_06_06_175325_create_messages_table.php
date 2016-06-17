@@ -20,6 +20,7 @@ class CreateMessagesTable extends Migration
             $table->integer('from_uid');
             $table->integer('to_uid')->index();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

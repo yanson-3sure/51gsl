@@ -2,7 +2,7 @@
     <div class="gz">
         <div class="yh">
             <div class="yhimg">
-                <div><a href="{{ url('/analyst/'.$model['uid'])  }}"><img src="{{  getAvatar($model['user']['avatar']) }}"/></a>
+                <div><a href="{{ url('/user/'.$model['uid'])  }}"><img src="{{  getAvatar($model['user']['avatar']) }}"/></a>
                 </div>
             </div>
             <div class="use">

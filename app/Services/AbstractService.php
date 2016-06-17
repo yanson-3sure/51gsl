@@ -257,7 +257,7 @@ abstract class AbstractService
         $model = $this->find($id);
         if($model) {
             $cacheModel = $this->getCacheModel($model);
-            $this->setCacheModel($id, $model);
+            $this->setCacheModel($model,$id);
             return $cacheModel;
         }
         return [];
@@ -320,7 +320,7 @@ abstract class AbstractService
         }
         return $result;
     }
-    public function setCacheModel($id,$model)
+    public function setCacheModel($model,$id)
     {
         if(is_array($model)){
             $cacheModel = $model;
@@ -328,6 +328,19 @@ abstract class AbstractService
             $cacheModel = $this->getCacheModel($model);
         }
         Redis::HMSET($this->getKey($id),$cacheModel);
+    }
+    public function setCacheModels($models)
+    {
+        $cacheModels=[];
+        foreach($models as $k => $v) {
+            $cacheModels[$v->getKey()] = $this->getCacheModel($v);
+        }
+        Redis::pipeline(function ($pipe)use($cacheModels){
+            foreach($cacheModels as $k => $v) {
+                $pipe->HMSET($this->getKey($k), $v);
+            }
+        });
+
     }
     public function setCache($id,$key,$value)
     {

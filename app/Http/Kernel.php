@@ -31,5 +31,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'oauth' => \App\Http\Middleware\OAuthAuthenticate::class,
         'oauth.admin' => \App\Http\Middleware\OAuthAdminAuthenticate::class,
+        'oauth.wechat' => \App\Http\Middleware\OAuthWechatAuthenticate::class,
     ];
 }

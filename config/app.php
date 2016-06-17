@@ -152,6 +152,12 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Ixudra\Curl\CurlServiceProvider::class,
 
+        SocialiteProviders\Manager\ServiceProvider::class,
+
+        Overtrue\LaravelSocialite\ServiceProvider::class,
+
+        //Overtrue\LaravelWechat\ServiceProvider::class,
+
     ],
 
     /*
@@ -206,6 +212,11 @@ return [
         'Agent' => Jenssegers\Agent\Facades\Agent::class, //https://github.com/jenssegers/agent
         'Image' => Intervention\Image\Facades\Image::class, //https://github.com/Intervention/image
         'Curl'      => Ixudra\Curl\Facades\Curl::class, //https://github.com/ixudra/curl
+
+
+        //'Socialite' => Laravel\Socialite\Facades\Socialite::class, // add  https://github.com/SocialiteProviders
+        'Socialite' => Overtrue\LaravelSocialite\Socialite::class,
+        //'Wechat' => Overtrue\LaravelWechat\Facade::class,
 
     ],
 

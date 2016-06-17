@@ -31,7 +31,7 @@ class ImageService extends AbstractService
         $model->save();
         if($model){
             $cacheModel = $this->getCacheModel($model);
-            $this->setCacheModel($model->id,$cacheModel);
+            $this->setCacheModel($cacheModel,$model->id);
             return $cacheModel;
         }
         return false;

@@ -20,7 +20,7 @@
                                         <img src="{{getImageUrl($message['event']['image'],66)}}">
                                     </a>
                                 @else
-                                    <p>{{ $message['event']['message']  }}</p>
+                                    <p>{{ showMsgNoHtml($message['event']['message'])  }}</p>
                                 @endif
                             </div>
                             </a>
@@ -49,7 +49,7 @@
                                 @else
                                     <p>
                                         @if($message['event']['object_type']=='status')
-                                            {{ $message['event']['object']['message']  }}
+                                            {{ showMsgNoHtml($message['event']['object']['message'])  }}
                                         @endif
                                     </p>
                                 @endif

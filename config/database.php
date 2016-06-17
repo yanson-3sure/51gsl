@@ -63,6 +63,17 @@ return [
             'prefix'    => '',
             'strict'    => false,
         ],
+        'mysql2' => [
+            'driver'    => 'mysql',
+            'host'      => env('DB2_HOST', 'localhost'),
+            'database'  => env('DB2_DATABASE', 'forge'),
+            'username'  => env('DB2_USERNAME', 'forge'),
+            'password'  => env('DB2_PASSWORD', ''),
+            'charset'   => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix'    => '',
+            'strict'    => false,
+        ],
 
         'pgsql' => [
             'driver'   => 'pgsql',
@@ -118,7 +129,7 @@ return [
             'host'     => env('REDIS_HOST', 'localhost'),
             'password' => env('REDIS_PASSWORD', null),
             'port'     => env('REDIS_PORT', 6379),
-            'database' => 2,
+            'database' => 4,
         ],
 
     ],
