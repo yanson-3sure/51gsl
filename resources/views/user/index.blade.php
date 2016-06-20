@@ -6,8 +6,8 @@
             <nav class="navbar-default navbar-fixed-top">
                 <div class="nav">
                     <ul>
-                        <li><a href="{{url('/?type=home')}}">关注</a></li>
-                        <li><a href="{{url('/')}}">全部</a></li>
+                        <li><a href="{{url('/home?type=home')}}">关注</a></li>
+                        <li><a href="{{url('/home')}}">全部</a></li>
                         <li style="width:34%;" class="tabin">名师</li>
                     </ul>
                 </div>

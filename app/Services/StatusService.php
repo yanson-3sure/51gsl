@@ -46,6 +46,7 @@ class StatusService extends AbstractService
 
     public function getRevAllHome($start,$length,$max=0,$isEqual=false){
         $result = $this->zrevrangebyscore('all_home',$start,$length,$max,$isEqual);
+        //dd($result);
         return $this->gets($result) ;
     }
     public function getAllHome($start,$length,$min=0,$isEqual=false)
@@ -54,18 +55,95 @@ class StatusService extends AbstractService
         return $this->gets($result);
     }
 
-    public function getRevHome($uid,$start,$length,$max=0,$isEqual=false)
+    public function getRevHome($uid,$start,$length,$max=0)
     {
-        $result = $this->zrevrangebyscore('home:'.$uid,$start,$length,$max,$isEqual);
-        return $this->gets($result) ;
+        $score = $max;
+        //先获取当前用户所有关注用户ids;
+        $followService = new FollowService();
+        $ids = $followService->getFollowingIds($uid);
+        $this->prefix = 'profile:';
+        $result = $this->zrevrangebyscores($ids, config('base.status_home_follow_size'), true);
+        $this->prefix = 'status:';
+        //dd($result);
+        if($result) {
+            $all_id = [];
+            foreach ($result as $k => $v) {
+                foreach($v as $k2 => $v2) {
+                    if(array_key_exists($k2,$all_id)){
+                        continue;
+                    }
+                    $all_id[$k2] = $v2;
+                }
+            }
+            arsort($all_id);
+            if ($score > 0) {
+                foreach($all_id as $k=>$v){
+                    if ($all_id[$k] >= $score) {
+                        unset($all_id[$k]);
+                    } else {
+                        break;
+                    }
+                }
+            }
+            //dd($all_id);
+            $all_status = array_slice(array_keys($all_id), $start, $length);
+            if ($all_status) {
+                return $this->gets($all_status, true);
+            }
+        }
+        return [];
+//        $result = $this->zrevrangebyscore('home:'.$uid,$start,$length,$max,$isEqual);
+//        return $this->gets($result) ;
     }
 
-    public function getHome($uid,$start,$length,$min=0,$isEqual=false)
+    public function getHome($uid,$start,$length,$min=0)
     {
-        $result = $this->zrangebyscore('home:'.$uid,$start,$length,$min,$isEqual);
-        return $this->gets($result) ;
-    }
+        $score = $min;
+        //先获取当前用户所有关注用户ids;
+        $followService = new FollowService();
+        $ids = $followService->getFollowingIds($uid);
+        $this->prefix = 'profile:';
+        $result = $this->zrangebyscores($ids, config('base.status_home_follow_size'), true);
+        $this->prefix = 'status:';
+        //dd($result);
+        if($result) {
+            $all_id = [];
+            foreach ($result as $k => $v) {
+                foreach($v as $k2 => $v2) {
+                    if(array_key_exists($k2,$all_id)){
+                        continue;
+                    }
+                    $all_id[$k2] = $v2;
+                }
+            }
+            $all_ids = [];
 
+            if ($score > 0) {
+                arsort($all_id);
+                foreach($all_id as $k=>$v){
+                    if($all_id[$k]<=$score){
+                        break;
+                    }
+                    if($all_id[$k]>$score){
+                        $all_ids[$k] = $v;
+                    }
+                }
+                $all_ids =array_reverse(array_keys($all_ids));
+            }else{
+                asort($all_id);
+                $all_ids = array_keys($all_id);
+            }
+            //dd($all_id);
+            $all_status = array_slice($all_ids, $start, $length);
+            $all_status = array_reverse($all_status);
+            if ($all_status) {
+                return $this->gets($all_status, true);
+            }
+        }
+        return [];
+//        $result = $this->zrangebyscore('home:'.$uid,$start,$length,$min,$isEqual);
+//        return $this->gets($result) ;
+    }
     public function getRevProfile($uid,$start,$length,$max=0,$isEqual=false)
     {
         $result = $this->zrevrangebyscore('profile:'.$uid,$start,$length,$max,$isEqual);

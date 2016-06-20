@@ -62,9 +62,11 @@ class ExportController extends Controller
 
             //关注
             $this->follows();
+
+            //消息
+            $this->messages();
         }
-        //消息
-        $this->messages();
+
 
 
 

@@ -48,15 +48,23 @@
             });
             var success = function(data){
                 if(parseInt(data.max)>0) {
-                    scroll_lock = false;
-                    $('#pullUp').attr('data-max',data.max);
+                    $('#pullUp').attr('data-max', data.max);
                     $('#thelist').append(data.content);
+                }else if(parseInt(data.min)>0) {
+                    $('#pullDown').attr('data-min', data.min);
+                    $('#thelist').prepend(data.content);
+                }
+                if(data.content) {
+                    scroll_lock = false;
                     var ids = data.ids;
-                    for(var i = 0;i<ids.length;i++){
+                    for (var i = 0; i < ids.length; i++) {
                         //console.log(ids[i]);
-                        $('#gz_'+ids[i]).find('.btn_praise').praise({uid:"{{$uid}}",avatar:"{{getAvatar($avatar)}}"});
-                        $('#gz_'+ids[i]).find('.fenxiang-pl').comment();
-                        $('#gz_'+ids[i]).find('.reply_comment').comment();
+                        $('#gz_' + ids[i]).find('.btn_praise').praise({
+                            uid: "{{$uid}}",
+                            avatar: "{{getAvatar($avatar)}}"
+                        });
+                        $('#gz_' + ids[i]).find('.fenxiang-pl').comment();
+                        $('#gz_' + ids[i]).find('.reply_comment').comment();
                     }
                     fancybox();
                 }

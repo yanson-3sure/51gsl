@@ -12,6 +12,7 @@ return [
     'posts_per_pass'=>env('POSTS_PER_PASS',1000),
     'status_praise_size' => env('STATUS_PRAISE_SIZE',30),
     'status_comment_size' => env('STATUS_COMMENT_SIZE',20),
+    'status_home_follow_size' => env('STATUS_HOME_follow_SIZE',300), //我的关注 ,获取每位分析师的直播数量
 
     'object_type' => [
         'praise'=>['status'],
