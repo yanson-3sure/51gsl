@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
 {
@@ -20,125 +21,51 @@ class UploadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function postImage()
     {
         $type = Input::get('type');
         $chk = $this->chk($type);
         if($chk!==true){
             return $chk;
         }
-
-        $config = Config::get('upload');
-
-        $file  = \Input::file('file');
-        // get file size in Bytes
-        $file_size = $file->getSize();
-
-        // get the extension
-        $ext = strtolower( $file->getClientOriginalExtension() );
-        //$ext = 'png';
-        // checking file format
-        $format = getFileFormat($ext);
-
-
-        //$type = 'status';
-        // saving file
-        $filename = date('U').str_random(10);
-        $dir = $config['dir'].'/'.$type .'/'. date('Y/m/d');
-        $destPath = public_path($dir);
-        if(!file_exists($destPath))
-            mkdir($destPath,0755,true);
-        $file->move($destPath, $filename.'.'.$ext);
-
-        $file_path = $dir.'/'.$filename.'.'.$ext;
-
-        if ( $format == 'image' && isset($config['types'][$type]['image']) && count($config['types'][$type]['image']) )
-        {
-            $img = Image::make(public_path().'/'.$file_path);
-
-            foreach($config['types'][$type]['image'] as $task => $params)
-            {
-                switch($task) {
-                    case 'resize':
-                        $img->resize($params[0], $params[1]);
-                        break;
-                    case 'fit':
-                        $img->fit($params[0], $params[1]);
-                        break;
-                    case 'crop':
-                        $img->crop($params[0], $params[1]);
-                        break;
-                    case 'thumbs':
-                       // $img->save();
-
-                        foreach($params as $name => $sizes) {
-
-                            $img->backup();
-
-                            $thumb_path = $destPath.'/'.$filename.'-'.$name.'.'.$ext;
-
-                            $img->fit($sizes[0], $sizes[1])->save($thumb_path);
-
-                            $img->reset();
-                        }
-                        break;
-                }
-            }
-
-            //$img->save();
-        }
-        $userid = Auth::user()->id;
-        $imageService = new ImageService();
-        $image = $imageService->save($userid,$dir.'/'.$filename,$ext,$type);
-        if($image) {
+        $filename = $this->putFile($type,Input::file('file'));
+        if($filename) {
             return [
-                'original' => [
-                    'name' => $file->getClientOriginalName(),
-                    'size' => $file_size,
-                ],
-                'ext' => $ext,
-                'format' => $format,
-                // 'image' => [
-                //     'size' =>$img->getSize(),
-                // ],
-                'image_id' => $image['id'],
+                'type' => $type,
                 'name' => $filename,
-                'path' => $file_path,
+                'path' => getImageUrl($type,$filename),
             ];
         }else{
-            return [ 'error' => '保存失败' ];
+            return response('上传图片失败',501);
         }
     }
-
     public function postAvatar()
     {
-        $chk = $this->chk('status');
+        $type = 'avatar';
+        $chk = $this->chk($type);
         if($chk!==true){
             return $chk;
         }
 
-        $userid = Auth::user()->id;
-        $md5 =  md5(config('avatar.hash-key').$userid);
-        $savedir = substr($md5,0,2) . '/' . substr($md5,2,2) . '/' . substr($md5,4);
-        $basedir = Config::get('avatar.uploads.path');
-        $basedir .= $savedir;
-        $destPath = public_path($basedir);
-        if(!file_exists($destPath))
-            mkdir($destPath,0755,true);
-        $sizes = Config::get('avatar.size');
-        $img = Image::make(Input::file('file'));
-        foreach($sizes as $k => $v){
-            $img->backup();
-
-            $img->fit($v[0], $v[0])->save($destPath.'/'.$v[0].'.png');
-
-            $img->reset();
-        }
-        if(!$this->user['avatar']){
+        $filename = $this->putFile($type,Input::file('file'));
+        if($filename){
             $userService = new UserService();
-            $userService->chgAvatar($this->uid,$savedir);
+            $userService->chgAvatar($this->uid,$filename);
+            return ['path'=>getAvatar($filename)];
         }
-        return ['path'=>$basedir];
+        return response('上传头像失败',501);
+    }
+
+    protected function putFile($type,$file)
+    {
+        $ext = strtolower($file->getClientOriginalExtension());
+        $filename = getMd5PathRandom($type).'.'.$ext;
+        $file_path = $type.'/'.$filename;
+        $result = Storage::putFile($file_path,$file);
+        if($result){
+            return $filename;
+        }
+        return false;
     }
     protected function chk($type)
     {

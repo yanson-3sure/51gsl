@@ -16,8 +16,8 @@
                     <div class="xx_tx_l">头像</div>
                     <div class="xx_tx_r">
                         <div class="xx_tx_img">
-                            <a class="fancybox-effects" alt="头像" href="{{getAvatar($user['avatar'],0)}}">
-                                <img src="{{getAvatar($user['avatar'])}}">
+                            <a class="fancybox-effects" alt="头像" href="{{getAvatar($user['avatar'],640)}}">
+                                <img src="{{getAvatar($user['avatar'],80)}}">
                             </a>
                         </div>
                         <div class="xx_tx_gd" style="margin-top:10px"><img src="/img/xx_gd.png"></div>
@@ -78,8 +78,8 @@
                         return false;
                     }
                     d = new Date();
-                    $('.fancybox-effects').attr('href',data.result.path+'/640.png?'+d.getTime());
-                    $('.fancybox-effects').find('img').attr('src',data.result.path+'/46.png?'+d.getTime());
+                    $('.fancybox-effects').attr('href',data.result.path+'@640w?'+d.getTime());
+                    $('.fancybox-effects').find('img').attr('src',data.result.path+'@46w_46h?'+d.getTime());
                     layer.msg('上传成功');
                 },
                 stop : function (e) {

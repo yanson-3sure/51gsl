@@ -26,7 +26,7 @@
 
                 <div class="charu">
                     <input type="file" name="file" id="doc"  accept="image/*">
-                    <input type="hidden" name="image_id" id="image_id" value="0" >
+                    <input type="hidden" name="image" id="image" value="0" >
                     <i class="icon-picture"></i>
                 </div>
             </div>
@@ -77,19 +77,14 @@
                         layer.msg('ERROR:'+data.result.error);
                         return false;
                     }
-                    if(data.result.format == 'image') {
 
-                        $(this).find('.thumbnail').show().find('img').attr('src','/'+data.result.path.replace(data.result.name,data.result.name+'-'+88));
-                        $(this).find('.thumbnail').attr('href','/'+data.result.path);
+                        $(this).find('.thumbnail').show().find('img').attr('src',data.result.path+'@88w_88h');
+                        $(this).find('.thumbnail').attr('href',data.result.path + '@200w_200h');
                         $(this).find('.crtp').show();
-                    }
-                    else {
-                        $(this).find('.thumbnail').hide()
-                        $(this).find('.crtp').hide();
-                    }
 
-                    $(this).find('input[name=file_path]').val(data.result.path);
-                    $(this).find('#image_id').val(data.result.image_id);
+
+                    $(this).find('input[name=file_path]').val(data.result.name);
+                    $(this).find('#image').val(data.result.name);
                     layer.msg('上传成功');
                 },
 

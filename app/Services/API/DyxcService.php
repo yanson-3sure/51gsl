@@ -72,17 +72,20 @@ class DyxcService
             $userid = $status['uid'];
             $username = $this->users[$userid];
             $token = md5($username.$this->key);
-            if ($status['image_id']) {
-                $imageService = new ImageService();
-                $image = $imageService->get($status['image_id']);
-                if ($image) {
-                    //提交图片到第一现场,并获取返回地址;
-                    $result = $this->curl(getImageRealPath($image));
-                    if ($result) {
-                        $imageUrl = json_decode($result)->url;
-                        $content .= '<image src="' . $imageUrl . '">';
-                    }
-                }
+//            if ($status['image_id']) {
+//                $imageService = new ImageService();
+//                $image = $imageService->get($status['image_id']);
+//                if ($image) {
+//                    //提交图片到第一现场,并获取返回地址;
+//                    $result = $this->curl(getImageRealPath($image));
+//                    if ($result) {
+//                        $imageUrl = json_decode($result)->url;
+//                        $content .= '<image src="' . $imageUrl . '">';
+//                    }
+//                }
+//            }
+            if($status['image']){
+                $content .= '<image src="' . getStatusImageUrl($status['image']) . '">';
             }
 
             $response = Curl::to($this->url)

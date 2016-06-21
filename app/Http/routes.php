@@ -1,4 +1,5 @@
 <?php
+Route::controller('admin/test', 'Admin\TestController');
 //登录相关
 Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
     Route::get('wechat', 'AuthController@redirectToProvider');
@@ -36,7 +37,7 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
 });
 Route::controller('admin/export', 'Admin\ExportController');
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'oauth.admin'], function () {
-    Route::controller('test', 'TestController');
+    //Route::controller('test', 'TestController');
     Route::controller('index', 'IndexController');
 });
 //微信自动登录

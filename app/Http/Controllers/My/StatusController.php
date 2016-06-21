@@ -40,10 +40,10 @@ class StatusController extends Controller
         ];
         $this->validate($request,$rules);
         $message = Input::get('message','');
-        $image_id = Input::get('image_id',0);
+        $image = Input::get('image','');
 
         $message = $message;// filterImg(filterCss(filterJs($message)));
-        $result = $this->service->post($this->uid,$message,$image_id);
+        $result = $this->service->post($this->uid,$message,$image);
         if($result){
             try {
                 $dyxc = new DyxcService();

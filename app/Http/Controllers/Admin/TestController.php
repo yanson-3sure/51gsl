@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
 
 class TestController extends Controller
 {
@@ -100,5 +101,16 @@ class TestController extends Controller
     {
         $service = new WechatService();
         dd($service);
+    }
+
+
+    public function getStorage()
+    {
+        $type='status';
+        $filename = $type.'/'.md5($type.date('U').str_random(10)).'.png';
+        var_dump($filename);//Input::file('file')
+        $path='/Applications/MAMP/htdocs/gusilu/master2/51gsl/public/uploads/status/2016/06/17/1466130271EHutPbGn93-66.png';
+        $path = '/Users/viky/Pictures/281883ae48353724c0984fb12983d01c.jpg';
+        dd(Storage::putFile($filename,$path));
     }
 }

@@ -2,7 +2,7 @@
     <div class="gz">
         <div class="yh">
             <div class="yhimg">
-                <div><a href="{{ url('/user/'.$model['uid'])  }}"><img src="{{  getAvatar($model['user']['avatar']) }}"/></a>
+                <div><a href="{{ url('/user/'.$model['uid'])  }}"><img src="{{  getAvatar($model['user']['avatar'],46) }}"/></a>
                 </div>
             </div>
             <div class="use">
@@ -34,8 +34,8 @@
         </a>
         @if(isset($model['image']))
             <div class="neirong-img">
-                <a href="{{getImageUrl($model['image'],0)}}" class="fancybox-effects">
-                    <img src="{{getImageUrl($model['image'],88)}}"/>
+                <a href="{{getStatusImageUrl($model['image'],0)}}" class="fancybox-effects">
+                    <img src="{{getStatusImageUrl($model['image'],88)}}"/>
                 </a>
             </div>
         @endif
@@ -47,8 +47,8 @@
                     {!! showMsg($model['forward']['message'])!!}
                     @if(isset($model['forward']['image']))
                         <br>
-                        <a href="{{getImageUrl($model['forward']['image'],0)}}" class="fancybox-effects">
-                        <img src="{{getImageUrl($model['forward']['image'],88)}}">
+                        <a href="{{getImageUrl($model['forward_type'],$model['forward']['image'],0)}}" class="fancybox-effects">
+                        <img src="{{getImageUrl($model['forward_type'],$model['forward']['image'],88)}}">
                         </a>
                     @endif
                 </div>
@@ -61,8 +61,8 @@
                         {!! showMsg($model['forward']['object']['message'])!!}
                         @if(isset($model['forward']['object']['image']))
                             <br>
-                            <a href="{{getImageUrl($model['forward']['object']['image'],0)}}" class="fancybox-effects">
-                                <img src="{{getImageUrl($model['forward']['object']['image'],88)}}">
+                            <a href="{{getImageUrl($model['forward']['object_type'],$model['forward']['object']['image'],0)}}" class="fancybox-effects">
+                                <img src="{{getImageUrl($model['forward']['object_type'],$model['forward']['object']['image'],88)}}">
                             </a>
                         @endif
                     </div>

@@ -15,9 +15,9 @@
         "nesbot/carbon": "^1.21",
         "jenssegers/agent": "^2.3",
         "overtrue/wechat": "~3.0",
-        "socialiteproviders/weixin": "^2.1",
         "socialiteproviders/weixin-web": "^2.0",
-        "overtrue/laravel-socialite": "~1.0"
+        "overtrue/laravel-socialite": "~1.0",
+        "jacobcyl/ali-oss-storage": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -62,10 +62,9 @@
         ]
     },
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "secure-http": false
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "repositories": {
         "packagist": {
             "type": "composer",

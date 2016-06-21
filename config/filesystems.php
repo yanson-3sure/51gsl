@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => 'local',
+    'default' => 'oss',
 
     /*
     |--------------------------------------------------------------------------
@@ -78,6 +78,16 @@ return [
             'endpoint'  => 'https://identity.api.rackspacecloud.com/v2.0/',
             'region'    => 'IAD',
             'url_type'  => 'publicURL',
+        ],
+        'oss' => [
+                'driver'        => 'oss',
+                'access_id'     => env('OSS_ACCESS_KEY_ID','Aliyun OSS AccessKeyId'),
+                'access_key'    => env('OSS_ACCESS_KEY_SECRET','Aliyun OSS AccessKeySecret'),
+                'bucket'        => env('OSS_BUCKET','51gsl'),
+                'endpoint'      => env('OSS_ENDPOINT','oss-cn-beijing.aliyuncs.com'),
+                'isCName'       => env('OSS_IS_CNAME',false),
+                'debug'         => env('OSS_Debug',false),
+                'image_host'    => env('OSS_IMAGE_HOST','')
         ],
 
     ],

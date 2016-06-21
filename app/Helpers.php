@@ -55,7 +55,14 @@ function getRealSize($size)
     }
     return dd('size error');
 }
-function getAvatar($url,$size=46){
+function getAvatar($filename,$width=0,$height=0)
+{
+    if(!$filename){
+        $filename = '640.jpg';
+    }
+    return getImageUrl('avatar',$filename,$width,$height);
+}
+function getAvatar1($url,$size=46){
     $realSize = getRealSize($size);
     if($url){
         return config( 'avatar.url-pre').$url.'/'.$realSize.'.png';
@@ -66,8 +73,34 @@ function getAvatar($url,$size=46){
 function getAvatarDefault($size=46){
     return config('avatar.size.'.$size)[1];
 }
-
-function getImageUrl($image,$size=''){
+function getStatusImageUrl($image,$width=0,$height=0,$quality=0,$format=null)
+{
+    return getImageUrl('status',$image,$width,$height,$quality,$format);
+}
+function getImageUrl($type,$image,$width=0,$height=0,$quality=0,$format=null)
+{
+    $host = config('filesystems.disks.oss.image_host');
+    $path = $host . '/' . $type . '/' . $image;
+    $action = '';
+    if($width){
+        $action .= '_' . $width . 'w';
+    }
+    if($height){
+        $action .= '_' . $height . 'h';
+    }
+    if($quality){
+        $action .= '_' . $quality . 'Q';
+    }
+    if($format){
+        $action .= '.' . $format;
+    }
+    if($action) {
+        $action = substr($action, 1);
+        $action = '@' . $action;
+    }
+    return $path . $action;
+}
+function getImageUrl2($image,$size=''){
     if($image && is_object($image)) {
         if ($size) {
             return '/' . $image->path . '-' . $size . '.' . $image->ext;
@@ -94,6 +127,22 @@ function getImageRealPath($image,$size=''){
     if($result){
         $result = public_path(ltrim($result,'/'));
     }
+    return $result;
+}
+
+function getMd5Random($prefix='')
+{
+    $txt = date('U').str_random(10);
+    if($prefix){
+        $txt = $prefix . $txt;
+    }
+    return md5($txt);
+}
+
+function getMd5PathRandom($prefix='')
+{
+    $md5 = getMd5Random($prefix);
+    $result = substr($md5,0,2) . '/' . substr($md5,2,2) . '/' . substr($md5,4);
     return $result;
 }
 

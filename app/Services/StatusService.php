@@ -169,12 +169,12 @@ class StatusService extends AbstractService
         });
     }
 
-    protected function save($uid,$message,$image_id=0,$forward_type=null,$forward_id=0)
+    protected function save($uid,$message,$image='',$forward_type=null,$forward_id=0)
     {
         $model = new Status();
         $model->uid = $uid;
         $model->message = $message;
-        if($image_id) $model->image_id = $image_id;
+        if($image) $model->image = $image;
         if($forward_type) $model->forward_type = $forward_type;
         if($forward_id) $model->forward_id = $forward_id;
         if($model->save()) {
@@ -184,9 +184,9 @@ class StatusService extends AbstractService
         return [];
     }
 
-    public function post($uid,$message,$image_id=0,$forward_type=null,$forward_id=0)
+    public function post($uid,$message,$image='',$forward_type=null,$forward_id=0)
     {
-        $cacheModel = $this->save($uid,$message,$image_id,$forward_type,$forward_id);
+        $cacheModel = $this->save($uid,$message,$image,$forward_type,$forward_id);
         if(!$cacheModel)return false;
         $post = [$cacheModel['id']=>strtotime($cacheModel['created_at'])];
         Redis::pipeline(function ($pipe) use($uid ,$post) {
@@ -264,18 +264,11 @@ class StatusService extends AbstractService
         foreach ($statuses as $k => $v) {
             $all_uid[] = $v['uid'];
             $all_status_id[] = $v['id'];
-            if(isset($v['image_id']) && $v['image_id']>0){
-                $all_image_id[] = $v['image_id'];
-            }
             if(isset($v['forward_id']) && $v['forward_id']>0){
                 $forward_type = !isset($v['forward_type']) ? 'status' : $v['forward_type'];
                 $all_forward_id[$forward_type][] = $v['forward_id'];
             }
         }
-        //获取所有图片
-        $imageService = new ImageService();
-        $all_images = $imageService->gets($all_image_id,true);
-
         //处理转发
         $commentService = new CommentService();
         $all_forward = [];
@@ -309,9 +302,6 @@ class StatusService extends AbstractService
                 $statuses[$k]['comments_count'] = $v['comments'];
             }
             $statuses[$k]['user'] = $all_user[$v['uid']];
-            if(isset($v['image_id']) && $v['image_id']>0){
-                $statuses[$k]['image'] = $all_images[$v['image_id']];
-            }
             if(isset($v['forward_id']) && $v['forward_id']>0){
                 $statuses[$k]['forward'] = $all_forward[$v['forward_type']][$v['forward_id']];
             }
@@ -328,9 +318,6 @@ class StatusService extends AbstractService
         $all_image_id = [];
         foreach ($models as $k => $v) {
             $all_uid[] = $v['uid'];
-            if(isset($v['image_id']) && $v['image_id']>0){
-                $all_image_id[] = $v['image_id'];
-            }
         }
         //获取所有图片
         $imageService = new ImageService();
@@ -340,9 +327,6 @@ class StatusService extends AbstractService
         $all_user = $userService->getBases($all_uid);//获取所有用户
         foreach ($models as $k => $v) {
             $models[$k]['user'] = $all_user[$v['uid']];
-            if(isset($v['image_id']) && $v['image_id']>0) {
-                $models[$k]['image'] = $all_images[$v['image_id']];
-            }
         }
         return $models;
     }

@@ -1,18 +1,6 @@
 <?php
 
 return [
-
-    /*
-     |--------------------------------------------------------------------------
-     | Media Upload Settings
-     |--------------------------------------------------------------------------
-     |
-     | Set the directory wher your uploaded files will be placed.
-     |
-     */
-
-    'dir' => 'uploads',
-    'temp_dir' => 'uploads/temp',
     /*
     |--------------------------------------------------------------------------
     | Max File Size
@@ -38,39 +26,17 @@ return [
     'types' => [
         'status' => [
             'route' => 'status-upload',
-            'action'=> 'UploadController@index',
+            'action'=> 'UploadController@postImage',
             'middleware' => 'oauth:1',
             'max_size' => 10240,  //| Make sure you give a limitation of file size uploaded (in KiloBytes).
             'format' => 'image',
-            'image' => [
-            //    'resize' => [1024, 768],
-            //  'crop' => [800, 800],
-            //  'fit' => [640, 640],
-              'thumbs' => [
-                 '66' => [66, 66],
-                 '88' => [88, 88]
-              ]
-            ],
-            'multiple' => false,
-            'save_original' => true,
         ],
         'avatar' => [
             'route' => 'avatar-upload',
             'action'=> 'UploadController@postAvatar',
-            'middleware' => 'auth',
+            'middleware' => 'oauth',
             'max_size' => 10240,  //| Make sure you give a limitation of file size uploaded (in KiloBytes).
             'format' => 'image',
-            'image' => [
-                //    'resize' => [1024, 768],
-                //  'crop' => [800, 800],
-                //  'fit' => [640, 640],
-                'thumbs' => [
-                    '66' => [66, 66],
-                    '88' => [88, 88],
-                ]
-            ],
-            'multiple' => false,
-            'save_original' => true,
         ],
 
         // ... put your custom type ...

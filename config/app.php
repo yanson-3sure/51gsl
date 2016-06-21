@@ -156,6 +156,8 @@ return [
 
         Overtrue\LaravelSocialite\ServiceProvider::class,
 
+        Jacobcyl\AliOSS\AliOssServiceProvider::class,
+
         //Overtrue\LaravelWechat\ServiceProvider::class,
 
     ],

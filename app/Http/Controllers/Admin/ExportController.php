@@ -24,7 +24,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
 
 class ExportController extends Controller
 {
@@ -52,7 +54,7 @@ class ExportController extends Controller
             $this->statuses();
 
             //处理 图片
-            $this->images();
+            //$this->images();
 
             //赞
             $this->praises();
@@ -65,11 +67,16 @@ class ExportController extends Controller
 
             //消息
             $this->messages();
+
+
         }
+        if(false){
+            //处理头像,迁移到OSS
+            $this->avatars();
 
-
-
-
+            //处理status image
+            $this->status_images();
+        }
     }
 
     protected function users()
@@ -172,7 +179,7 @@ class ExportController extends Controller
             $status->id = $v->statusid;
             $status->uid = $v->userid;
             $status->message = $v->body;
-            $status->image_id = $v->imageid;
+            //$status->image_id = $v->imageid;
 
             if($v->forwardid){
                 $forward = head($forwards->where('forwardid',$v->forwardid)->all());
@@ -333,6 +340,70 @@ class ExportController extends Controller
             $model->created_at = $v->created_at;
             $model->updated_at = $v->updated_at;
             $model->save();
+        }
+    }
+
+    protected function avatars()
+    {
+        set_time_limit(0);
+        $users = DB::select('select id,avatar from users where avatar<>\'\' and avatar is not null and avatar not like \'%.png\'');
+        if(Input::get('debug')==1) {
+            var_dump(count($users));
+            dd($users);
+        }
+        $service = new UserService();
+        foreach ($users as $k => $v) {
+            $avatar = $v->avatar;
+            if($avatar) {
+                $avatar_path = public_path('uploads/avatar/' . $avatar.'/640.png');
+                $avatar_path2 = public_path('uploads2/avatar/' . $avatar.'.png');
+                $path = $avatar.'.png';//getMd5PathRandom('avatar');
+                //var_dump($path);
+                //sleep(1);
+                //$result = Storage::putFile('avatar/' . $path, $avatar_path);
+                //将相应本地图片,按oss图片路径及格式,保存到临时目录.通过客户端统一上传
+                $destPath = substr($avatar_path2,0,strlen($avatar_path2)-32);
+                if(!file_exists($destPath))
+                    mkdir($destPath,0755,true);
+                //var_dump($avatar_path2);
+                //dd($destPath);
+                $result = copy($avatar_path,$avatar_path2);
+                if($result){
+                    $service->chgAvatar($v->id,$path);
+                }
+            }
+        }
+    }
+
+    protected function status_images()
+    {
+        $statuses = collect(DB::connection('mysql2')->select('select * from status where imageid>0'));
+        $images = collect(DB::connection('mysql2')->select('select * from images'));
+        //dd($images->where('imageid',1));
+        ///dd($forwards);
+        $statusService = new StatusService();
+        foreach($statuses as $k => $v) {
+            if($v->imageid==0) continue;
+            $image = array_values(head($images->where('imageid',$v->imageid)))[0];
+            $image_path = public_path($image->path.'.'.$image->ext);
+            $md5 = md5($image_path);
+            $md5_path = substr($md5,0,2) . '/' . substr($md5,2,2) . '/' . substr($md5,4);
+            $path =$md5_path . '.' .$image->ext;
+            $image_path2 = public_path('uploads2/status/' . $path);
+            //将相应本地图片,按oss图片路径及格式,保存到临时目录.通过客户端统一上传
+            $destPath = substr($image_path2,0,strlen($image_path2)-(32-4+1+strlen($image->ext)));
+            if(!file_exists($destPath))
+                mkdir($destPath,0755,true);
+            $result = copy($image_path,$image_path2);
+            if($result){
+                $status = $statusService->find($v->statusid);
+                if($status) {
+                    $status->image = $path;
+                    if($status->save()) {
+                        $statusService->setCache($v->statusid,'image',$path);
+                    }
+                }
+            }
         }
     }
 

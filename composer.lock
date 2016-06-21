@@ -4,9 +4,50 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cf2058b6848c028bb8f53819485c4f58",
-    "content-hash": "9f33bfb7943b1b6ca4288506f35400e9",
+    "hash": "a5b47d6508e55bde5fc8f34a6b111188",
+    "content-hash": "a8d736bdf41bf2b140725a4c70813c80",
     "packages": [
+        {
+            "name": "aliyuncs/oss-sdk-php",
+            "version": "v2.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aliyun/aliyun-oss-php-sdk.git",
+                "reference": "74e427241d748af5bf0c2fa9d0b614b56bd46f9b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://packagist.phpcomposer.com/files/aliyun/aliyun-oss-php-sdk/74e427241d748af5bf0c2fa9d0b614b56bd46f9b.zip",
+                "reference": "74e427241d748af5bf0c2fa9d0b614b56bd46f9b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OSS\\": "src/OSS"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aliyuncs",
+                    "homepage": "http://www.aliyun.com"
+                }
+            ],
+            "description": "Aliyun OSS SDK for PHP",
+            "homepage": "http://www.aliyun.com/product/oss/",
+            "time": "2016-06-17 01:57:24"
+        },
         {
             "name": "caouecs/laravel-lang",
             "version": "3.0.5",
@@ -1031,6 +1072,50 @@
             "time": "2016-06-15 20:08:37"
         },
         {
+            "name": "jacobcyl/ali-oss-storage",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jacobcyl/Aliyun-oss-storage.git",
+                "reference": "c96afc860410678abfb71efea7eecf8d62130d84"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://packagist.phpcomposer.com/files/jacobcyl/Aliyun-oss-storage/c96afc860410678abfb71efea7eecf8d62130d84.zip",
+                "reference": "c96afc860410678abfb71efea7eecf8d62130d84",
+                "shasum": ""
+            },
+            "require": {
+                "aliyuncs/oss-sdk-php": "~2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jacobcyl\\AliOSS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "jacobcyl",
+                    "email": "cyl.jacob@gmail.com"
+                }
+            ],
+            "description": "aliyun oss filesystem storage for laravel 5+",
+            "homepage": "http://jacobcyl.github.io/Aliyun-oss-storage/",
+            "keywords": [
+                "aliyun",
+                "filesystems",
+                "laravel",
+                "oss",
+                "storage"
+            ],
+            "time": "2016-05-24 03:06:38"
+        },
+        {
             "name": "jakub-onderka/php-console-color",
             "version": "0.1",
             "source": {
@@ -1234,16 +1319,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.1.39",
+            "version": "v5.1.40",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "cb6c650cbb25c27fa9a4eddd07c6a78dd87554ea"
+                "reference": "555269ee07cfe4e966ad16b394c89fa0b586d8b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://packagist.phpcomposer.com/files/laravel/framework/cb6c650cbb25c27fa9a4eddd07c6a78dd87554ea.zip",
-                "reference": "cb6c650cbb25c27fa9a4eddd07c6a78dd87554ea",
+                "url": "https://packagist.phpcomposer.com/files/laravel/framework/555269ee07cfe4e966ad16b394c89fa0b586d8b0.zip",
+                "reference": "555269ee07cfe4e966ad16b394c89fa0b586d8b0",
                 "shasum": ""
             },
             "require": {
@@ -1359,7 +1444,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-06-14 01:20:12"
+            "time": "2016-06-17 19:23:17"
         },
         {
             "name": "laravel/socialite",
@@ -1923,16 +2008,16 @@
         },
         {
             "name": "overtrue/wechat",
-            "version": "3.0.20",
+            "version": "3.0.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/overtrue/wechat.git",
-                "reference": "fd85b555ed2a807461d427cac721aa24713b7ee0"
+                "reference": "627cd244847e496c9cc4cde20668e22572b5acb7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://packagist.phpcomposer.com/files/overtrue/wechat/fd85b555ed2a807461d427cac721aa24713b7ee0.zip",
-                "reference": "fd85b555ed2a807461d427cac721aa24713b7ee0",
+                "url": "https://packagist.phpcomposer.com/files/overtrue/wechat/627cd244847e496c9cc4cde20668e22572b5acb7.zip",
+                "reference": "627cd244847e496c9cc4cde20668e22572b5acb7",
                 "shasum": ""
             },
             "require": {
@@ -1976,7 +2061,7 @@
                 "weixin",
                 "weixin-sdk"
             ],
-            "time": "2016-06-02 09:56:15"
+            "time": "2016-06-17 03:44:16"
         },
         {
             "name": "paragonie/random_compat",
@@ -2283,16 +2368,16 @@
         },
         {
             "name": "socialiteproviders/manager",
-            "version": "v2.1.3",
+            "version": "v2.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Manager.git",
-                "reference": "51a683800719ee0b24b3b7db2b84daec5af1d591"
+                "reference": "72d4ea8234745344c01b04dbefefde6c757fc2b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://packagist.phpcomposer.com/files/SocialiteProviders/Manager/51a683800719ee0b24b3b7db2b84daec5af1d591.zip",
-                "reference": "51a683800719ee0b24b3b7db2b84daec5af1d591",
+                "url": "https://packagist.phpcomposer.com/files/SocialiteProviders/Manager/72d4ea8234745344c01b04dbefefde6c757fc2b1.zip",
+                "reference": "72d4ea8234745344c01b04dbefefde6c757fc2b1",
                 "shasum": ""
             },
             "require": {
@@ -2321,44 +2406,7 @@
                 }
             ],
             "description": "Easily add new or override built-in providers in Laravel Socialite.",
-            "time": "2016-06-03 17:59:20"
-        },
-        {
-            "name": "socialiteproviders/weixin",
-            "version": "v2.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/SocialiteProviders/Weixin.git",
-                "reference": "8ac480f9c88522bd4d110dedb5deb1982e7d3aae"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://packagist.phpcomposer.com/files/SocialiteProviders/Weixin/8ac480f9c88522bd4d110dedb5deb1982e7d3aae.zip",
-                "reference": "8ac480f9c88522bd4d110dedb5deb1982e7d3aae",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.6 || ^7.0",
-                "socialiteproviders/manager": "~2.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "SocialiteProviders\\Weixin\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "xyxu",
-                    "email": "techxu@gmail.com"
-                }
-            ],
-            "description": "Weixin OAuth2 Provider for Laravel Socialite",
-            "time": "2016-06-14 13:04:39"
+            "time": "2016-06-18 12:53:01"
         },
         {
             "name": "socialiteproviders/weixin-web",
@@ -4506,16 +4554,16 @@
         },
         {
             "name": "sebastian/exporter",
-            "version": "1.2.1",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/exporter.git",
-                "reference": "7ae5513327cb536431847bcc0c10edba2701064e"
+                "reference": "42c4c2eec485ee3e159ec9884f95b431287edde4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/7ae5513327cb536431847bcc0c10edba2701064e",
-                "reference": "7ae5513327cb536431847bcc0c10edba2701064e",
+                "url": "https://packagist.phpcomposer.com/files/sebastianbergmann/exporter/42c4c2eec485ee3e159ec9884f95b431287edde4.zip",
+                "reference": "42c4c2eec485ee3e159ec9884f95b431287edde4",
                 "shasum": ""
             },
             "require": {
@@ -4523,12 +4571,13 @@
                 "sebastian/recursion-context": "~1.0"
             },
             "require-dev": {
+                "ext-mbstring": "*",
                 "phpunit/phpunit": "~4.4"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2.x-dev"
+                    "dev-master": "1.3.x-dev"
                 }
             },
             "autoload": {
@@ -4568,7 +4617,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2015-06-21 07:55:53"
+            "time": "2016-06-17 09:04:28"
         },
         {
             "name": "sebastian/global-state",
@@ -4809,9 +4858,11 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": [],
-    "prefer-stable": true,
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "jacobcyl/ali-oss-storage": 20
+    },
+    "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": ">=5.5.9"

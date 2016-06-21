@@ -23,7 +23,7 @@ class IndexController extends Controller
         $type = Input::get('type', 'all_home');
         $page_size = config('base.page_size');
         $this->data['type'] = $type;
-        $start = 3;
+        $start = 0;
         $statusService = new StatusService();
         if ($type == 'home') {
             if (Auth::check()) {
