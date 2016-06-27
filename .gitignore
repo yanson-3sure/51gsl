@@ -8,3 +8,5 @@ Homestead.json
 /public/uploads2
 /public/font
 /storage
+.DS_Store
+/mypackages/Viky88/ueditor/laravel-u-editor/vendor
