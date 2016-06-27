@@ -10,3 +10,4 @@ Homestead.json
 /storage
 .DS_Store
 /mypackages/Viky88/ueditor/laravel-u-editor/vendor
+/packages/Viky88/ueditor/laravel-u-editor/vendor
