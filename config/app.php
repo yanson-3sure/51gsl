@@ -157,6 +157,7 @@ return [
         Overtrue\LaravelSocialite\ServiceProvider::class,
 
         Jacobcyl\AliOSS\AliOssServiceProvider::class,
+        Stevenyangecho\UEditor\UEditorServiceProvider::class,
 
         //Overtrue\LaravelWechat\ServiceProvider::class,
 

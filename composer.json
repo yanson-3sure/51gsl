@@ -18,6 +18,7 @@
         "socialiteproviders/weixin-web": "^2.0",
         "overtrue/laravel-socialite": "~1.0",
         "jacobcyl/ali-oss-storage": "dev-master"
+
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -33,7 +34,8 @@
             "App\\": "app/",
             "Viky88\\Sms\\" : "packages/viky88/sms/src/",
             "Gensee\\" : "packages/viky88/gensee/src",
-            "Viky88\\Upload\\":"packages/viky88/upload/src"
+            "Viky88\\Upload\\":"packages/viky88/upload/src",
+            "Stevenyangecho\\UEditor\\": "packages/viky88/ueditor/laravel-u-editor/src/"
         },
         "files": [
             "app/Helpers.php",
