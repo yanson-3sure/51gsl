@@ -29,6 +29,15 @@ class AnalystService extends AbstractService
         return [];
     }
 
+    public function getAllName()
+    {
+        $ids = Redis::ZREVRANGE('zanalyst:status',0,-1);
+        if($ids){
+            $userService = new UserService();
+            return $userService->getNames($ids);
+        }
+        return [];
+    }
 
     public function getList($ids,$follower_id = 0)
     {

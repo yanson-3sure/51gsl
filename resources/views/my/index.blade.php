@@ -1,89 +1,101 @@
 @extends('layouts.master')
 @section('title', '我的')
-@section('content')
-    <div class="con">
-        <!--toubu-->
-        <div class="banner">
-            @if($isLogin && $user['role']==1)
-                <div class="fb"><a href="/my/status/create"> <img src="/img/fabiao.png"></a></div>
-            @endif
-            <div class="my">
-                @if($isLogin)
-                    @if($user['role']==1)
-                        <a href="{{ url('/my/info')  }}">
-                            <div class="myimg"><img src="{{  getAvatar($user['avatar'],80) }}"></div>
-                        </a>
-                        <p><a href="{{ url('/user/'.$user['id'])  }}">{{ $user['name'] }} </a>{{getTime()}}
-                        </p>
-                    @else
-                        <a href="/my/info">
-                            <div class="myimg"><img src="{{  getAvatar($user['avatar'],80) }}"></div>
-                        </a>
-                        <p><a href="/my/info">{{ $user['name'] }} </a>{{getTime()}}</p>
-                    @endif
-                @else
-                    <a href="#"><div class="myimg"><img src="/img/wms.png"></div></a>
-                    <p><a href="/auth/login">登录 </a><span>|</span><a href="/auth/reg1">注册</a></p>
-                @endif
+@section('body')
+        <!-- 头像区域 -->
+<div class="head-container">
+    @if($isLogin && $user['role']==1)
+    <a class="write" href="/my/status/create"></a>
+    @endif
+    @if($isLogin)
+        <div class="head-wrap">
+            <div class="user_head" style="background-image:url({{ getAvatar($user['avatar'],60) }});">
+                <a href="{{ url('/my/info')  }}" class="mask"></a>
             </div>
         </div>
+        <p>{{ $user['name'] }},你好</p>
+    @else
+        <div class="head-wrap">
+            <div class="user_head" style="background-image:url({{ getAvatar('',60) }});">
+                <a href="{{ url('/my/info')  }}" class="mask"></a>
+            </div>
+        </div>
+        <p><a href="/auth/login">登录</a> <a href="/auth/reg1">注册</a> </p>
+    @endif
+</div>
 
-        <!--liebiao-->
+<!-- 功能列表区域 -->
+<div class="bd">
+    <div class="weui_cells weui_cells_access">
         @if($isLogin && $user['role']==1)
-            <a href="{{ url('/user/'.$user['id'])  }}">
-                <div class="wdzy gz">
-                    <div class="wdzy-l"><img src="/img/zy.png">
-
-                        <p>我的主页</p></div>
-                    <div class="wdzy-r"><img src="/img/dj.png"></div>
-                </div>
-            </a>
+        <a href="{{ url('/user/'.$user['id'])  }}" class="weui_cell">
+            <div class="weui_cell_hd">
+                <img src="/img/zhuye.svg" alt="" width="16px" class="db mr6">
+            </div>
+            <div class="weui_cell_bd weui_cell_primary">我的主页</div>
+            <div class="weui_cell_ft"></div>
+        </a>
         @endif
-        <a href="{{ url('/my/message')  }}">
-            <div class="wdzy gz">
-                <div class="wdzy-l"><img src="/img/xx.png">
-
-                    <p>我的消息</p></div>
-                <div class="person-a">
-                    <span class="wdzy-l-1 person" style="display:none;"></span>
-                    <span class="wdzy-l-2 person" style="display:none;">9</span>
-                    <span class="wdzy-l-3 person" style="display:none;">99</span>
-                    @if($noreadcount>0)
-                        <span class="wdzy-l-4 person" style="display:block;">{{ $noreadcount  }}</span>
+        @if($isLogin && $user['role']==1)
+            <?php $vipUrl = '/my/vip/provided'; ?>
+        @else
+            <?php  $vipUrl = '/my/vip';?>
+        @endif
+        <a  href="{{$vipUrl}}" class="weui_cell">
+            <div class="weui_cell_hd">
+                <img src="/img/vip.svg" alt="" width="16px" class="db mr6">
+            </div>
+            <div class="weui_cell_bd weui_cell_primary">我的服务</div>
+            <div class="weui_cell_ft"></div>
+        </a>
+        <a href="{{ url('/my/message')  }}" class="weui_cell">
+            <div class="weui_cell_hd">
+                <img src="/img/wodexiaoxi.svg" alt="" width="16px" class="db mr6">
+            </div>
+            <div class="weui_cell_bd weui_cell_primary">我的消息
+                @if($noreadcount)
+                <div class="badge mt2">
+                    @if($noreadcount>999)
+                       999+
+                    @else
+                        {{$noreadcount}}
                     @endif
                 </div>
-                <div class="wdzy-r"><img src="/img/dj.png"></div>
+                @endif
             </div>
+            <div class="weui_cell_ft"></div>
         </a>
-        <a href="{{ url('/my/follow')  }}">
-            <div class="wdzy gz">
-                <div class="wdzy-l"><img src="/img/gz.png">
-
-                    <p>我的关注</p></div>
-                <div class="wdzy-r"><img src="/img/dj.png"></div>
+        <a href="{{ url('/my/follow')  }}" class="weui_cell">
+            <div class="weui_cell_hd">
+                <img src="/img/guanzhu.svg" alt="" width="16px" class="db mr6">
             </div>
+            <div class="weui_cell_bd weui_cell_primary">我的关注</div>
+            <div class="weui_cell_ft"></div>
         </a>
-
-        @if($isLogin && $user['role']==0)
-        <a href="/my/apply">
-            <div class="wdzy gz">
-                <div class="wdzy-l"><img src="/img/gz.png">
-
-                    <p>投顾认证</p></div>
-                <div class="wdzy-r"><img src="/img/dj.png"></div>
+        <a href="analyst/draft.html" class="weui_cell">
+            <div class="weui_cell_hd">
+                <img src="/img/caogaoxiang.svg" alt="" width="16px" class="db mr6">
             </div>
+            <div class="weui_cell_bd weui_cell_primary">草稿箱</div>
+            <div class="weui_cell_ft"></div>
         </a>
-        @endif
         @if($isLogin)
-            <a href="{{ url('/auth/logout')  }}">
-                <div class="wdzy gz">
-                    <div class="wdzy-l"><img src="/img/gz.png">
-                        <p>退出</p></div>
-                    <div class="wdzy-r"><img src="/img/dj.png"></div>
-                </div>
-            </a>
+        <a href="/auth/logout" class="weui_cell">
+            <div class="weui_cell_hd">
+                <img src="/img/caogaoxiang.svg" alt="" width="16px" class="db mr6">
+            </div>
+            <div class="weui_cell_bd weui_cell_primary">退出</div>
+            <div class="weui_cell_ft"></div>
+        </a>
         @endif
-
-        <div class="fotbot"></div>
-
-@stop
+    </div>
+    <div class="weui_cells weui_cells_access">
+        <a href="kefu.html" class="weui_cell">
+            <div class="weui_cell_hd">
+                <img src="/img/kefu.svg" alt="" width="16px" class="db mr6">
+            </div>
+            <div class="weui_cell_bd weui_cell_primary">客服反馈</div>
+            <div class="weui_cell_ft"></div>
+        </a>
+    </div>
+</div>
+@endsection

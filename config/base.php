@@ -15,7 +15,7 @@ return [
     'status_home_follow_size' => env('STATUS_HOME_follow_SIZE',300), //我的关注 ,获取每位分析师的直播数量
 
     'object_type' => [
-        'praise'=>['status'],
+        'praise'=>['status','answer'],
         'comment'=>['status'],
     ],
 

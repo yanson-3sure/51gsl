@@ -1,55 +1,48 @@
-@extends('layouts.master_nofooter')
+@extends('layouts.master')
 @section('title', '创建文章内容')
-@section('content')
+@section('body-attr', 'class="bd-sendmsg"')
+@section('body')
+    <div class="btn-wrap rel">
+        <a href="/my"  class="weui_btn weui_btn_mini weui_btn_default quxiao">取消</a>
+        <div class="weui_btn weui_btn_mini weui_btn_primary send" id="sendMsg">发送</div>
+    </div>
     <form id="myForm" method="post" action="/my/status">
-        <div class="fbxx" id="fbxx" data-url="/status-upload?type=status">
-            <div class="fbxxk">
-                <div class="fbxx-top">
-                    <div class="fbxx_qx"><a href="/my">取消</a></div>
-                    <div class="fbxx_pl">发表</div>
-                </div>
-                @if(isset(config('base.dyxc.users')[$uid]))
-                    <p>
-                        <input type='radio' name='NewsType' value='1' checked/>大盘
-                        <input type='radio' name='NewsType' value='2'/>名家论市
-                        <input type='radio' name='NewsType' value='3'/>热股
-                        <input type='radio' name='NewsType' value='4'/>消息
-                        <input type='radio' name='NewsType' value='5'/>独家
-                        <input type='radio' name='NewsType' value='6'/>个股关注
-                        <input type='radio' name='NewsType' value='7'/>绩效回顾
-                    </p>
-                @endif
-                <p class="emoji-picker-container">
-                    <textarea name="message" id="message" class="form-control textarea-control" rows="3"></textarea>
-                </p>
-                <!-- 加载编辑器的容器 -->
+        @if(isset(config('base.dyxc.users')[$uid]))
+            <p>
+                <input type='radio' name='NewsType' value='1' checked/>大盘
+                <input type='radio' name='NewsType' value='2'/>名家论市
+                <input type='radio' name='NewsType' value='3'/>热股
+                <input type='radio' name='NewsType' value='4'/>消息
+                <input type='radio' name='NewsType' value='5'/>独家
+                <input type='radio' name='NewsType' value='6'/>个股关注
+                <input type='radio' name='NewsType' value='7'/>绩效回顾
+            </p>
+        @endif
+        <textarea placeholder="请输入" name="message" id="message"></textarea>
+        <input type="hidden" name="image" id="image" value="" >
 
-                <div class="charu">
-                    <input type="file" name="file" id="doc"  accept="image/*">
-                    <input type="hidden" name="image" id="image" value="0" >
-                    <i class="icon-picture"></i>
-                </div>
+        <!-- 上传图片 -->
+        <div class="weui_uploader_bd mb30" data-url="/status-upload?type=status">
+            <ul class="weui_uploader_files" style="display: none;">
+                <li class="weui_uploader_file" ></li>
+            </ul>
+            <div class="weui_uploader_input_wrp">
+                <input type="file" name="file" class="weui_uploader_input" accept="image/jpg,image/jpeg,image/png,image/gif">
             </div>
-            <div class="crtp" id="crtp" style="display:none">
-                <a href="#" class="thumbnail">
-                    <img src="" class="img-responsive">
-                </a>
-            </div>
-            <input style="display: none;" type="text" class="form-control input-block" name="file_path" value="" readonly>
+            <a href="/my/strategy/create" class="xinzeng">新增策略</a>
         </div>
     </form>
+
+    <!-- 发送成功提示 -->
+    <img src="img/2016/yifasong.svg" id="sendSuccess">
 @endsection
 @section('footer')
     @parent
     <script src="/js/jquery.ui.widget.js"></script>
     <script src="/js/jquery.fileupload.js"></script>
-    <link href="/css/jquery.fancybox.css" rel="stylesheet" type="text/css">
-    <script src="/js/jquery.fancybox.pack.js"></script>
     <script>
         $(function(){
-            fancybox('.thumbnail');
-
-            $('.fbxx_pl').click(function(){
+            $('#sendMsg').click(function(){
                 if($('#message')==""){
                     layer.msg("发表内容不能为空");
                     return false;
@@ -62,39 +55,23 @@
                 });
             });
             //http://laravel-media-upload.triasrahman.com/
-            var buttonUpload = '.charu';
             var settings = {
                 autoUpload : true,
                 add : function (e, data) {
                     data.submit();
-                },
-                submit : function (e, data) {
-                    $(this).find(buttonUpload).attr('disabled', true);
-
                 },
                 done : function (e, data) {
                     if(data.result.error) {
                         layer.msg('ERROR:'+data.result.error);
                         return false;
                     }
-
-                        $(this).find('.thumbnail').show().find('img').attr('src',data.result.path+'@88w_88h');
-                        $(this).find('.thumbnail').attr('href',data.result.path + '@200w_200h');
-                        $(this).find('.crtp').show();
-
-
-                    $(this).find('input[name=file_path]').val(data.result.name);
-                    $(this).find('#image').val(data.result.name);
+                    $(this).find('.weui_uploader_files').show().find('.weui_uploader_file').css('background-image','url('+data.result.path+'@88w_88h)');
+                    $('#image').val(data.result.name);
                     layer.msg('上传成功');
                 },
-
-                stop : function (e) {
-                    $(this).find(buttonUpload).removeAttr('disabled');
-                    filesList = null;
-                }
             }
 
-            $('.fbxx').fileupload(settings);
+            $('.weui_uploader_bd').fileupload(settings);
         });
     </script>
 @endsection

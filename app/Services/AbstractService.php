@@ -1,12 +1,16 @@
 <?php
 namespace App\Services;
 
+use App\Models\Answer;
+use App\Models\Strategy;
+use App\Models\Train;
+use App\Services\MyTraits\Common;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
 
 abstract class AbstractService
 {
-
+    use Common;
     protected $prefix;
     protected $model;
     protected $noCacheAttributes = [];
@@ -24,24 +28,6 @@ abstract class AbstractService
         $class = '\\'.ltrim($this->model, '\\');
 
         return new $class;
-    }
-    /*
-     * 获取对象所属用户
-     */
-    public function getObjectUid($object_type,$object_id)
-    {
-        $object_uid = 0;
-        switch($object_type) {
-            case 'status':
-                $statusService = new StatusService();
-                $object = $statusService->get($object_id);
-                if(!$object){
-                    return false;
-                }
-                $object_uid = $object['uid'];
-                break;
-        }
-        return $object_uid;
     }
     public function isBlackRole($uid)
     {
@@ -148,6 +134,17 @@ abstract class AbstractService
     public function zscroe($key,$member)
     {
         return Redis::zscore($key,$member);
+    }
+    public function zscroes($ids,$member,$object_type=null)
+    {
+        $ids = array_unique($ids);
+        $keys = $this->getkeys($ids,$object_type);
+        $result = Redis::pipeline(function ($pipe) use($keys,$member){
+            foreach($keys as $key){
+                $pipe->zscore($key,$member);
+            }
+        });
+        return array_combine($ids,$result);
     }
 
     public function zrevranges($ids,$page=1,$count=10,$WITHSCORES=false)
@@ -320,14 +317,16 @@ abstract class AbstractService
         }
         return $result;
     }
-    public function setCacheModel($model,$id)
+    public function setCacheModel($model,$id=0)
     {
         if(is_array($model)){
             $cacheModel = $model;
         }else{
             $cacheModel = $this->getCacheModel($model);
+            $id = $model->getKey();
         }
         Redis::HMSET($this->getKey($id),$cacheModel);
+        return $cacheModel;
     }
     public function setCacheModels($models)
     {

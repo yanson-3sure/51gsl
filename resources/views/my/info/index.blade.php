@@ -16,8 +16,8 @@
                     <div class="xx_tx_l">头像</div>
                     <div class="xx_tx_r">
                         <div class="xx_tx_img">
-                            <a class="fancybox-effects" alt="头像" href="{{getAvatar($user['avatar'],640)}}">
-                                <img src="{{getAvatar($user['avatar'],80)}}">
+                            <a class="fancybox-effects" alt="头像" href="{{getAvatar($user['avatar'])}}">
+                                <img src="{{getAvatar($user['avatar'],46)}}">
                             </a>
                         </div>
                         <div class="xx_tx_gd" style="margin-top:10px"><img src="/img/xx_gd.png"></div>

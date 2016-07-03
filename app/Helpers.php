@@ -6,6 +6,10 @@ function debug_time($str=''){
         echo '<br>';
     }
 }
+function ajax()
+{
+    return \Illuminate\Support\Facades\Request::ajax();
+}
 function previous()
 {
     return URL::previous();
@@ -73,9 +77,17 @@ function getAvatar1($url,$size=46){
 function getAvatarDefault($size=46){
     return config('avatar.size.'.$size)[1];
 }
+function getTrackImageUrl($image,$width=0,$height=0,$quality=0,$format=null)
+{
+    return getImageUrl('track',$image,$width,$height,$quality,$format);
+}
 function getStatusImageUrl($image,$width=0,$height=0,$quality=0,$format=null)
 {
     return getImageUrl('status',$image,$width,$height,$quality,$format);
+}
+function getTrainImageUrl($image,$width=0,$height=0,$quality=0,$format=null)
+{
+    return getImageUrl('train',$image,$width,$height,$quality,$format);
 }
 function getImageUrl($type,$image,$width=0,$height=0,$quality=0,$format=null)
 {

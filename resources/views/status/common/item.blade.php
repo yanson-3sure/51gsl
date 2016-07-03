@@ -1,128 +1,107 @@
-<div class="con">
-    <div class="gz">
-        <div class="yh">
-            <div class="yhimg">
-                <div><a href="{{ url('/user/'.$model['uid'])  }}"><img src="{{  getAvatar($model['user']['avatar'],46) }}"/></a>
-                </div>
-            </div>
-            <div class="use">
-                <div class="usename">
-                    <span>{{  $model['user']['name'] }}</span>
-
-                    <p class="pub-time">{{ smarty_modifier_time_ago(strtotime($model['created_at']) ) }}</p>
-                </div>
-            </div>
-        </div><!--用户END-->
+<!-- 消息框:主贴 -->
+<div class="msg-container" id="status_{{$model['uid']}}">
+    <div class="header">
+        <div class="pub-header" style="background-image:url({{ getAvatar($model['user']['avatar'],88) }})">
+            <a href="{{ url('/user/'.$model['uid'])  }}"></a>
+        </div>
+        <p class="pub-name">
+            <a href="{{ url('/user/'.$model['uid'])  }}">{{  $model['user']['name'] }}</a>
+        </p>
+        <p>{{ smarty_modifier_time_ago(strtotime($model['created_at']) ) }}</p>
+        <i class="handle"></i>
+    </div>
+    <div class="body">
         <a href="{{ url('/status/'.$model['id'])  }}">
         @if(isset($model['forward_id']) && $model['forward_id']>0)
             @if($model['forward_type']=='comment')
                 @if(isset($model['forward']['reply_comment']))
-                <div class="huifu fans"><span class="blue_1">回复</span>
-                    <span>{{$model['message']}}</span><span>//</span>
-                    <span class="blue_1 cursor"> {{ $model['forward']['reply_comment']['user']['name']}}</span>
-                    <span>:</span><span>{{ $model['forward']['reply_comment']['comment']}}</span>
-                </div>
+                    <p>
+                        <span>回复</span>{{$model['message']}}
+                        <span>//</span><span>{{ $model['forward']['reply_comment']['user']['name']}}</span>
+                        <span>:</span>{{ $model['forward']['reply_comment']['comment']}}
+                    </p>
                 @else
-                        {{$model['message']}}
+                    <p>{!!nl2p($model['message']) !!}</p>
                 @endif
             @elseif($model['forward_type']=='status')
-                <div class="fx_content fans ">{!!nl2p($model['message']) !!}</div>
+                <p>{!!nl2p($model['message']) !!}</p>
             @endif
         @else
-                <div class="fx_content fans ">{!!nl2p($model['message']) !!}</div>
+            <p>{!!nl2p($model['message']) !!}</p>
         @endif
         </a>
         @if(isset($model['image']))
-            <div class="neirong-img">
-                <a href="{{getStatusImageUrl($model['image'],0)}}" class="fancybox-effects">
-                    <img src="{{getStatusImageUrl($model['image'],88)}}"/>
-                </a>
-            </div>
+        <div class="thumbnail" >
+            <img class="lazy" src="{{getStatusImageUrl($model['image'],60)}}" src1="{{getStatusImageUrl($model['image'])}}" alt="" height="60px" width="60px">
+        </div>
         @endif
+
+
         @if(isset($model['forward_id']) && $model['forward_id']>0 && $model['forward'])
             @if($model['forward_type']=='status')
-            <a href="{{ url('/status/'.$model['forward']['id'])  }}">
-                <div class="fx_content1 fans ">
-                    {{ $model['forward']['user']['name']}}:
-                    {!! showMsg($model['forward']['message'])!!}
-                    @if(isset($model['forward']['image']))
-                        <br>
-                        <a href="{{getImageUrl($model['forward_type'],$model['forward']['image'],0)}}" class="fancybox-effects">
-                        <img src="{{getImageUrl($model['forward_type'],$model['forward']['image'],88)}}">
-                        </a>
-                    @endif
-                </div>
-            </a>
-            @elseif($model['forward_type']=='comment' && isset($model['forward']['object']))
-                @if($model['forward']['object_type']=='status')
-                <a href="{{ url('/status/'.$model['forward']['object']['id'])  }}">
+                <a href="{{ url('/status/'.$model['forward']['id'])  }}">
                     <div class="fx_content1 fans ">
-                        {{ $model['forward']['object']['user']['name']}}:
-                        {!! showMsg($model['forward']['object']['message'])!!}
-                        @if(isset($model['forward']['object']['image']))
+                        {{ $model['forward']['user']['name']}}:
+                        {!! showMsg($model['forward']['message'])!!}
+                        @if(isset($model['forward']['image']))
                             <br>
-                            <a href="{{getImageUrl($model['forward']['object_type'],$model['forward']['object']['image'],0)}}" class="fancybox-effects">
-                                <img src="{{getImageUrl($model['forward']['object_type'],$model['forward']['object']['image'],88)}}">
+                            <a href="{{getImageUrl($model['forward_type'],$model['forward']['image'])}}" class="fancybox-effects">
+                                <img src="{{getImageUrl($model['forward_type'],$model['forward']['image'],88)}}">
                             </a>
                         @endif
                     </div>
                 </a>
+            @elseif($model['forward_type']=='comment' && isset($model['forward']['object']))
+                @if($model['forward']['object_type']=='status')
+                    <a href="{{ url('/status/'.$model['forward']['object']['id'])  }}">
+                        <div class="fx_content1 fans ">
+                            {{ $model['forward']['object']['user']['name']}}:
+                            {!! showMsg($model['forward']['object']['message'])!!}
+                            @if(isset($model['forward']['object']['image']))
+                                <br>
+                                <a href="{{getImageUrl($model['forward']['object_type'],$model['forward']['object']['image'],0)}}" class="fancybox-effects">
+                                    <img src="{{getImageUrl($model['forward']['object_type'],$model['forward']['object']['image'],88)}}">
+                                </a>
+                            @endif
+                        </div>
+                    </a>
                 @endif
             @endif
-         @endif
-                    <!--内容END-->
+        @endif
     </div>
-    <div class="hr_1"></div>
-    <div class="gz" id="gz_{{$model['id']}}">
-        <div class="fenxiang">
-            <div class="fenxiang-zan">
-                <a href="javascript:;" class="btn_praise" data-object-id="{{$model['id']}}" data-object-type="status">
-                        <span {{ $model['praises_count'] >0 ? array_key_exists($uid,$model['praises']) ? 'class=red' : '' : ''}}>
-                            <i id="icon_p_{{$model['id']}}" class="icon-heart{{ $model['praises_count'] >0 ? '' : '-empty'}}"></i>赞<span>{{ $model['praises_count'] >0 ? $model['praises_count'] : "" }}</span>
-                        </span>
-                </a>
+    <div class="footer">
+        <!-- 点赞与评论按钮 -->
+        <div class="comment-wrap">
+            <div class="appreciate" status="{{ $model['praises_count'] >0 ? array_key_exists($uid,$model['praises']) ? '1' : '0' : '0'}}">
+                <span class="like"><img src="/img/heart.svg"></span>
+                <strong>{{ $model['praises_count'] >0 ? $model['praises_count'] : "" }}</strong>
             </div>
-            <div>|</div>
-            <div class="fenxiang-pl" data-object-id="{{$model['id']}}">
-                <a href="javascript:;" >
-                    <span>
-                        <i class=" icon-comment-alt"></i>评论
-                        <span id="plcount_{{$model['id']}}">{{ $model['comments_count']>0 ? $model['comments_count'] : ''  }}</span>
-                    </span>
-                </a>
+            <div class="make-comment">
+                <img src="/img/comment.svg" width="20px">
+                <strong>{{ $model['comments_count']>0 ? $model['comments_count'] : ''  }}</strong>
             </div>
         </div>
-        <div class="zan">
-            <div id="zan-l-{{$model['id']}}"
-                 class="zan-l" {{$model['praises_count'] >0 ? '':'style=display:none'}}>
-                <span class="red"><i class="icon-heart-empty"></i></span></div>
-            <div class="zan-r" id="zan-r_{{$model['id']}}">
-                @if(array_key_exists('praises',$model))
-                    @foreach($model['praises'] as $k => $v)
-                        <a href="javascript:;">
-                            <div class="zan-r-a" id="praise_{{$model['id']}}_{{ $k  }}">
-                                <img width="28px" height="28px" src="{{ getAvatar($v['avatar'],28) }}"/>
-                            </div>
-                        </a>
-                    @endforeach
-                @endif
-            </div>
-        </div><!--赞END-->
-        <div class="pinglun" id="pinglun_{{$model['id']}}">
+        <!-- 赞 -->
+        <div class="reviewers" id="zan-l-{{$model['id']}}" {{$model['praises_count'] >0 ? '':'style=display:none'}}>
+            @if(array_key_exists('praises',$model))
+                @foreach($model['praises'] as $k => $v)
+                    <img class="lazy" id="praise_{{$model['id']}}_{{ $k  }}" src="{{ getAvatar($v['avatar'],44) }}"/>
+                @endforeach
+            @endif
+        </div>
+        <!-- 评论区 -->
+        <div class="comment-content" id="comment_{{$model['id']}}">
             @if(array_key_exists('comments',$model))
                 @foreach($model['comments'] as $k => $v)
-                    <p class="reply_comment" data-object-id="{{$model['id']}}" data-reply-id="{{$k}}">
-                        <a href="javascript:;">{{ $v['user']['name']  }}</a>
+                    <p data-object-id="{{$model['id']}}" data-reply-id="{{$k}}">
+                        <span>{{ $v['user']['name']  }}</span>
                         @if(isset($v['reply_user']['name']))
-                            <span>回复</span><a href="javascript:;"> {{$v['reply_user']['name']}}</a>
+                            <span>回复</span><span>{{$v['reply_user']['name']}}</span>
                         @endif
-                        :<span>{{ $v['comment'] }}</span>
+                        :{{ $v['comment'] }}
                     </p>
                 @endforeach
             @endif
-        </div><!--评论END-->
+        </div>
     </div>
-    @if(!isset($detail))
-        <div class="hr_2"></div>
-    @endif
 </div>

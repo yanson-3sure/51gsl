@@ -1,105 +1,70 @@
+// 初始化iScroll插件
 var myScroll,
 		pullDownEl, pullDownOffset,
 		pullUpEl, pullUpOffset,
 		generatedCount = 0;
-var scroll_lock =false;
-// JavaScript Document
-/**
- * 初始化iScroll控件
- */
+
 function loaded() {
 	pullDownEl = document.getElementById('pullDown');
 	pullDownOffset = pullDownEl ? pullDownEl.offsetHeight : 0;
-	pullUpEl = document.getElementById('pullUp');	
+	pullUpEl = document.getElementById('pullUp');
 	pullUpOffset = pullUpEl.offsetHeight;
-	if(pullDownEl){
-		myScroll = new iScroll('wrapper', {
-			scrollbarClass: 'myScrollbar', /* 重要样式 */
-			useTransition: false, /* 此属性不知用意，本人从true改为false */
-			topOffset: pullDownOffset,
-			onRefresh: function () {
-				if (pullDownEl.className.match('loading')) {
-					pullDownEl.className = '';
-					pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新...';
-				} else if (pullUpEl.className.match('loading')) {
-					pullUpEl.className = '';
-					pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';
-				}
-			},
-			onScrollMove: function () {
-				if (this.y > 5 && !pullDownEl.className.match('flip')) {
-					pullDownEl.className = 'flip';
-					pullDownEl.querySelector('.pullDownLabel').innerHTML = '松手开始更新...';
-					this.minScrollY = 0;
-				} else if (this.y < 5 && pullDownEl.className.match('flip')) {
-					pullDownEl.className = '';
-					pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新...';
-					this.minScrollY = -pullDownOffset;
-				} else if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
-					pullUpEl.className = 'flip';
-					pullUpEl.querySelector('.pullUpLabel').innerHTML = '松手开始更新...';
-					this.maxScrollY = this.maxScrollY;
-				} else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
-					pullUpEl.className = '';
-					pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';
-					this.maxScrollY = pullUpOffset;
-				}
-			},
-			onScrollEnd: function () {
-				if (pullDownEl.className.match('flip')) {
-					pullDownEl.className = 'loading';
-					pullDownEl.querySelector('.pullDownLabel').innerHTML = '加载中...';
-					if(!scroll_lock) {
-						pullDownAction();	// Execute custom function (ajax call?)
-					}
-				} else if (pullUpEl.className.match('flip')) {
-					pullUpEl.className = 'loading';
-					pullUpEl.querySelector('.pullUpLabel').innerHTML = '加载中...';
-					if(!scroll_lock) {
-						pullUpAction();	// Execute custom function (ajax call?)
-					}
-				}
-			}
-		});
-	}else{
-			myScroll = new iScroll('wrapper', {
-			scrollbarClass: 'myScrollbar', /* 重要样式 */
-			useTransition: false, /* 此属性不知用意，本人从true改为false */
-			onRefresh: function () {
-				if (pullUpEl.className.match('loading')) {
-					pullUpEl.className = '';
-					pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';
-				}
-			},
-			onScrollMove: function () {
-				if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
-					pullUpEl.className = 'flip';
-					pullUpEl.querySelector('.pullUpLabel').innerHTML = '松手开始更新...';
-					this.maxScrollY = this.maxScrollY;
-				} else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
-					pullUpEl.className = '';
-					pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';
-					this.maxScrollY = pullUpOffset;
-				}
-			},
-			onScrollEnd: function () {
-				if (pullUpEl.className.match('flip')) {
-					pullUpEl.className = 'loading';
-					pullUpEl.querySelector('.pullUpLabel').innerHTML = '加载中...';				
-					pullUpAction();	// Execute custom function (ajax call?)
-				}
-			}
-		});
 
-	}
-	
+	myScroll = new iScroll('wrapper',{
+		click:true,
+		scrollbars: true,
+		topOffset: pullDownOffset,
+		onRefresh: function () {
+			if (pullDownEl && pullDownEl.className.match('loading')) {
+				pullDownEl.className = '';
+				pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新...';
+			} else if (pullUpEl.className.match('loading')) {
+				pullUpEl.className = '';
+				pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';
+			}
+		},
+		onScrollMove: function () {
+			if (this.y > 5 && pullDownEl && !pullDownEl.className.match('flip')) {
+				pullDownEl.className = 'flip';
+				pullDownEl.querySelector('.pullDownLabel').innerHTML = '松手开始更新...';
+				this.minScrollY = 0;
+			} else if (this.y < 5 && pullDownEl && pullDownEl.className.match('flip')) {
+				pullDownEl.className = '';
+				pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新...';
+				this.minScrollY = -pullDownOffset;
+			} else if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
+				pullUpEl.className = 'flip';
+				pullUpEl.querySelector('.pullUpLabel').innerHTML = '松手开始更新...';
+				this.maxScrollY = this.maxScrollY;
+			} else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
+				pullUpEl.className = '';
+				pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';
+				this.maxScrollY = pullUpOffset;
+			}
+		},
+		onScrollEnd: function () {
+			if (pullDownEl && pullDownEl.className.match('flip')) {
+				pullDownEl.className = 'loading';
+				pullDownEl.querySelector('.pullDownLabel').innerHTML = '加载中...';
+				pullDownAction();   // ajax call
+			} else if (pullUpEl.className.match('flip')) {
+				pullUpEl.className = 'loading';
+				pullUpEl.querySelector('.pullUpLabel').innerHTML = '加载中...';
+				pullUpAction(); // ajax call
+			}
+		}
+	});
+	/* 新增 */
 	setTimeout(function () { document.getElementById('wrapper').style.left = '0'; }, 800);
 }
 function iscrollInit() {
-//初始化绑定iScroll控件 
 	document.addEventListener('touchmove', function (e) {
 		e.preventDefault();
 	}, false);
-	document.addEventListener('DOMContentLoaded', loaded, false);
+// document.addEventListener('DOMContentLoaded', loaded, false);
+	/* 新增 */
+	document.addEventListener('DOMContentLoaded', function () {
+		setTimeout(loaded, 200);
+	}, false);
 }
 iscrollInit();

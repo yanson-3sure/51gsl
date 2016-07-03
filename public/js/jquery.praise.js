@@ -6,20 +6,31 @@
         }
         var options = $.extend(defaults, options);
         this.each(function(){
+            var _this = $(this);
+            if($._data(_this, 'events' )){
+                return ;
+            };
+            var status = $(this).attr("status");
+            if(status == 0){
+                $(this).find("img").css("opacity",1);
+            }else{
+                $(this).find("img").css("opacity",0);
+            }
             $(this).click(function(){
+                var obj = $(this);
                 var object_id = $(this).attr('data-object-id');
                 var object_type = $(this).attr('data-object-type');
                 var uid = options.uid;
-                var span = $(this).find('span').first();
-                var span2 = $(this).find('span').first().find('span');
-                var count = span2.text();
+                var num = $(this).find("strong");
+                var count = num.text();
                 if (count == "") {
                     count = 0;
                 } else {
                     count = parseInt(count);
                 }
                 var data = {"object_id": object_id, "object_type": object_type};
-                if (!span.attr('class')) {
+                var status = $(this).attr("status");
+                if(status == 0){
                     $.ajax({
                         type: "post",
                         url: '/my/praise',
@@ -27,35 +38,33 @@
                         data: data,
                         success: function (data) {
                             //console.log(data);
-                            span.attr('class', 'red');
-                            $('#icon_p_' + object_id).attr('class', 'icon-heart');
                             count++;
                             if (count == 1) {
-                                $('#zan-l-' + object_id).show();
+                                //$('#zan-l-' + object_id).show();
                             }
-                            span2.text(count);//prepend
-                            $('#zan-r_' + object_id).append("<a href='javascript:;'><div  class='zan-r-a' id='praise_" + object_id + "_" + uid + "'><img src='" + options.avatar + "' width='28px' height='28px'></div></a>");
+                            num.text(count);//prepend
+                            obj.attr("status",1).find("img").css("opacity",0);
                         }
                     });
-                } else {
+                }else{
                     $.ajax({
                         type: "DELETE",
                         url: '/my/praise/0',
                         data: data,
                         success: function (data) {
-                            span.attr('class', '');
                             count--;
                             if (count == 0) {
-                                span2.text('');
+                                num.text(count);
                             } else {
-                                span2.text(count);
+                                num.text(count);
                             }
                             if (count == 0) {
-                                $('#zan-l-' + object_id).hide();
+                                //$('#zan-l-' + object_id).hide();
                             }
-                            $('#icon_p_' + object_id).attr('class', 'icon-heart-empty');
-                            //console.log("praise_"+object_id + "_"+ userid);
-                            $("#praise_" + object_id + "_" + uid).remove();
+                            //$('#icon_p_' + object_id).attr('class', 'icon-heart-empty');
+                            ////console.log("praise_"+object_id + "_"+ userid);
+                            //$("#praise_" + object_id + "_" + uid).remove();
+                            obj.attr("status",0).find("img").css("opacity",1);
                         },
                     });
                 }

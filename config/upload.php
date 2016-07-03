@@ -38,6 +38,27 @@ return [
             'max_size' => 10240,  //| Make sure you give a limitation of file size uploaded (in KiloBytes).
             'format' => 'image',
         ],
+        'train' => [
+            'route' => 'train-upload',
+            'action'=> 'UploadController@postImage',
+            'middleware' => 'oauth:1',
+            'max_size' => 10240,
+            'format' => 'image',
+        ],
+        'track' => [
+            'route' => 'track-upload',
+            'action'=> 'UploadController@postImage',
+            'middleware' => 'oauth:1',
+            'max_size' => 10240,
+            'format' => 'image',
+        ],
+        'answer' => [
+            'route' => 'answer-upload',
+            'action'=> 'UploadController@postImage',
+            'middleware' => 'oauth:1',
+            'max_size' => 10240,
+            'format' => 'image',
+        ],
 
         // ... put your custom type ...
     ],

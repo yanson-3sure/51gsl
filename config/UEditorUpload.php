@@ -18,7 +18,7 @@ return [
 */
     'core' => [
         'route' => [
-           // 'middleware' => 'auth',
+           'middleware' => 'oauth:1',
         ],
 
         'mode'=>'oss',//上传方式,local 为本地   qiniu 为七牛

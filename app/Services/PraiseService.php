@@ -13,6 +13,27 @@ class PraiseService extends AbstractService
     protected $model = Praise::class;
 
 
+   public function hmgets_count($ids,$object_type)
+   {
+       if(!$ids) return [];
+       $ids = array_unique($ids);
+       $this->prefix = $object_type.':';
+       $keys = $this->getKeys($ids);
+       $this->prefix = 'praise:';
+       $result = Redis::pipeline(function ($pipe) use($keys){
+           foreach($keys as $key){
+               $pipe->HMGET($key,'praises');
+           }
+       });
+       foreach($result as $k => $v){
+           if($v) {
+               $result[$k] = array_combine(['praises'], $v);
+           }else{
+               $result[$k] = ['praises'=>0];
+           }
+       }
+       return array_combine($ids,$result);
+   }
 
     public function zgets($ids,$object_type='status',$length=10)
     {
@@ -70,6 +91,9 @@ class PraiseService extends AbstractService
         }
 
         $object_uid = $this->getObjectUid($object_type,$object_id);
+        $userService = new UserService();
+        $object_user = $userService->get($object_uid);
+        $object_user_isAnalyst = $object_user['role']==1;
         $now1 = Carbon::now();
         $now = strtotime($now1);
         $praise = Praise::withTrashed()
@@ -85,15 +109,17 @@ class PraiseService extends AbstractService
             $result = $this->add($uid,$object_id,$object_type,$now1);
         }
         if($result){//如果添加成功
-            Redis::pipeline(function ($pipe)use($key,$now,$uid,$object_uid,$object_type,$object_id) {
+            Redis::pipeline(function ($pipe)use($key,$now,$uid,$object_uid,$object_type,$object_id,$object_user_isAnalyst) {
                 //添加到对象赞列表
                 $pipe->ZADD($key, $now, $uid);
                 //对象的赞数量+1
                 $pipe->HINCRBY($object_type . ':' . $object_id, 'praises', 1);
                 //对象所属人,总赞数+1
                 $pipe->HINCRBY('user:' . $object_uid, 'praises', 1);
-                //总赞排行+1
-                $pipe->ZINCRBY('zanalyst:praises', 1, $uid);
+                if($object_user_isAnalyst) {//分析师,排行+1
+                    //总赞排行+1
+                    $pipe->ZINCRBY('zanalyst:praises', 1, $object_uid);
+                }
             });
             //添加到消息列表
             if($uid!=$object_uid) {//如果自己给自己点赞,不需要消息

@@ -42,11 +42,13 @@ abstract class Controller extends BaseController
         $this->data['isLogin'] = $this->uid > 0;
         $url = Request::getRequestUri();
         if(starts_with($url,'/my') or starts_with($url,'/auth')){
-            $this->data['isMy'] = true;
+            $this->data['footer_isMy'] = true;
         }elseif(starts_with($url,'/train')){
-            $this->data['isTrain'] = true;
+            $this->data['footer_isTrain'] = true;
+        }elseif(starts_with($url,'/strategy')){
+            $this->data['footer_isStrategy'] = true;
         }else{
-            $this->data['isFirst'] = true;
+            $this->data['footer_isFirst'] = true;
         }
 
         $this->data['previous'] =  URL::previous();

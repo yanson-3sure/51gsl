@@ -4,7 +4,6 @@ Route::controller('admin/test', 'Admin\TestController');
 Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
     Route::get('wechat', 'AuthController@redirectToProvider');
     Route::get('wechat/callback', 'AuthController@handleProviderCallback');
-
     Route::controller('','AuthController');
 });
 //微信自动登录中间件
@@ -15,6 +14,14 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
     Route::get('status/list', 'StatusController@getList');
     Route::get('status/rev-list', 'StatusController@getRevList');
     Route::Resource('status', 'StatusController');
+    Route::Resource('strategy', 'StrategyController');
+
+    Route::Resource('qa', 'QAController');
+
+    Route::Resource('train', 'TrainController');
+    Route::Resource('track', 'TrackController');
+
+
     Route::group(['prefix' => 'home', 'namespace' => 'Home'], function () {
         Route::get('/', 'IndexController@index');
         Route::controller('index', 'IndexController');
@@ -25,7 +32,6 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
         Route::get('info', 'InfoController@index');
         Route::controller('info', 'InfoController');
         Route::Resource('apply', 'ApplyController');
-        Route::Resource('status', 'StatusController');
         Route::post('follow/focus', 'FollowController@postFocus');
         Route::post('follow/un-focus', 'FollowController@postUnFocus');
         Route::Resource('follow', 'FollowController');
@@ -33,6 +39,25 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
         Route::controller('message', 'MessageController');
         Route::Resource('praise', 'PraiseController');
         Route::Resource('comment', 'CommentController');
+        Route::Resource('question', 'QuestionController');
+
+        Route::Resource('qa', 'QAController');
+
+
+        Route::get('video/list', 'VideoController@getList');
+
+    });
+    Route::group(['prefix' => 'my', 'namespace' => 'My', 'middleware' => 'oauth:1'], function () {
+        Route::Resource('strategy', 'StrategyController');
+        Route::Resource('status', 'StatusController');
+        Route::Resource('track', 'TrackController');
+        Route::Resource('vip/provided', 'Vip\ProvidedController');
+        Route::Resource('vip', 'VipController');
+
+        Route::Resource('answer', 'AnswerController');
+    });
+    Route::group(['prefix' => 'my', 'namespace' => 'My', 'middleware' => 'oauth:1'], function () {
+        Route::Resource('train', 'TrainController');
     });
 });
 Route::controller('admin/export', 'Admin\ExportController');

@@ -259,7 +259,7 @@ class ExportController extends Controller
                 //对象所属人,总赞数+1
                 $pipe->HINCRBY('user:' . $object_uid, 'praises', 1);
                 //总赞排行+1
-                $pipe->ZINCRBY('zanalyst:praises', 1, $uid);
+                $pipe->ZINCRBY('zanalyst:praises', 1, $object_uid);
             });
         }
     }

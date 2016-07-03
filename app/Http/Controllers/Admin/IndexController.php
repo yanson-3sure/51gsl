@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Services\ApplicationService;
+use App\Services\VideoService;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -19,7 +20,6 @@ class IndexController extends Controller
     public function index()
     {
         //
-
     }
 
     public function getAudit(Request $request)
@@ -35,5 +35,15 @@ class IndexController extends Controller
         }else{
             return '失败';
         }
+    }
+
+    public function getUpdateAllVodList()
+    {
+        $page = Input::get('page',1);
+        $startTime='2000-01-01 00:00:00';
+        $endTime='9999-01-01 00:00:00';
+        $service = new VideoService();
+        $service->updateAllVodList();
+        //$service->updateVodList($startTime,$endTime,$page);
     }
 }

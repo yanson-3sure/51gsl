@@ -13,13 +13,19 @@ class WebcastJsonAPI extends AbstractAPI
     {
         return $this->get('/webcast/setting/info',['webcastId'=>$webcastId]);
     }
-
     /*
      * 5.10 获取直播录制的点播列表
      */
     public function getRecordInfo($webcastId)
     {
         return $this->get('/webcast/record/info',['webcastId'=>$webcastId]);
+    }
+    /*
+     * 5.24 分页同步点播数据
+     */
+    public function getVodSync($startTime,$endTime,$pageNo=1)
+    {
+        return $this->get('/webcast/vod/sync',['pageNo'=>$pageNo,'startTime'=>$startTime,'endTime'=>$endTime]);
     }
 
     public function getPrefix($suffix)

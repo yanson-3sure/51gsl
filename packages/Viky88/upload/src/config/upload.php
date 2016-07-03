@@ -72,6 +72,13 @@ return [
             'multiple' => false,
             'save_original' => true,
         ],
+        'train' => [
+            'route' => 'train-upload',
+            'action'=> 'UploadController@index',
+            'middleware' => 'oauth.admin',
+            'max_size' => 10240,
+            'format' => 'image',
+        ],
 
         // ... put your custom type ...
     ],
