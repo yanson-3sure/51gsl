@@ -121,7 +121,6 @@ var pullUpAction_exec = function(callback){
 			myScroll.refresh();
 	});
 }
-function callback(){}
 function pullUpAction () {
 	scroll_lock = true;
 	pullUpAction_exec(callback);

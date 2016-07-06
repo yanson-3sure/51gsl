@@ -31,9 +31,7 @@ class StatusController extends Controller
             if($status) {
                 $statuses = $this->service->getViewListInfo([$status]);
                 $this->data['model'] = head($statuses);
-                if(Input::get('debug','')=='1') {
-                    dd($this->data);
-                }
+                $this->debug(false);
                 return view('status.show',$this->data);
             }
         }

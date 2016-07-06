@@ -34,16 +34,21 @@
         </div>
     </div>
 <!-- 删除成功提示 -->
-<img src="img/yishanchu.svg" id="deleteSuccess">
+<img src="/img/yishanchu.svg" id="deleteSuccess">
 
     @include('comment.common.create_div')<!--zhuanfa-->
+@if(isAdmin($uid) || isAnalyst($role))
     @include('status.common.delete_div')
+@endif
 @endsection
 @section('footer')
         @include('layouts.script_iscroll')
         @include('layouts.script_fancybox')
         <script src="/js/jquery.praise.js"></script>
         <script src="/js/jquery.comment.js"></script>
+        @if(isAdmin($uid) || isAnalyst($role))
+            <script src="/js/jquery.actionsheet.js"></script>
+        @endif
 
         <script>
             var init =true;
@@ -52,14 +57,16 @@
                 $('.appreciate').praise();
                 $('.make-comment').comment();
                 $('.comment-content p').comment();
-                deleteStatus('.handle');
+                @if(isAdmin($uid) || isAnalyst($role))
+                $('.handle').actionsheet();
+                @endif
                 if(init){
                     $('#pullDown').attr('data-min',data.min);
                     init = false;
                 }
             }
             $(function(){
-                pullUpAction_exec();
+                pullUpAction_exec(callback);
             });
         </script>
 @endsection

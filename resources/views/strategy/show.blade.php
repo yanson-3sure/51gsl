@@ -104,14 +104,20 @@
     @include('layouts.script_fancybox')
     <script src="/js/jquery.praise.js"></script>
     <script src="/js/jquery.loadmore.js"></script>
+    @if(isAdmin($uid) || isAnalyst($role))
+        <script src="/js/jquery.actionsheet.js"></script>
+    @endif
     <script>
         $(document).ready(function () {
-            {{--var loadTrack =function(){--}}
-                {{--$.get('/track?id={{$model->id}}', function (data) {--}}
-                    {{--$('.genzong').append(data.content);--}}
-                {{--});--}}
-            {{--}--}}
-            $('.load-more-btn').first().loadmore({callback:function(data){
+            @if(isAdmin($uid) || isAnalyst($role))
+                $('.handle').actionsheet();
+            @endif
+        {{--var loadTrack =function(){--}}
+            {{--$.get('/track?id={{$model->id}}', function (data) {--}}
+                {{--$('.genzong').append(data.content);--}}
+            {{--});--}}
+        {{--}--}}
+        $('.load-more-btn').first().loadmore({callback:function(data){
                 fancybox();
             }});
             $('.load-more-btn').first().click();

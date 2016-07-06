@@ -71,13 +71,6 @@
             <div class="weui_cell_bd weui_cell_primary">我的关注</div>
             <div class="weui_cell_ft"></div>
         </a>
-        <a href="analyst/draft.html" class="weui_cell">
-            <div class="weui_cell_hd">
-                <img src="/img/caogaoxiang.svg" alt="" width="16px" class="db mr6">
-            </div>
-            <div class="weui_cell_bd weui_cell_primary">草稿箱</div>
-            <div class="weui_cell_ft"></div>
-        </a>
         @if($isLogin)
         <a href="/auth/logout" class="weui_cell">
             <div class="weui_cell_hd">

@@ -28,10 +28,12 @@
         </div>
 
     <!-- 删除成功提示 -->
-    <img src="img/yishanchu.svg" id="deleteSuccess">
+    <img src="/img/yishanchu.svg" id="deleteSuccess">
 
     @include('comment.common.create_div')<!--zhuanfa-->
-    @include('status.common.delete_div')
+    @if(isAdmin($uid) || isAnalyst($role))
+        @include('status.common.delete_div')
+    @endif
 @endsection
 @section('footer')
             @include('layouts.script_iscroll')
@@ -39,6 +41,9 @@
         <script src="/js/jquery.praise.js"></script>
         <script src="/js/jquery.comment.js"></script>
         <script src="/js/jquery.follow.js"></script>
+        @if(isAdmin($uid) || isAnalyst($role))
+            <script src="/js/jquery.actionsheet.js"></script>
+        @endif
         <script>
             $(function(){
                 $('.guanzhu').follow({
@@ -54,7 +59,9 @@
                 $('.appreciate').praise();
                 $('.make-comment').comment();
                 $('.comment-content p').comment();
-                deleteStatus('.handle');
+                @if(isAdmin($uid) || isAnalyst($role))
+                $('.handle').actionsheet();
+                @endif
                 if(init){
                     $('#pullDown').attr('data-min',data.min);
                     init = false;
