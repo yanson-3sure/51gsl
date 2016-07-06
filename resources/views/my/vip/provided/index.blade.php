@@ -14,7 +14,7 @@
 <div class="tab-change">
     <ul id="trains"></ul>
     <!-- 加载更多按钮 -->
-    <div class="load-more-btn" data-url="/my/train?type=1" data-append-object="#trains">
+    <div class="load-more-btn" data-url="/my/ajax/train?type=1" data-append-object="#trains">
         <a href="javascript:;" title="">加载更多<i class="icon"></i></a>
     </div>
 </div>
@@ -24,7 +24,7 @@
 <div class="tab-change hide">
     <ul id="strategies"></ul>
     <!-- 加载更多按钮 -->
-    <div class="load-more-btn"  data-url="/my/strategy?type=1" data-append-object="#strategies">
+    <div class="load-more-btn"  data-url="/my/ajax/strategy?type=1" data-append-object="#strategies">
         <a href="javascript:;" title="">加载更多<i class="icon"></i></a>
     </div>
 </div>
@@ -48,22 +48,26 @@
     <ul class="tab-change-msg hide" id="qa2"></ul>
 
     <!-- 加载更多按钮 -->
-    <div class="load-more-btn"  data-url="/my/qa?type=1&role=1" data-append-object="#qa1" >
+    <div class="load-more-btn"  data-url="/my/ajax/qa?type=1&role=1" data-append-object="#qa1" >
         <a href="javascript:;" title="">加载更多<i class="icon"></i></a>
     </div>
 
     <!-- 加载更多按钮 -->
-    <div class="load-more-btn hide"  data-url="/my/qa?type=2&role=1" data-append-object="#qa2" >
+    <div class="load-more-btn hide"  data-url="/my/ajax/qa?type=2&role=1" data-append-object="#qa2" >
         <a href="javascript:;" title="">加载更多<i class="icon"></i></a>
     </div>
 </div>
 @endsection
 @section('footer')
+    <script src="/js/jquery.praise.js"></script>
     <script src="/js/jquery.loadmore.js"></script>
 
     <script>
         $(document).ready(function () {
-            $('.load-more-btn').loadmore();
+            $('.load-more-btn[data-append-object!="#qa1"]').loadmore();
+            $('.load-more-btn[data-append-object="#qa1"]').loadmore({callback:function(data){
+                $('.appreciate').praise();
+            }});
             $('.load-more-btn').first().click();
             /* tab-change切换 */
             $('div.weui_navbar a').click(function () {

@@ -1,3 +1,5 @@
+
+
 // 初始化iScroll插件
 var myScroll,
 		pullDownEl, pullDownOffset,
@@ -67,4 +69,79 @@ function iscrollInit() {
 		setTimeout(loaded, 200);
 	}, false);
 }
+
 iscrollInit();
+var pullDownAction_exec = function(callback){
+	var pullUpEl = document.getElementById('pullDown');
+	if(!pullUpEl) return;
+	var _this = $("#pullDown");
+	var url = _this.attr('data-url');
+	var append_object = _this.attr('data-append-object') ? _this.attr('data-append-object') : '#thelist';
+	var min = _this.attr('data-min');
+	//var isMore = _this.attr('data-is-more');
+	//if(isMore=='0') return;
+	//console.log(min);
+	$.get(url,{min:min}, function (data) {
+		if(data.min>0){
+			$(append_object).prepend(data.content);
+			_this.attr('data-min', data.min);
+			if (!data.isMore) {
+				//_this.hide();
+				//_this.attr('data-is-more','0');
+			}
+			if (callback) {
+				callback(data);
+			}
+		}
+		myScroll.refresh();
+	});
+}
+var pullUpAction_exec = function(callback){
+	var pullUpEl = document.getElementById('pullUp');
+	if(!pullUpEl) return;
+	var _this = $("#pullUp");
+	var url = _this.attr('data-url');
+	var append_object = _this.attr('data-append-object') ? _this.attr('data-append-object') : '#thelist';
+	var max = _this.attr('data-max');
+	var isMore = _this.attr('data-is-more');
+	if(isMore=='0') return;
+	$.get(url,{max:max}, function (data) {
+		if(data.max>0) {
+			$(append_object).append(data.content);
+			_this.attr('data-max', data.max);
+			if (!data.isMore) {
+				//_this.hide();
+				_this.attr('data-is-more', '0');
+			}
+			if (callback) {
+				callback(data);
+			}
+		}
+		if (myScroll)
+			myScroll.refresh();
+	});
+}
+function callback(){}
+function pullUpAction () {
+	scroll_lock = true;
+	pullUpAction_exec(callback);
+	scroll_lock = false;
+}
+function pullDownAction () {
+	scroll_lock = true;
+	pullDownAction_exec(callback);
+	scroll_lock = false;
+}
+// 滚动区域高度小于屏幕高度时，隐藏底部加载区，反之则显示
+function hideBottom(){
+	var H = window.screen.height;
+	var scroll = document.getElementById("scroller");
+	var bottom = document.getElementById("pullUp");
+	var h = scroll.offsetHeight;
+	if(h > H){
+		bottom.style.opacity = 1;
+	}else{
+		bottom.style.opacity = 0;
+	}
+}
+hideBottom();

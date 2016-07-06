@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Ajax;
 
 use App\Models\Answer;
 use App\Models\Question;
@@ -14,10 +14,14 @@ use Illuminate\Support\Facades\Input;
 
 class QAController extends Controller
 {
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $page = 10;
+        $page = config('base.page_size');
         $object_type=Input::get('object_type');
         $object_id = Input::get('object_id');
         $max = Input::get('max',0);
@@ -71,76 +75,7 @@ class QAController extends Controller
         }else{
             $this->data['questions'] = [];
         }
-        if(ajax()) {
-            return ['max' => $this->data['max'], 'isMore' => $this->data['isMore'], 'content' => view('qa.common.list', $this->data)->render()];
-        }else{
-            //dd($this->data);
-        }
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return ajaxView('ajax.qa.list',$this->data) ;
     }
 }

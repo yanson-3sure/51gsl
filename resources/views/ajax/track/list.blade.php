@@ -1,5 +1,5 @@
 @foreach($tracks as $track)
 <li>
-    @include('track.common.item')
+    @include('ajax.track.item')
 </li>
 @endforeach

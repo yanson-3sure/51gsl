@@ -38,7 +38,7 @@
     <ul class="genzong"></ul>
     <div class="risk">风险提示：投资建议仅作参考！</div>
     <!-- 加载更多按钮 -->
-    <div class="load-more-btn" data-url="/track?id={{$model->id}}" data-append-object=".genzong">
+    <div class="load-more-btn" data-url="/ajax/track?id={{$model->id}}" data-append-object=".genzong">
         <a href="javascript:;" title="">加载更多<i class="icon"></i></a>
     </div>
 </div>
@@ -62,7 +62,7 @@
         <h3 class="subtitle">策略问答</h3>
         <ul id="questions"></ul>
         <!-- 加载更多按钮 -->
-        <div class="load-more-btn"  data-url="/qa?object_type=strategy&object_id={{$model->id}}" data-append-object="#questions">
+        <div class="load-more-btn"  data-url="/ajax/qa?object_type=strategy&object_id={{$model->id}}" data-append-object="#questions">
             <a href="javascript:;" title="">加载更多<i class="icon"></i></a>
         </div>
         <!-- 提问栏 -->
@@ -101,9 +101,9 @@
 @section('footer_nav')
 @endsection
 @section('footer')
+    @include('layouts.script_fancybox')
     <script src="/js/jquery.praise.js"></script>
     <script src="/js/jquery.loadmore.js"></script>
-    <script src="/js/jquery.thumbnail.js"></script>
     <script>
         $(document).ready(function () {
             {{--var loadTrack =function(){--}}
@@ -112,7 +112,7 @@
                 {{--});--}}
             {{--}--}}
             $('.load-more-btn').first().loadmore({callback:function(data){
-                $('.thumbnail').thumbnail();
+                fancybox();
             }});
             $('.load-more-btn').first().click();
             $('.load-more-btn').last().loadmore({callback:function(data){
@@ -130,7 +130,7 @@
                     if($(this).attr("name") == name) {
                         if ($(this).attr("name") == 'contents') {
                             if ($('#strategy_content').html() == '') {
-                                $.get('/strategy/{{$model->id}}', function (data) {
+                                $.get('/ajax/strategy/{{$model->id}}', function (data) {
                                     $('#strategy_content').append(data.content);
                                 });
                             }

@@ -10,6 +10,20 @@ function ajax()
 {
     return \Illuminate\Support\Facades\Request::ajax();
 }
+function ajaxView($view,$data)
+{
+    $result = ['content'=> view($view, $data)->render()];
+    if(isset($data['max'])){
+        $result['max'] = $data['max'];
+    }
+    if(isset($data['min'])){
+        $result['min'] = $data['min'];
+    }
+    if(isset($data['isMore'])){
+        $result['isMore'] = $data['isMore'];
+    }
+    return $result;
+}
 function previous()
 {
     return URL::previous();

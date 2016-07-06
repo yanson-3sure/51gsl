@@ -55,10 +55,15 @@ class PraiseController extends Controller
         $this->validate($request,$rules,$messages);
         $object_id = Input::get('object_id',0);
         $object_type = Input::get('object_type','status');
-        if($this->service->save($this->uid,$object_id,$object_type)){
-            return ['result'=>'success'];
+        $result = $this->service->save($this->uid,$object_id,$object_type);
+        if($result===true){
+            return ['result'=>'success','user'=>['id'=>$this->uid,'avatar'=>getAvatar($this->avatar,44)]];
+        }elseif($result==-1){
+            return response('赞对象已经删除',501);
+        }else{
+            return response('已经赞过',501);
         }
-        return response('已经赞过',501);
+
     }
 
     /**
@@ -108,9 +113,13 @@ class PraiseController extends Controller
         if($object_id<1 || !validObjectType($object_type,'praise')) {
             response('对象或类型不正确');
         }
-        if($this->service->delete($this->uid,$object_id,$object_type)){
-            return ['result'=>'success'];
+        $result = $this->service->delete($this->uid,$object_id,$object_type);
+        if($result===true){
+            return ['result'=>'success','user'=>['id'=>$this->uid,'avatar'=>getAvatar($this->avatar,44)]];
+        }elseif($result==-1){
+            return response('赞对象已经删除',501);
+        }else{
+            return response('已经取消赞',501);
         }
-        return response('已经取消赞',501);
     }
 }

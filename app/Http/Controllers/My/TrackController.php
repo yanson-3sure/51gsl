@@ -4,6 +4,7 @@ namespace App\Http\Controllers\My;
 
 use App\Models\Strategy;
 use App\Models\Track;
+use App\Services\TrackService;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -12,6 +13,11 @@ use Illuminate\Support\Facades\Input;
 
 class TrackController extends Controller
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->service = new TrackService();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -69,13 +75,7 @@ class TrackController extends Controller
             if(!$role) {
                 return response('无权限',501);
             }
-            $model = new Track();
-            $model->strategy_id = $strategy_id;
-            $model->status = Input::get('status');
-            $model->content = Input::get('content');
-            $model->uid = $this->uid;
-            $model->image = Input::get('image');
-            if($model->save()){
+            if($this->service->save($strategy_id,Input::get('status'),Input::get('content'),$this->uid,Input::get('image'))){
                 return ['result'=>'添加成功'];
             }
         }

@@ -145,15 +145,19 @@ class MessageService extends AbstractService
         }
         //获取所有相关用户
         $userService = new UserService();
-        $all_user = $userService->getAvatarAndName($all_uid);
+        $all_user = $userService->getBases($all_uid);
         //处理event
         $all_event = [];
         $statusService = new StatusService();
         $commentService = new CommentService();
+        $qaService = new QAService();
         foreach($all_event_id as $k => $v){
             switch($k){
                 case 'praise:status':
                     $all_event[$k] = $statusService->getForwardStatus($v);
+                    break;
+                case 'praise:answer':
+                    $all_event[$k] = $qaService->getForwardAnswer($v);
                     break;
                 case 'comment':
                     $all_event[$k] = $commentService->getForwardComment($v);

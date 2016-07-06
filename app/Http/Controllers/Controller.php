@@ -6,6 +6,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use App\Services\UserService;
@@ -58,5 +59,14 @@ abstract class Controller extends BaseController
 
         //$jssdk = new JSSDK();
         //$this->data['jssdk_token'] = $jssdk->getSignPackage();
+    }
+
+    protected function debug($admin=true)
+    {
+        if(($admin && isAdmin($this->uid)) || !$admin) {
+            if(Input::get(config('base.debug.name'))==config('base.debug.value')) {
+                dd($this->data);
+            }
+        }
     }
 }

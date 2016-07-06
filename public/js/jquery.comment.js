@@ -3,8 +3,8 @@
         var defaults = {
             comment_div:"#plk",
             comment_form:"#comment_form",
-            comment_post : ".plk_pl",
-            comment_cancel:'.plk_qx'
+            comment_post : ".comment-box .send",
+            comment_cancel:'.comment-box .cancel'
         }
         var options = $.extend(defaults, options);
         var div = $(options.comment_div);
@@ -26,7 +26,13 @@
             if(data_object_type){
                 $("#comment_object_type").val(data_object_type);
             }
-            div.show();
+            // 显示评论框
+            div.fadeIn().find(".comment-box").css("top",0).animate({"top":"50px"}).find("textarea")
+                .focus();
+            var data_reply_name = $(obj).attr('data_reply_name');
+            if(data_reply_name){
+                div.attr("placeholder","回复：" + data_reply_name);
+            }
         }
         var btn_post = $(options.comment_post);
         var btn_cancel = $(options.comment_cancel);
@@ -39,15 +45,15 @@
                     var object_id = $('#comment_object_id').val();
                     var name = data.name;
                     var reply_nickname = data.reply_name ? data.reply_name : '';
-                    var content = '<p class="reply_comment" data-object-id="'+object_id+'" data-reply-id="'+data.comment_id+'">';
-                    content += "<a href='javascript:;'>"+name + '</a>:';
+                    var content = '<p  data-object-id="'+object_id+'" data-reply-id="'+data.comment_id+'">';
+                    content += "<span>"+name + '</span>:';
                     if(reply_nickname!=''){
-                        content += '<span>回复</span> ' + "<a href='javascript:;'>" + reply_nickname + "</a>:";
+                        content += '<span>回复</span> ' + "<span>" + reply_nickname + "</span>:";
                     }
-                    content += "<span>"+data.comment+"</span>";
+                    content += ""+data.comment+"";
                     content +='</p>';
                     //console.log(content);
-                    $('#pinglun_'+object_id).append(content);
+                    $('#comment_'+object_id).append(content);
                     var count = $('#plcount_'+object_id).text();
                     if(count==""){
                         count = 0;
@@ -55,12 +61,12 @@
                         count = parseInt(count);
                     }
                     $("#plcount_"+object_id).text(count+1);
-                    div.hide();
+                    div.fadeOut();
                 }
             });
         });
         btn_cancel.click(function(){
-            div.hide();
+            div.fadeOut();
         });
     };
 })(jQuery);

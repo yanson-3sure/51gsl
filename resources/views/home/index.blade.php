@@ -12,7 +12,7 @@
     </div>
 
     <!-- 新的消息提示栏 -->
-    <div class="news-tip" style="display:none">
+    <div class="news-tip" >
         <a href="/my/message?type=noread">
             <img src="/img/bell.svg" alt="">
             <span id="home_noreadcount">3条新消息</span>
@@ -22,104 +22,45 @@
     <!-- "关注"列表 -->
     <div id="wrapper">
         <div id="scroller"> <!-- class="content-wrapper" -->
-            <div id="pullDown" data-min="{{$min}}">
+            <div id="pullDown" data-url="/ajax/status?type={{$type}}">
                 <span class="pullDownIcon"></span>
                 <span class="pullDownLabel">下拉刷新</span>
             </div>
-            <ul id="thelist">
-                @include('status.common.list')
-            </ul>
-            <div id="pullUp" data-max="{{$max}}">
+            <ul id="thelist"></ul>
+            <div id="pullUp" data-url="/ajax/status?order=1&type={{$type}}">
                 <span class="pullUpIcon"></span>
                 <span class="pullUpLabel">加载更多</span>
             </div>
         </div>
     </div>
+<!-- 删除成功提示 -->
+<img src="img/yishanchu.svg" id="deleteSuccess">
+
     @include('comment.common.create_div')<!--zhuanfa-->
+    @include('status.common.delete_div')
 @endsection
 @section('footer')
-        @parent
-        <script src="/js/iscroll.js"></script>
-        <script src="/js/iscroll_load.js"></script>
+        @include('layouts.script_iscroll')
+        @include('layouts.script_fancybox')
         <script src="/js/jquery.praise.js"></script>
         <script src="/js/jquery.comment.js"></script>
 
         <script>
+            var init =true;
+            function callback(data){
+                fancybox();
+                $('.appreciate').praise();
+                $('.make-comment').comment();
+                $('.comment-content p').comment();
+                deleteStatus('.handle');
+                if(init){
+                    $('#pullDown').attr('data-min',data.min);
+                    init = false;
+                }
+            }
             $(function(){
-                {{--$('.btn_praise').praise({uid:"{{$uid}}",avatar:"{{getAvatar($avatar)}}"});--}}
-                {{--$('.fenxiang-pl').comment();--}}
-                {{--$('.reply_comment').comment();--}}
-
+                pullUpAction_exec();
             });
-            var success = function(data){
-                if(parseInt(data.max)>0) {
-                    $('#pullUp').attr('data-max', data.max);
-                    $('#thelist').append(data.content);
-                }else if(parseInt(data.min)>0) {
-                    $('#pullDown').attr('data-min', data.min);
-                    $('#thelist').prepend(data.content);
-                }
-                if(data.content) {
-                    scroll_lock = false;
-                    var ids = data.ids;
-                    {{--for (var i = 0; i < ids.length; i++) {--}}
-                        {{--//console.log(ids[i]);--}}
-                        {{--$('#gz_' + ids[i]).find('.btn_praise').praise({--}}
-                            {{--uid: "{{$uid}}",--}}
-                            {{--avatar: "{{getAvatar($avatar)}}"--}}
-                        {{--});--}}
-                        {{--$('#gz_' + ids[i]).find('.fenxiang-pl').comment();--}}
-                        {{--$('#gz_' + ids[i]).find('.reply_comment').comment();--}}
-                    {{--}--}}
-                    {{--fancybox();--}}
-                }
-            }
-            /**
-             * 下拉刷新 （自定义实现此方法）
-             */
-            function pullDownAction () {
-                    scroll_lock = true;
-                    $.ajax({
-                        url: "/status/list",
-                        data:{"type":"{{$type}}","min":$('#pullDown').attr('data-min')},
-                        type: "get",
-                        dataType:'json',
-                        success:function(data){
-                            success(data);
-                            myScroll.refresh();
-                            scroll_lock = false;
-                        },
-                        error:function(er){
-                            myScroll.refresh();
-                            scroll_lock = false;
-                        }
-                    });
-                myScroll.refresh();
-
-            }
-            /**
-             * 滚动翻页 （自定义实现此方法）
-             */
-            function pullUpAction () {
-                    scroll_lock = true;
-                    $.ajax({
-                        url: "/status/rev-list",
-                        data:{"type":"{{$type}}","max":$('#pullUp').attr('data-max')},
-                        type: "get",
-                        dataType:'json',
-                        success:function(data){
-                            success(data);
-                            scroll_lock = false;
-                            myScroll.refresh();
-                        },
-                        error:function(er){
-                            scroll_lock = false;
-                            myScroll.refresh();
-                        }
-                    });
-                    myScroll.refresh();
-            }
-
         </script>
 @endsection
 

@@ -45,4 +45,27 @@ class QAService
         }
         return false;
     }
+
+    public function getForwardAnswer($ids)
+    {
+        if(!$ids) return [];
+        $temp_models = Answer::whereIn('id',$ids)->get();
+        $all_uid = [];
+        $models = [];
+        foreach ($temp_models as $k => $v) {
+            if($v) {
+                $all_uid[] = $v['uid'];
+                $models[$v->id] = $v->toArray();
+            }
+        }
+        //获取所有相关用户
+        $userService = new UserService();
+        $all_user = $userService->getBases($all_uid);//获取所有用户
+        foreach ($models as $k => $v) {
+            if($v) {
+                $models[$k]['user'] = $all_user[$v['uid']];
+            }
+        }
+        return $models;
+    }
 }

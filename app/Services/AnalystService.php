@@ -83,6 +83,13 @@ class AnalystService extends AbstractService
         return [];
     }
 
+    public function filter($models)
+    {
+        $filter_analyst_user_ids = array_unique(config('base.filter_analyst_user_ids'));
+        $filter_analyst_user_ids = array_flip($filter_analyst_user_ids);
+        return array_diff_key($models,$filter_analyst_user_ids);
+    }
+
     public function initCache($uid)
     {
         Redis::pipeline(function ($pipe) use($uid) {

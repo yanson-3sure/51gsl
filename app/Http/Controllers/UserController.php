@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Train;
 use App\Services\AnalystService;
 use App\Services\FollowService;
 use App\Services\UserService;
@@ -27,19 +28,6 @@ class UserController extends Controller
     {
         $type = Input::get('type','');
         $this->data['type'] = $type;
-        $analystService = new AnalystService();
-        switch($type){
-            case 2:
-                $this->data['users'] = $analystService->getRankByFollower($this->uid);
-                break;
-            case 3:
-                $this->data['users'] = $analystService->getRankByComment($this->uid);
-                break;
-            default :
-                $this->data['users'] = $analystService->getRankByStatus($this->uid);
-                break;
-        }
-        //dd($this->data);
         return view('user.index',$this->data);
     }
 
@@ -75,14 +63,34 @@ class UserController extends Controller
         if(!$id)abort(404);
         $cur_user = $this->service->get($id);
         if($cur_user && $cur_user['role']==1) {
+            $type = Input::get('type');
             $this->data['cur_user'] = $cur_user;
             $analystServcie = new AnalystService();
             $this->data['analyst'] = $analystServcie->get($id);
 
             $followService = new FollowService();
             $this->data['isFollowing'] = $followService->isFollowing($this->uid,$id);
-            $this->data['maxscore'] = 0;
-            $this->data['minscore'] = 0;
+            if($type!='train') {
+                $this->data['trains'] = Train::where('uid', $id)->count();
+            }
+
+            if($type=='train'){//培训
+                $models = Train::where('uid',$id)->take(100)->get();
+                $this->data['models'] = $models;
+                if($models) {
+                    $all_uid = [];
+                    foreach ($models as $model) {
+                        $all_uid[] = $model->uid;
+                    }
+                    $userService = new UserService();
+                    $this->data['users'] = $userService->getAvatarAndName($all_uid);
+                }
+                return view('user.show_train',$this->data);
+            }
+            if($type=='strategy') {//策略
+                return view('user.show_strategy',$this->data);
+            }
+
 
             return view('user.show',$this->data);
         }

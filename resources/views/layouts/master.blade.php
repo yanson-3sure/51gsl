@@ -8,14 +8,17 @@
     <link rel="stylesheet" type="text/css" href="/css/weui.min.css?v={{config('base.version.css')}}">
     <link rel="stylesheet" type="text/css" href="/css/main.css?v={{config('base.version.css')}}">
     <link rel="stylesheet" type="text/css" href="/css/phocus.css?v={{config('base.version.css')}}">
+    <script src="/js/jquery.js"></script>
     @yield('head')
 </head>
 <body @yield('body-attr')>
 @yield('body')
 @section('footer_nav')
 @include('layouts.footer_nav')
+@if($isLogin)
+    <script>$(function(){getNoreadcount()});</script>
+@endif
 @show
-<script src="/js/jquery.js"></script>
 <script src="/js/jquery.form.js"></script>
 <script src="/js/layer/layer.js"></script>
 <script src="/js/main.js?v={{config('base.version.js')}}"></script>

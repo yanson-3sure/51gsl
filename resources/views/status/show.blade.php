@@ -1,20 +1,25 @@
 @extends('layouts.master')
 @section('title', '直播详细')
-@section('content')
+@section('body')
     @include('status.common.item')
     @include('comment.common.create_div')
+    @include('status.common.delete_div')
 @endsection
 @section('footer')
-<link href="/css/jquery.fancybox.css" rel="stylesheet" type="text/css">
-<script src="/js/jquery.fancybox.pack.js"></script>
-<script src="/js/jquery.praise.js"></script>
-<script src="/js/jquery.comment.js"></script>
-<script>
-    $(function(){
-        fancybox();
-        $('.btn_praise').praise({uid:"{{$uid}}",avatar:"{{getAvatar($avatar)}}"});
-        $('.fenxiang-pl').comment();
-        $('.reply_comment').comment();
-    });
-</script>
+    @include('layouts.script_fancybox')
+    <script src="/js/jquery.praise.js"></script>
+    <script src="/js/jquery.comment.js"></script>
+
+    <script>
+        function callback(data){
+            fancybox();
+            $('.appreciate').praise();
+            $('.make-comment').comment();
+            $('.comment-content p').comment();
+            deleteStatus('.handle');
+        }
+        $(function(){
+            callback();
+        });
+    </script>
 @endsection

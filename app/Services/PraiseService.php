@@ -91,6 +91,7 @@ class PraiseService extends AbstractService
         }
 
         $object_uid = $this->getObjectUid($object_type,$object_id);
+        if(!$object_uid)return -1;
         $userService = new UserService();
         $object_user = $userService->get($object_uid);
         $object_user_isAnalyst = $object_user['role']==1;
@@ -150,17 +151,8 @@ class PraiseService extends AbstractService
         if(!$this->zexist($key,$uid)){//已经不存在
             return true;
         }
-        $object_uid = 0;
-        switch($object_type) {
-            case 'status':
-                $statusService = new StatusService();
-                $object = $statusService->get($object_id);
-                if(!$object){
-                    return false;
-                }
-                $object_uid = $object['uid'];
-                break;
-        }
+        $object_uid = $this->getObjectUid($object_type,$object_id);
+        if(!$object_uid) return -1;
         $result = Praise::withTrashed()
             ->where('uid',$uid)
             ->where('object_id',$object_id)
@@ -177,7 +169,8 @@ class PraiseService extends AbstractService
                 //总赞排行-1
                 $pipe->ZINCRBY('zanalyst:praises', -1, $uid);
             });
+            return true;
         }
-        return true;
+        return false;
     }
 }

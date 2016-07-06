@@ -107,11 +107,16 @@ class CommentService extends AbstractService
         if($object_type=='status'){//如果是直播,检查是否允许评论
             $statusService = new StatusService();
             $object = $statusService->get($object_id);
-            if(isset($object['isComment']) && $object['isComment']==0){//不允许评论
-                return false;
+            if($object){
+                if(isset($object['isComment']) && $object['isComment']==0){//不允许评论
+                    return false;
+                }
+                $object_uid = $object['uid'];
             }
-            $object_uid = $object['uid'];
+        }else{
+            $object_uid = $this->getObjectUid($object_type,$object_id);
         }
+        if(!$object_uid) return -1;
         $role = $user['role'];
         $now1 = Carbon::now();
         $now = strtotime($now1);

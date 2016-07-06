@@ -1,5 +1,5 @@
 @foreach($questions as $question)
     <li>
-        @include('qa.common.item')
+        @include('ajax.qa.item')
     </li>
 @endforeach

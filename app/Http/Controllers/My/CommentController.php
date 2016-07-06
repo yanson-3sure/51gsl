@@ -75,7 +75,7 @@ class CommentController extends Controller
             return response('自己不能回复自己',501);
         }
         $result = $this->service->save($uid,$comment,$object_id,$object_type,$reply_uid,$reply_comment_id);
-        if($result){
+        if($result && $result!=-1){
             if($r_comment) {//如果有转发
                 $statusService = new StatusService();
                 $statusService->post($uid,$comment,0,'comment',$result['id']);
@@ -94,8 +94,11 @@ class CommentController extends Controller
                 }
             }
             return $result;
+        }elseif($result==-1){
+            return response('评论对象已经删除',501);
+        }else{
+            return response('评论失败',501);
         }
-        return response('评论失败');
     }
 
     /**

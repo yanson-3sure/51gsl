@@ -1,5 +1,6 @@
 @extends('layouts.master')
 @section('title', '我的关注')
+@section('body-attr', 'class="msg"')
 @section('body')
         <!-- "名师"列表 -->
 <div id="wrapper" style="top:0">

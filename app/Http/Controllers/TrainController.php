@@ -20,7 +20,7 @@ class TrainController extends Controller
      */
     public function index()
     {
-        $models = Train::simplePaginate(10);
+        $models = Train::take(100)->get();
         $this->data['models'] = $models;
         $all_uid = [];
         foreach($models as $model){
@@ -29,27 +29,6 @@ class TrainController extends Controller
         $userService = new UserService();
         $this->data['users'] = $userService->getAvatarAndName($all_uid);
         return view('train.index',$this->data);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -67,37 +46,4 @@ class TrainController extends Controller
         return view('train.show',$this->data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

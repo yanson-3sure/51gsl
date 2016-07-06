@@ -31,7 +31,7 @@
     <ul class="list-box" name="questions" id="questions">
     </ul>
     <!-- 加载更多按钮 -->
-    <div class="load-more-btn"  data-url="/qa?object_type=train&object_id={{$model->id}}" data-append-object="#questions">
+    <div class="load-more-btn"  data-url="/ajax/qa?object_type=train&object_id={{$model->id}}" data-append-object="#questions">
         <a href="javascript:;" title="">加载更多<i class="icon"></i></a>
     </div>
 </div>

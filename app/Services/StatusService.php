@@ -222,14 +222,13 @@ class StatusService extends AbstractService
     public function delete_status($uid,$id)
     {
         $key = $this->getKey($id);
-        $status = $this->get($id);
+        $status = $this->find($id);
         if($status){
             //非消息发布者本人,不能删除 .管理员除外
-            if($status->uid != $uid && !isAdmin($uid)){
+            if($status['uid'] != $uid && !isAdmin($uid)){
                 return false;
             }
             if($status->delete()){//软删除
-                $prefix = $this->prefix;
                 Redis::pipeline(function ($pipe) use($uid,$id,$key) {
                     $pipe->DEL($key);
                     $pipe->ZREM('all_home',$id);//全部
@@ -238,10 +237,12 @@ class StatusService extends AbstractService
                     $pipe->ZINCRBY('zanalyst:status',-1,$uid);//排行
                     $pipe->HINCRBY('user:' . $uid, 'posts', -1);//用户直播总数量
                 });
+                return true;
             }
         }
+        return false;
     }
-    //恢复删除的评论
+    //恢复删除
     public function restore($uid,$id)
     {
 
@@ -271,6 +272,7 @@ class StatusService extends AbstractService
         }
         //处理转发
         $commentService = new CommentService();
+        $strategyService = new StrategyService();
         $all_forward = [];
         foreach($all_forward_id as $k => $v){
             switch($k){
@@ -279,6 +281,9 @@ class StatusService extends AbstractService
                     break;
                 case 'comment':
                     $all_forward[$k] = $commentService->getForwardComment($v);
+                    break;
+                case 'strategy':
+                    $all_forward[$k] = $strategyService->getForward($v);
                     break;
             }
         }
@@ -315,18 +320,18 @@ class StatusService extends AbstractService
         if(!$ids) return [];
         $models = $this->gets($ids,true);
         $all_uid = [];
-        $all_image_id = [];
         foreach ($models as $k => $v) {
-            $all_uid[] = $v['uid'];
+            if($v) {
+                $all_uid[] = $v['uid'];
+            }
         }
-        //获取所有图片
-        $imageService = new ImageService();
-        $all_images = $imageService->gets($all_image_id);
         //获取所有相关用户
         $userService = new UserService();
         $all_user = $userService->getBases($all_uid);//获取所有用户
         foreach ($models as $k => $v) {
-            $models[$k]['user'] = $all_user[$v['uid']];
+            if($v) {
+                $models[$k]['user'] = $all_user[$v['uid']];
+            }
         }
         return $models;
     }

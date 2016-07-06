@@ -17,11 +17,11 @@
                 $(this).find("img").css("opacity",0);
             }
             $(this).click(function(){
-                var obj = $(this);
-                var object_id = $(this).attr('data-object-id');
-                var object_type = $(this).attr('data-object-type');
+                var _this = $(this);
+                var object_id = _this.attr('data-object-id');
+                var object_type = _this.attr('data-object-type');
                 var uid = options.uid;
-                var num = $(this).find("strong");
+                var num = _this.find("strong");
                 var count = num.text();
                 if (count == "") {
                     count = 0;
@@ -29,7 +29,8 @@
                     count = parseInt(count);
                 }
                 var data = {"object_id": object_id, "object_type": object_type};
-                var status = $(this).attr("status");
+                var status = _this.attr("status");
+                var list = _this.parents('.footer').find('.reviewers');
                 if(status == 0){
                     $.ajax({
                         type: "post",
@@ -39,11 +40,14 @@
                         success: function (data) {
                             //console.log(data);
                             count++;
-                            if (count == 1) {
-                                //$('#zan-l-' + object_id).show();
+                            if(list.length>0) {
+                                if (count == 1) {
+                                    list.show();
+                                }
+                                list.append('<img src="' + data.user.avatar + '">');
                             }
                             num.text(count);//prepend
-                            obj.attr("status",1).find("img").css("opacity",0);
+                            _this.attr("status",1).find("img").css("opacity",0);
                         }
                     });
                 }else{
@@ -58,13 +62,13 @@
                             } else {
                                 num.text(count);
                             }
-                            if (count == 0) {
-                                //$('#zan-l-' + object_id).hide();
+                            if(list.length>0) {
+                                if (count == 0) {
+                                    list.hide()
+                                }
+                                list.find('img[src="' + data.user.avatar + '"]').remove();
                             }
-                            //$('#icon_p_' + object_id).attr('class', 'icon-heart-empty');
-                            ////console.log("praise_"+object_id + "_"+ userid);
-                            //$("#praise_" + object_id + "_" + uid).remove();
-                            obj.attr("status",0).find("img").css("opacity",1);
+                            _this.attr("status",0).find("img").css("opacity",1);
                         },
                     });
                 }

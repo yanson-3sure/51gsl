@@ -6,20 +6,26 @@ Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
     Route::get('wechat/callback', 'AuthController@handleProviderCallback');
     Route::controller('','AuthController');
 });
+
+//ajax相关
+Route::group(['prefix' => 'ajax', 'namespace' => 'Ajax'], function () {
+    Route::Resource('qa','QAController');
+    Route::Resource('status','StatusController');
+    Route::Resource('strategy','StrategyController');
+    Route::Resource('track','TrackController');
+    Route::Resource('train','TrainController');
+    Route::Resource('user','UserController');
+});
+
 //微信自动登录中间件
 Route::group([ 'middleware' => 'oauth.wechat'], function () {
     Route::get('/', function () {
         return Redirect::to('home');
     });
-    Route::get('status/list', 'StatusController@getList');
-    Route::get('status/rev-list', 'StatusController@getRevList');
     Route::Resource('status', 'StatusController');
     Route::Resource('strategy', 'StrategyController');
 
-    Route::Resource('qa', 'QAController');
-
     Route::Resource('train', 'TrainController');
-    Route::Resource('track', 'TrackController');
 
 
     Route::group(['prefix' => 'home', 'namespace' => 'Home'], function () {
@@ -29,6 +35,7 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
     Route::get('my', 'My\IndexController@index');
     Route::Resource('user', 'UserController');
     Route::group(['prefix' => 'my', 'namespace' => 'My', 'middleware' => 'oauth'], function () {
+
         Route::get('info', 'InfoController@index');
         Route::controller('info', 'InfoController');
         Route::Resource('apply', 'ApplyController');
@@ -45,6 +52,13 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
 
 
         Route::get('video/list', 'VideoController@getList');
+
+        //ajax相关
+        Route::group(['prefix' => 'ajax', 'namespace' => 'Ajax'], function () {
+            Route::Resource('qa','QAController');
+            Route::Resource('train','TrainController');
+            Route::Resource('strategy','StrategyController');
+        });
 
     });
     Route::group(['prefix' => 'my', 'namespace' => 'My', 'middleware' => 'oauth:1'], function () {

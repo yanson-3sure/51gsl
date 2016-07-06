@@ -56,9 +56,7 @@ abstract class AbstractService
     public function hmgets(array $ids,array $fields,$unique=true)
     {
         if($ids) {
-            if($unique) {
-                $ids = array_unique($ids);
-            }
+            $ids = array_unique($ids);
             $keys = $this->getkeys($ids);
             $result = Redis::pipeline(function ($pipe) use($keys,$fields){
                 foreach($keys as $key){
@@ -99,9 +97,7 @@ abstract class AbstractService
     public function hgetalls(array $ids,$unique=true)
     {
         if($ids) {
-            if($unique) {
-                $ids = array_unique($ids);
-            }
+            $ids = array_unique($ids);
             $keys = $this->getkeys($ids);
             $result = Redis::pipeline(function ($pipe) use($keys){
                 foreach($keys as $key){

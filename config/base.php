@@ -19,8 +19,16 @@ return [
         'comment'=>['status'],
     ],
 
+    'filter_analyst_user_ids' => ['4'],
+
+    'debug' => [
+        'name'=>env('DEBUG_NAME','debug'),
+        'value'=>env('DEBUG_VALUE',1)
+    ],
+
+
     'posts_per_page' => 10,
-    'page_size' => 5,
+    'page_size' => env('PAGE_SIZE',10),
     'rss_size' => 25,
     'contact_email' => env('MAIL_FROM',''),
     'uploads' => [
