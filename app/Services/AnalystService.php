@@ -12,6 +12,12 @@ class AnalystService extends AbstractService
     protected $model = Analyst::class;
     protected $noCacheAttributes = ['created_at','updated_at'];
 
+    public function has($uid)
+    {
+        $model = $this->get($uid);
+        return $model;
+    }
+
     public function save($uid,$role_name,$feature,$application_id,$status=1)
     {
         $model = new Analyst();

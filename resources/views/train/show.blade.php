@@ -11,7 +11,7 @@
     </div>
     <!-- 视频长宽比预设为16:9 -->
     <a href="/train">
-        <img src="../img/zhuye.svg" alt="" width="22px" height="22px">
+        <img src="/img/zhuye.svg" alt="" width="22px" height="22px">
     </a>
 </div>
 

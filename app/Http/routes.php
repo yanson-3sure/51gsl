@@ -49,6 +49,7 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
         Route::Resource('question', 'QuestionController');
 
         Route::Resource('qa', 'QAController');
+        Route::Resource('order', 'OrderController');
 
 
         Route::get('video/list', 'VideoController@getList');

@@ -13,9 +13,10 @@ class CreateUserWechatsTable extends Migration
     public function up()
     {
         Schema::create('user_wechats', function (Blueprint $table) {
-            $table->integer('uid');
-            $table->string('unionid',30)->unique();
-            $table->primary('uid');
+            $table->increments('id');
+            $table->integer('uid')->index();
+            $table->string('unionid',30)->index();
+            $table->string('openid',30)->index();
             $table->timestamp('created_at');
         });
     }

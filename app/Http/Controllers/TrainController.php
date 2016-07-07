@@ -10,6 +10,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Gensee\Facades\Gensee;
+use App\Services\OrderService;
 
 class TrainController extends Controller
 {
@@ -40,10 +41,20 @@ class TrainController extends Controller
     public function show($id)
     {
         $model = Train::find($id);
-        $model->views = $model->views+1;
-        $model->save();
-        $this->data['model'] = $model;
-        return view('train.show',$this->data);
+        if($model) {
+            $model->views = $model->views + 1;
+            $model->save();
+            $useService = new UserService();
+            $user = $useService->get($model->uid);
+            $model['user'] = $user;
+            $this->data['model'] = $model;
+            $orderService = new OrderService();
+            if ($orderService->has($this->uid, $model->uid)) {
+                return view('train.show', $this->data);
+            }
+            return view('train.show_vip', $this->data);
+        }
+        abort(404);
     }
 
 }

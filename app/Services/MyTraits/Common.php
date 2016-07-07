@@ -46,4 +46,9 @@ trait Common{
         }
         return $object_uid;
     }
+
+    public function result($content='成功',$status=200)
+    {
+        return collect(['status' => $status, 'content' => $content]);
+    }
 }

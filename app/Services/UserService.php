@@ -27,6 +27,21 @@ class UserService extends AbstractService
     {
         return $this->hmgets($ids,['id','avatar','name','role']);
     }
+    public function isAnalystByRole($role)
+    {
+        return isAnalyst($role);
+    }
+    public function isAnalyst($uid)
+    {
+        $analystService = new AnalystService();
+        if($analystService->has($uid)){
+            $user = $this->get($uid);
+            if($user) {
+                return $this->isAnalystByRole($user['role']);
+            }
+        }
+        return false;
+    }
     public function save($mobile,$password,$name,$avatar=null)
     {
         $user = new User();

@@ -254,6 +254,13 @@ function getTime()
     $strWenhou = array('夜深了，','凌晨了，','早上好！','上午好！','中午好！','下午好！','晚上好！','夜深了，');
     return $strWenhou[(int)$strTimeToString[(int)date('G',time())]];
 }
+function add_date($givendate,$day=0,$mth=0,$yr=0) {
+    $cd = strtotime($givendate);
+    $newdate = date('Y-m-d h:i:s', mktime(date('h',$cd),
+        date('i',$cd), date('s',$cd), date('m',$cd)+$mth,
+        date('d',$cd)+$day, date('Y',$cd)+$yr));
+    return $newdate;
+}
 function hideMobile($mobile)
 {
     if(strlen($mobile) != 11) return $mobile;

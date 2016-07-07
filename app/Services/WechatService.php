@@ -3,6 +3,7 @@ namespace App\Services;
 
 use EasyWeChat\Foundation\Application;
 use Jenssegers\Agent\Agent;
+use EasyWeChat\Payment\Order;
 
 class WechatService
 {
@@ -36,5 +37,28 @@ class WechatService
     public function getApp()
     {
         return new Application($this->_options);
+    }
+
+    public function createOrder($body,$detail,$out_trade_no,$total_fee,$trade_type='JSAPI',$notify_url=null)
+    {
+        $attributes = [
+            'trade_type'       => $trade_type, // JSAPI，NATIVE，APP...
+            'body'             => $body,
+            'detail'           => $detail,
+            'out_trade_no'     => $out_trade_no,
+            'total_fee'        => $total_fee,
+        ];
+        if($notify_url){
+            $attributes['notify_url'] = $notify_url;
+        }
+        $order = new Order($attributes);
+        $app = $this->getApp();
+        $payment = $app->payment;
+        $result = $payment->prepare($order);
+        $prepayId = '';
+        if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
+            $prepayId = $result->prepay_id;
+        }
+        return $prepayId;
     }
 }

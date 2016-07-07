@@ -36,7 +36,7 @@
 <div class="tab-change strategy-content">
     <h3 class="subtitle">策略跟踪</h3>
     <ul class="genzong"></ul>
-    <div class="risk">风险提示：投资建议仅作参考！</div>
+    <div class="risk">风险提示：{{$model->risk}}</div>
     <!-- 加载更多按钮 -->
     <div class="load-more-btn" data-url="/ajax/track?id={{$model->id}}" data-append-object=".genzong">
         <a href="javascript:;" title="">加载更多<i class="icon"></i></a>

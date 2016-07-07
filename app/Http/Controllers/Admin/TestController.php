@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Services\AnalystService;
+use App\Services\AvatarService;
 use App\Services\StatusService;
 use App\Services\UserService;
 use App\Services\WechatService;
@@ -112,5 +113,13 @@ class TestController extends Controller
         $path='/Applications/MAMP/htdocs/gusilu/master2/51gsl/public/uploads/status/2016/06/17/1466130271EHutPbGn93-66.png';
         $path = '/Users/viky/Pictures/281883ae48353724c0984fb12983d01c.jpg';
         dd(Storage::putFile($filename,$path));
+    }
+
+    public function getAvatar()
+    {
+        $headimgurl = 'http://wx.qlogo.cn/mmopen/zS5ibofBmCTyW2RUo81WCFLCnbMlAz2V5wGkicSFuVmsrmjruIetWGxk97micicrpDGHQ40NKoHJy1Q1EFpBpdORP2hj6tiaywWgG/0';
+        $avatarService = new AvatarService();
+        $result = $avatarService->saveWechat($headimgurl);
+        return '<img src="'.getAvatar($result).'" >';
     }
 }

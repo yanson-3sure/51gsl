@@ -115,6 +115,7 @@ class ExportController extends Controller
             $user_wechat = new UserWechat();
             $user_wechat->uid = $v->userid;
             $user_wechat->unionid = $v->unionid;
+            $user_wechat->openid = $v->openid;
             $user_wechat->created_at = $v->create_at;
             $user_wechat->save();
         }

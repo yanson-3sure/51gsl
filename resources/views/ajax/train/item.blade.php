@@ -20,7 +20,5 @@
         <i></i>
         <span>观看人数：{{$model->views}}</span>
         <button><a href="/train/{{$model->id}}">立即观看</a></button>
-        <button><a href="weipay.html">开通VIP</a></button>
-        <button class="freeuse">免费试用</button>
     </div>
 </div>

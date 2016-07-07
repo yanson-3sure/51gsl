@@ -34,16 +34,17 @@ class StrategyController extends Controller
     {
         $model = Strategy::find($id);
         if ($model) {
-            if (\Illuminate\Support\Facades\Request::ajax()) {
-                return $model;
-            }
             $model->views = $model->views + 1;
             $model->save();
             $useService = new UserService();
             $user = $useService->get($model->uid);
             $model['user'] = $user;
             $this->data['model'] = $model;
-            return view('strategy.show', $this->data);
+            $orderService = new OrderService();
+            if($orderService->has($this->uid,$model->uid)){
+                return view('strategy.show', $this->data);
+            }
+            return view('strategy.show_vip', $this->data);
         }
     }
 

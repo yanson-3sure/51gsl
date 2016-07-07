@@ -35,6 +35,17 @@ return [
         'storage' => 'local',
         'webpath' => '/uploads/',
     ],
+    'product_price'=>[
+        'analyst'=>[
+            '2'=>'1000',
+            '3'=>'1000',
+            '5'=>'0',
+            '6'=>'0',
+            '7'=>'1000',
+            '8'=>'800',
+            '61'=>'1000'
+        ]
+    ],
     //同步第一现场配置
     'dyxc'=>[
         'debug' => env('DYXC_DEBUG',true),
