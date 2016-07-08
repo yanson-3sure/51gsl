@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Services\ApplicationService;
+use App\Services\UserService;
 use App\Services\VideoService;
 use Illuminate\Http\Request;
 
@@ -45,5 +46,12 @@ class IndexController extends Controller
         $service = new VideoService();
         $service->updateAllVodList();
         //$service->updateVodList($startTime,$endTime,$page);
+    }
+
+    public function getPingbi()
+    {
+        $uid = Input::get('uid');
+        $service = new UserService();
+        $service->chgRoleById($uid,-1);
     }
 }

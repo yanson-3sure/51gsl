@@ -57,6 +57,9 @@ class CommentController extends Controller
         ];
         $this->validate($request,$rules,$messages);
         $uid = $this->uid;
+        if($this->user['role']==-1){
+            return response('回复失败',501);
+        }
         $object_id = Input::get('comment_object_id');
         $object_type = Input::get('comment_object_type');
         $comment = Input::get('comment_body');

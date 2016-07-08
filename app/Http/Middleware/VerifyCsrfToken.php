@@ -12,6 +12,7 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        '/wechat/oauthcallback/callback'
+        '/wechat/oauthcallback/callback',
+        '/wechat/pay'
     ];
 }

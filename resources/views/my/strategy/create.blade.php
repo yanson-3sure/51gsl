@@ -27,21 +27,6 @@
             <script id="container" name="content" type="text/plain"></script>
         {{--<textarea placeholder="请输入" role="content" name="content"></textarea>--}}
 
-        <!-- 上传图片 -->
-        <div class="weui_uploader_bd mb10">
-            <ul class="weui_uploader_files">
-                <li class="weui_uploader_file" style="background-image:url(../img/frog.png)"></li>
-                <li class="weui_uploader_file weui_uploader_status" style="background-image:url(../img/frog.png)">
-                    <div class="weui_uploader_status_content">
-                        <i class="weui_icon_warn"></i>
-                    </div>
-                </li>
-            </ul>
-            <div class="weui_uploader_input_wrp">
-                <input type="file" class="weui_uploader_input" accept="image/jpg,image/jpeg,image/png,image/gif">
-            </div>
-        </div>
-
         <input type="text" placeholder="风险提示：不可为空" name="risk">
         </form>
     </div>

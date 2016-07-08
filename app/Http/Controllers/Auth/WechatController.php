@@ -44,6 +44,7 @@ class WechatController extends Controller
                     if($headimgurl){
                         $avatarService = new AvatarService();
                         $savedir = $avatarService->saveWechat($headimgurl);
+                        if(!$savedir) $savedir = '';
                     }
 
                     $service = new UserService();
@@ -51,12 +52,22 @@ class WechatController extends Controller
 
                     $user_wechat = new UserWechat();
                     $user_wechat->unionid = $UNIONID;
+                    $user_wechat->openid = $OPENID;
                     $user_wechat->uid =  $user['id'];
-                    $user_wechat->create_at = Carbon::now();
+                    $user_wechat->created_at = Carbon::now();
                     $user_wechat->save();
 
                     Auth::loginUsingId($user['id'],config('base.auto_remember_me'));
                 }  else {
+                    $user_wechat = UserWechat::where('unionid',$UNIONID)->where('openid',$OPENID)->first();
+                    if(!$user_wechat){
+                        $user_wechat = new UserWechat();
+                        $user_wechat->unionid = $UNIONID;
+                        $user_wechat->openid = $OPENID;
+                        $user_wechat->uid =  $users_wechat->uid;
+                        $user_wechat->created_at = Carbon::now();
+                        $user_wechat->save();
+                    }
                     $user = User::find($users_wechat->uid);
                     if(!$user){
                         Log::error('unionid='.$UNIONID . '获取用户失败');

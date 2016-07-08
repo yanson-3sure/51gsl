@@ -26,11 +26,9 @@
         </tr>
     </table>
     <p class="f16">您的服务期限为：<span class="begin">{{$now->format('Y-m-d')}}</span>至<span class="end">{{$end->format('Y-m-d')}}</span></p>
-    <button class="btn-lg weipay" data-type="weipay" data-product-id="{{$analyst['id']}}" data-month="1">
-        <a href="success.html">
+    <button class="btn-lg weipay" id="weipay" data-type="weipay" data-product-id="{{$analyst['id']}}" data-month="1">
             <img src="/img/weixin.svg" class="vm" alt="" width="28px">
             微信支付
-        </a>
     </button>
 
 @endsection
@@ -38,6 +36,8 @@
 @endsection
 @section('footer')
     <script src="/js/xdate.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="utf-8"></script>
+
     <script>
 
         // 获取价格
@@ -57,7 +57,7 @@
             }
             num = num + 1;
             amount.text(num);
-            $('.weipay').attr('data-month',num)
+            $('#weipay').attr('data-month',num)
             $(".total").text(num * price);
             myDatetime(1);
         });
@@ -69,10 +69,41 @@
             }else{
                 num = num - 1;
                 amount.text(num);
-                $('.weipay').attr('data-month',num)
+                $('#weipay').attr('data-month',num)
                 $(".total").text(num * price);
                 myDatetime(-1);
             }
+        });
+    </script>
+
+    <script type="text/javascript" charset="utf-8">
+        wx.config(<?php echo $js->config(array('chooseWXPay'), false) ?>);
+        $('#weipay').click(function(){
+            var _this = $(this);
+            var type = $(this).attr('data-type');
+            var product_id = $(this).attr('data-product-id');
+            var product_type = $(this).attr('data-product-type');
+            var month = $(this).attr('data-month');
+            if(product_id<1){
+                layer.msg('产品不能为空');
+                return false;
+            }
+            $.post('/my/order',
+                    {type:type,product_id:product_id,product_type:product_type,month:month},
+                    function (data) {
+
+                wx.chooseWXPay({
+                    timestamp: data.timestamp,
+                    nonceStr: data.nonceStr,
+                    package: data.package,
+                    signType: data.signType,
+                    paySign: data.paySign, // 支付签名
+                    success: function (res) {
+
+                        layer.msg('支付成功');
+                    }
+                });
+            });
         });
     </script>
 @endsection

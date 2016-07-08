@@ -37,7 +37,62 @@ class ExportController extends Controller
      */
     public function getDo()
     {
-        if(false) {
+        $step = Input::get('step',1);
+        switch($step){
+            case 1:
+                //处理用户
+                $this->users();
+                break;
+            case 2:
+                //处理微信UNIONID对应关系
+                $this->user_wechat_ids();
+                break;
+            case 3:
+                //处理申请表
+                $this->applies();
+
+                //处理分析师表
+                $this->analysts();
+                break;
+            case 4:
+                //处理直播
+                $this->statuses();
+                break;
+            case 5:
+                //赞
+                $this->praises();
+                break;
+            case 6:
+                //评论
+                $this->comments();
+
+                break;
+            case 7:
+                //关注
+                $this->follows();
+                break;
+            case 8:
+                //消息
+                $this->messages();
+                break;
+            case 9:
+                //处理头像,迁移到OSS
+                $this->avatars1();
+                break;
+            case 10:
+                //处理status image
+                $this->status_images1();
+                break;
+            case 11:
+                //处理头像,迁移到OSS
+                $this->avatars2();
+
+                //处理status image
+                $this->status_images2();
+                break;
+
+        }
+        if (false) {
             //处理用户
             $this->users();
 
@@ -70,12 +125,18 @@ class ExportController extends Controller
 
 
         }
-        if(false){
+        if (false) {
             //处理头像,迁移到OSS
-            $this->avatars();
+            $this->avatars1();
 
             //处理status image
-            $this->status_images();
+            $this->status_images1();
+
+            //处理头像,迁移到OSS
+            $this->avatars2();
+
+            //处理status image
+            $this->status_images2();
         }
     }
 
@@ -86,13 +147,13 @@ class ExportController extends Controller
         //dd($user_profiles);
         //处理users
         $all_user = [];
-        foreach($users as $k => $v){
+        foreach ($users as $k => $v) {
             $user = new User();
             $user->id = $v->userid;
             $user->mobile = $v->phone;
             $user->password = $v->password;
-            if($user_profiles->contains('userid',$v->userid)) {
-                $user_profile = head($user_profiles->where('userid',$v->userid)->all());
+            if ($user_profiles->contains('userid', $v->userid)) {
+                $user_profile = head($user_profiles->where('userid', $v->userid)->all());
                 $user->name = $user_profile->nickname;
                 $user->role = $user_profile->role;
                 $user->avatar = $user_profile->avatar;
@@ -111,7 +172,7 @@ class ExportController extends Controller
     {
         $user_wechat_ids = collect(DB::connection('mysql2')->select('select * from user_wechat_ids'));
         //dd($user_wechat_ids);
-        foreach($user_wechat_ids as $k => $v){
+        foreach ($user_wechat_ids as $k => $v) {
             $user_wechat = new UserWechat();
             $user_wechat->uid = $v->userid;
             $user_wechat->unionid = $v->unionid;
@@ -124,8 +185,7 @@ class ExportController extends Controller
     public function applies()
     {
         $applies = collect(DB::connection('mysql2')->select('select * from applies'));
-        foreach($applies as $k => $v)
-        {
+        foreach ($applies as $k => $v) {
             $apply = new Application();
             $apply->id = $v->apply_id;
 
@@ -151,7 +211,7 @@ class ExportController extends Controller
     {
         $analysts = collect(DB::connection('mysql2')->select('select * from analyst_profiles'));
         $analystService = new AnalystService();
-        foreach($analysts as $k => $v){
+        foreach ($analysts as $k => $v) {
             $analyst = new Analyst();
             $analyst->uid = $v->userid;
             $analyst->status = $v->status;
@@ -174,20 +234,19 @@ class ExportController extends Controller
         $forwards = collect(DB::connection('mysql2')->select('select * from forwards'));
         ///dd($forwards);
         $statusService = new StatusService();
-        foreach($statuses as $k => $v)
-        {
+        foreach ($statuses as $k => $v) {
             $status = new Status();
             $status->id = $v->statusid;
             $status->uid = $v->userid;
             $status->message = $v->body;
             //$status->image_id = $v->imageid;
 
-            if($v->forwardid){
-                $forward = head($forwards->where('forwardid',$v->forwardid)->all());
-                if($forward->reply_commentid) {
+            if ($v->forwardid) {
+                $forward = head($forwards->where('forwardid', $v->forwardid)->all());
+                if ($forward->reply_commentid) {
                     $status->forward_id = $forward->reply_commentid;
                     $status->forward_type = 'comment';
-                }else{
+                } else {
                     $status->forward_id = $forward->statusid;
                     $status->forward_type = 'status';
                 }
@@ -197,8 +256,8 @@ class ExportController extends Controller
             $status->save();
             $uid = $status->uid;
             $cacheModel = $statusService->loadCache($status->id);
-            $post = [$cacheModel['id']=>strtotime($cacheModel['created_at'])];
-            Redis::pipeline(function ($pipe) use($uid ,$post) {
+            $post = [$cacheModel['id'] => strtotime($cacheModel['created_at'])];
+            Redis::pipeline(function ($pipe) use ($uid, $post) {
                 //放到自己主页的时间线上
                 $pipe->ZADD('profile:' . $uid, $post);
                 //放到总时间线上
@@ -215,7 +274,7 @@ class ExportController extends Controller
     {
         $images = collect(DB::connection('mysql2')->select('select * from images'));
         $all_image = [];
-        foreach($images as $k => $v){
+        foreach ($images as $k => $v) {
             $image = new Image();
             $image->id = $v->imageid;
             $image->path = $v->path;
@@ -236,7 +295,7 @@ class ExportController extends Controller
     public function praises()
     {
         $models = collect(DB::connection('mysql2')->select('select * from praises'));
-        foreach($models as $k => $v){
+        foreach ($models as $k => $v) {
             $model = new Praise();
             $model->id = $v->praiseid;
             $model->uid = $v->userid;
@@ -249,10 +308,10 @@ class ExportController extends Controller
             $uid = $model->uid;
             $object_id = $model->object_id;
             $object_type = $model->object_type;
-            $object_uid = $service->getObjectUid($object_type,$object_id);
+            $object_uid = $service->getObjectUid($object_type, $object_id);
 
-            $key = $service->getKey($object_id,$object_type);
-            Redis::pipeline(function ($pipe)use($key,$now,$uid,$object_uid,$object_type,$object_id) {
+            $key = $service->getKey($object_id, $object_type);
+            Redis::pipeline(function ($pipe) use ($key, $now, $uid, $object_uid, $object_type, $object_id) {
                 //添加到对象赞列表
                 $pipe->ZADD($key, $now, $uid);
                 //对象的赞数量+1
@@ -268,7 +327,7 @@ class ExportController extends Controller
     public function comments()
     {
         $models = collect(DB::connection('mysql2')->select('select * from comments'));
-        foreach($models as $k => $v){
+        foreach ($models as $k => $v) {
             $model = new Comment();
             $model->id = $v->commentid;
             $model->uid = $v->userid;
@@ -285,12 +344,12 @@ class ExportController extends Controller
             $now = strtotime($model->created_at);
             $object_id = $model->object_id;
             $object_type = $model->object_type;
-            $object_uid = $service->getObjectUid($object_type,$object_id);
-            $key = $service->getKey($object_id,$object_type);
+            $object_uid = $service->getObjectUid($object_type, $object_id);
+            $key = $service->getKey($object_id, $object_type);
 
             $cacheModel = $service->getCacheModel($model);
-            $service->setCacheModel($cacheModel,$comment_id);
-            Redis::pipeline(function ($pipe)use($key,$now,$comment_id,$object_uid,$object_type,$object_id){
+            $service->setCacheModel($cacheModel, $comment_id);
+            Redis::pipeline(function ($pipe) use ($key, $now, $comment_id, $object_uid, $object_type, $object_id) {
                 //添加到对象评论列表
                 $pipe->ZADD($key, $now, $comment_id);
                 //对象的评论数量+1
@@ -298,7 +357,7 @@ class ExportController extends Controller
                 //对象所属人,总评论数+1
                 $pipe->HINCRBY('user:' . $object_uid, 'comments', 1);
             });
-            $uid = $model->uid ;
+            $uid = $model->uid;
             $userService = new UserService();
             $user = $userService->get($uid);
             $role = $user['role'];
@@ -312,28 +371,28 @@ class ExportController extends Controller
     {
         $models = collect(DB::connection('mysql2')->select('select * from followings'));
         $service = new FollowService();
-        foreach($models as $k => $v) {
+        foreach ($models as $k => $v) {
 //            $model = new Follow();
 //            $model->id = $v->fid;
 //            $model->uid = $v->userid;
 //            $model->f_uid = $v->fuserid;
 //            $model->created_at = $v->created_at;
 //            $model->save();
-            $service->follow_user($v->userid,$v->fuserid,$v->created_at);
+            $service->follow_user($v->userid, $v->fuserid, $v->created_at);
         }
     }
 
     public function messages()
     {
         $models = collect(DB::connection('mysql2')->select('select * from messages'));
-        foreach($models as $k => $v) {
+        foreach ($models as $k => $v) {
             $model = new Message();
             $model->id = $v->message_id;
             $model->message = $v->title;
             $model->event_id = $v->event_id;
-            if($v->event_type=='praise') {
+            if ($v->event_type == 'praise') {
                 $model->event_type = 'praise:status';
-            }else{
+            } else {
                 $model->event_type = $v->event_type;
             }
             $model->from_uid = $v->from_userid;
@@ -344,64 +403,118 @@ class ExportController extends Controller
         }
     }
 
-    protected function avatars()
+    protected function avatars1()
     {
         set_time_limit(0);
-        $users = DB::select('select id,avatar from users where avatar<>\'\' and avatar is not null and avatar not like \'%.png\'');
-        if(Input::get('debug')==1) {
+        $users = DB::select('select id,avatar from users where avatar<>\'\' and avatar is not null and avatar not like \'%.png\' and id<=4672');
+        if (Input::get('debug') == 1) {
             var_dump(count($users));
             dd($users);
         }
         $service = new UserService();
         foreach ($users as $k => $v) {
             $avatar = $v->avatar;
-            if($avatar) {
-                $avatar_path = public_path('uploads/avatar/' . $avatar.'/640.png');
-                $avatar_path2 = public_path('uploads2/avatar/' . $avatar.'.png');
-                $path = $avatar.'.png';//getMd5PathRandom('avatar');
+            if ($avatar) {
+                $path = $avatar . '.png';
+                $service->chgAvatar($v->id, $path);
+            }
+        }
+
+    }
+
+    protected function status_images1()
+    {
+        $statuses = collect(DB::connection('mysql2')->select('select * from status where statusid <= 2187 and  imageid>0'));
+        $images = collect(DB::connection('mysql2')->select('select * from images'));
+        //dd($images->where('imageid',1));
+        ///dd($forwards);
+        $statusService = new StatusService();
+        foreach ($statuses as $k => $v) {
+            if ($v->imageid == 0) continue;
+            $image = array_values(head($images->where('imageid', $v->imageid)))[0];
+            $image_path = public_path($image->path . '.' . $image->ext);
+            $md5 = md5($image_path);
+            $md5_path = substr($md5, 0, 2) . '/' . substr($md5, 2, 2) . '/' . substr($md5, 4);
+            $path = $md5_path . '.' . $image->ext;
+            $image_path2 = public_path('uploads2/status/' . $path);
+            //将相应本地图片,按oss图片路径及格式,保存到临时目录.通过客户端统一上传
+            $destPath = substr($image_path2, 0, strlen($image_path2) - (32 - 4 + 1 + strlen($image->ext)));
+//            if (!file_exists($destPath))
+//                mkdir($destPath, 0755, true);
+//            $result = copy($image_path, $image_path2);
+
+            $status = $statusService->find($v->statusid);
+            if ($status) {
+                $status->image = $path;
+                if ($status->save()) {
+                    $statusService->setCache($v->statusid, 'image', $path);
+                }
+            }
+
+        }
+    }
+
+    protected function avatars2()
+    {
+        set_time_limit(0);
+        $users = DB::select('select id,avatar from users where avatar<>\'\' and avatar is not null and avatar not like \'%.png\' and id >4672');
+        if (Input::get('debug') == 1) {
+            var_dump(count($users));
+            dd($users);
+        }
+        $service = new UserService();
+        foreach ($users as $k => $v) {
+            $avatar = $v->avatar;
+            if ($avatar) {
+                $avatar_path = public_path('uploads/avatar/' . $avatar . '/640.png');
+                $avatar_path = str_replace('gusilu2','gusilu',$avatar_path);
+                $avatar_path2 = public_path('uploads2/avatar/' . $avatar . '.png');
+                $path = $avatar . '.png';//getMd5PathRandom('avatar');
                 //var_dump($path);
                 //sleep(1);
                 //$result = Storage::putFile('avatar/' . $path, $avatar_path);
                 //将相应本地图片,按oss图片路径及格式,保存到临时目录.通过客户端统一上传
-                $destPath = substr($avatar_path2,0,strlen($avatar_path2)-32);
-                if(!file_exists($destPath))
-                    mkdir($destPath,0755,true);
+                $destPath = substr($avatar_path2, 0, strlen($avatar_path2) - 32);
+                if (!file_exists($destPath))
+                    mkdir($destPath, 0755, true);
                 //var_dump($avatar_path2);
                 //dd($destPath);
-                $result = copy($avatar_path,$avatar_path2);
-                if($result){
-                    $service->chgAvatar($v->id,$path);
+                $result = copy($avatar_path, $avatar_path2);
+                if ($result) {
+                    $service->chgAvatar($v->id, $path);
                 }
             }
         }
     }
 
-    protected function status_images()
+    protected function status_images2()
     {
-        $statuses = collect(DB::connection('mysql2')->select('select * from status where imageid>0'));
+        $statuses = collect(DB::connection('mysql2')->select('select * from status where statusid > 2187 and imageid>0'));
         $images = collect(DB::connection('mysql2')->select('select * from images'));
         //dd($images->where('imageid',1));
         ///dd($forwards);
         $statusService = new StatusService();
-        foreach($statuses as $k => $v) {
-            if($v->imageid==0) continue;
-            $image = array_values(head($images->where('imageid',$v->imageid)))[0];
-            $image_path = public_path($image->path.'.'.$image->ext);
+        foreach ($statuses as $k => $v) {
+            if ($v->imageid == 0) continue;
+            $image = array_values(head($images->where('imageid', $v->imageid)))[0];
+            $image_path = public_path($image->path . '.' . $image->ext);
             $md5 = md5($image_path);
-            $md5_path = substr($md5,0,2) . '/' . substr($md5,2,2) . '/' . substr($md5,4);
-            $path =$md5_path . '.' .$image->ext;
+            $md5_path = substr($md5, 0, 2) . '/' . substr($md5, 2, 2) . '/' . substr($md5, 4);
+            $path = $md5_path . '.' . $image->ext;
             $image_path2 = public_path('uploads2/status/' . $path);
             //将相应本地图片,按oss图片路径及格式,保存到临时目录.通过客户端统一上传
-            $destPath = substr($image_path2,0,strlen($image_path2)-(32-4+1+strlen($image->ext)));
-            if(!file_exists($destPath))
-                mkdir($destPath,0755,true);
-            $result = copy($image_path,$image_path2);
-            if($result){
+            $destPath = substr($image_path2, 0, strlen($image_path2) - (32 - 4 + 1 + strlen($image->ext)));
+            if (!file_exists($destPath))
+                mkdir($destPath, 0755, true);
+
+            $image_path = str_replace('gusilu2','gusilu',$image_path);
+            $result = copy($image_path, $image_path2);
+            if ($result) {
                 $status = $statusService->find($v->statusid);
-                if($status) {
+                if ($status) {
                     $status->image = $path;
-                    if($status->save()) {
-                        $statusService->setCache($v->statusid,'image',$path);
+                    if ($status->save()) {
+                        $statusService->setCache($v->statusid, 'image', $path);
                     }
                 }
             }

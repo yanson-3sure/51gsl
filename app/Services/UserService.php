@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Models\UserWechat;
 use App\User;
 use Illuminate\Support\Facades\Redis;
 
@@ -26,6 +27,14 @@ class UserService extends AbstractService
     public function getBases(array $ids)
     {
         return $this->hmgets($ids,['id','avatar','name','role']);
+    }
+
+    public function getOpenId($uid){
+        $model = UserWechat::where('uid',$uid)->first();
+        if($model){
+            return $model->openid;
+        }
+        return '';
     }
     public function isAnalystByRole($role)
     {
@@ -144,6 +153,21 @@ class UserService extends AbstractService
             $model->avatar = $avatar;
             if($model->save()) {
                 $this->setCache($uid,'avatar',$avatar);
+                return $model;
+            }
+        }
+        return null;
+    }
+    public function chgRoleById($uid,$role)
+    {
+        $model = $this->find($uid);
+        if($model) {
+            if($role==$model->role){
+                return false;
+            }
+            $model->role = $role;
+            if($model->save()) {
+                $this->setCache($uid,'role',$role);
                 return $model;
             }
         }

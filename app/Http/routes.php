@@ -2,8 +2,9 @@
 Route::controller('admin/test', 'Admin\TestController');
 //登录相关
 Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
-    Route::get('wechat', 'AuthController@redirectToProvider');
-    Route::get('wechat/callback', 'AuthController@handleProviderCallback');
+    //Route::get('wechat', 'AuthController@redirectToProvider');
+    //Route::get('wechat/callback', 'AuthController@handleProviderCallback');
+    Route::get('wechat/callback', 'WechatController@callback');
     Route::controller('','AuthController');
 });
 
@@ -50,6 +51,7 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
 
         Route::Resource('qa', 'QAController');
         Route::Resource('order', 'OrderController');
+        Route::Resource('vip', 'VipController');
 
 
         Route::get('video/list', 'VideoController@getList');
@@ -67,7 +69,7 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
         Route::Resource('status', 'StatusController');
         Route::Resource('track', 'TrackController');
         Route::Resource('vip/provided', 'Vip\ProvidedController');
-        Route::Resource('vip', 'VipController');
+
 
         Route::Resource('answer', 'AnswerController');
     });
@@ -85,5 +87,6 @@ Route::group(['prefix' => 'wechat', 'namespace' => 'Wechat'], function () {
     Route::get('oauthcallback', ['uses' => 'OauthCallbackController@index']);
     Route::any('oauthcallback/callback', ['uses' => 'OauthCallbackController@callback']);
     Route::controller('oauthcallback', 'OauthCallbackController');
+    Route::Resource('pay', 'PayCallbackController');
 });
 

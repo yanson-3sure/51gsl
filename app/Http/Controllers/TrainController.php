@@ -49,10 +49,10 @@ class TrainController extends Controller
             $model['user'] = $user;
             $this->data['model'] = $model;
             $orderService = new OrderService();
-            if ($orderService->has($this->uid, $model->uid)) {
-                return view('train.show', $this->data);
+            if($model->vip && !$orderService->has($this->uid, $model->uid)) {
+                return view('train.show_vip', $this->data);
             }
-            return view('train.show_vip', $this->data);
+            return view('train.show', $this->data);
         }
         abort(404);
     }

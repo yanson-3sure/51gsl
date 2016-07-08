@@ -27,7 +27,7 @@ class CreateVideosTable extends Migration
 //    +"subject": "18-19点培训课"
 //    +"webcastId": "63aacb3be0f4467198d7908970409fb5"
         Schema::create('videos', function (Blueprint $table) {
-            $table->string('id')->comment('展示互动历史点播列表');
+            $table->string('id',191)->comment('展示互动历史点播列表');
             $table->string('attendeeJoinUrl');
             $table->smallInteger('convertResult');
             $table->timestamp('createdTime')->index();

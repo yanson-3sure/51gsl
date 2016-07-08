@@ -41,10 +41,12 @@ class StrategyController extends Controller
             $model['user'] = $user;
             $this->data['model'] = $model;
             $orderService = new OrderService();
-            if($orderService->has($this->uid,$model->uid)){
-                return view('strategy.show', $this->data);
+
+            if($model->vip && !$orderService->has($this->uid,$model->uid)){
+                return view('strategy.show_vip', $this->data);
             }
-            return view('strategy.show_vip', $this->data);
+            return view('strategy.show', $this->data);
+
         }
     }
 

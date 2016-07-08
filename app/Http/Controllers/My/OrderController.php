@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\My;
 
+use App\Models\Order;
 use App\Services\OrderService;
 use App\Services\UserService;
+use App\Services\WechatService;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -45,6 +47,9 @@ class OrderController extends Controller
             $this->data['price'] = $orderService->getProductPrice($product_id,$product_type);
             $this->data['now'] = Carbon::now();
             $this->data['end'] = Carbon::now()->addMonth(1);
+            $wechatService = new WechatService();
+            $app = $wechatService->getApp();
+            $this->data['js'] = $app->js;
             return view('my.order.create', $this->data);
         }
     }
@@ -68,7 +73,24 @@ class OrderController extends Controller
             return response($result['content'],$result['status']);
         }
         if($type=='weipay'){
-
+            $month = Input::get('month',1);
+            $center_order_id = '';
+            $result = $this->service->orderWeiPay($this->uid,$product_id,$product_type,$month,$month,$center_order_id);
+            if($result['status']==200){
+                $wechatService = new WechatService();
+                $order = $result['content'];
+                $title = $this->service->getProductTitle($product_id,$product_type);
+                $prepayId = $wechatService->createOrder($title,$title,$order->id,$order->price,$order->openid);
+                if($prepayId) {
+                    $app = $wechatService->getApp();
+                    $payment = $app->payment;
+                    $config = $payment->configForJSSDKPayment($prepayId);
+                    $this->data['config'] = $config;
+                    return $config;
+                }
+                return response('生成微信订单失败',501);
+            }
+            return response($result['content'],$result['status']);
         }
     }
 
@@ -80,7 +102,14 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        $model = Order::find($id);
+        if($model && ($model->uid == $this->uid || isAdmin($this->uid))) {
+            $this->data['model'] = $model;
+            $userService = new UserService();
+            $this->data['user'] = $userService->get($model->product_id);
+            return view('my.order.show', $this->data);
+        }
+        return '没有相关订单信息';
     }
 
     /**

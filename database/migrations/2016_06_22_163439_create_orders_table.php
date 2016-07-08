@@ -14,7 +14,7 @@ class CreateOrdersTable extends Migration
     {
         //
         Schema::create('orders',function(Blueprint $table){
-            $table->string('id');
+            $table->string('id',191);
             $table->integer('uid');
             $table->string('mobile')->comment('下订单时的手机号');
             $table->integer('product_id');

@@ -14,7 +14,19 @@ class OrderService
      */
     public function getUserIds($uid)
     {
-        return [7];
+        $now = Carbon::now();
+        $models = Order::where('uid',$uid)
+            ->whereIn('order_type',[1,2,3])
+            ->where('start_at','<',$now)
+            ->where('end_at','>',$now)
+            ->where('status','paid')
+            ->where('product_type','analyst')
+            ->get();
+        $result = [];
+        foreach($models as $model){
+            $result[] = $model->product_id;
+        }
+        return $result;
     }
     //获取用户,订阅某位老师的订单信息
     public function has($uid,$product_id,$product_type='analyst')
@@ -24,6 +36,9 @@ class OrderService
             ->whereIn('order_type',[1,2,3])
             ->where('start_at','<',$now)
             ->where('end_at','>',$now)
+            ->where('status','paid')
+            ->where('product_id',$product_id)
+            ->where('product_type',$product_type)
             ->get();
         if(count($order)){
             return true;
@@ -48,6 +63,7 @@ class OrderService
         if(!$model){
             return $this->result('订单不存在',501);
         }
+        $model->paid_at = Carbon::now();
         $model->status = 'paid';
         $model->price_pay = $model->price;
         $model->transaction_id = $transaction_id;
@@ -56,7 +72,7 @@ class OrderService
         }
         return $this->result('失败',501);
     }
-    public function orderWeiPay($uid,$product_id,$product_type,$number,$month,$center_order_id)
+    public function orderWeiPay($uid,$product_id,$product_type,$number,$month,$center_order_id,$order_type=2)
     {
         $userService = new UserService();
         $user = $userService->find($uid);
@@ -70,6 +86,10 @@ class OrderService
         if(!$this->chkProduct($product_id,$product_type)){
             return $this->result('产品不存在',501);
         }
+        $openid = $userService->getOpenId($uid);
+        if(!$openid){
+            return $this->result('OPENID不存在',501);
+        }
         $order_id = $this->createOrderId($product_id,$product_type);
         $now = Carbon::now();
         $model = new Order();
@@ -82,12 +102,14 @@ class OrderService
         $model->price = $this->getProductPrice($product_id,$product_type) * $month;
         $model->price_pay = 0;
         $model->start_at = $now;
-        $model->end_at = Carbon::now()->addDay(1)->addMonth($month)->format('Y-m-d');
-        $model->order_type = 2;
+        $model->end_at = Carbon::now()->addMonth($month)->format('Y-m-d').' 23:59:59';
+        $model->order_type = $order_type;
         $model->status = 'paying';
         $model->center_order_id = $center_order_id;
         $model->transaction_id = '';
+        $model->openid = $openid;
         if($model->save()){
+            $model->id = $order_id;
             return $this->result($model);
         }
         return $this->result('失败',501);
@@ -124,7 +146,7 @@ class OrderService
         $model->price_pay = 0;
         $model->paid_at = $now;
         $model->start_at = $now;
-        $model->end_at = Carbon::now()->addDay(1)->addMonth($month)->format('Y-m-d');
+        $model->end_at = Carbon::now()->addMonth($month)->format('Y-m-d').' 23:59:59';
         $model->order_type = 1;
         $model->status = 'paid';
         $model->center_order_id = '';
@@ -153,6 +175,17 @@ class OrderService
             case 'analyst':
                 $userService = new UserService();
                 return $userService->isAnalyst($product_id);
+                break;
+        }
+        return false;
+    }
+    public function getProductTitle($product_id,$product_type)
+    {
+        switch($product_type){
+            case 'analyst':
+                $userService = new UserService();
+                $user = $userService->get($product_id);
+                return $user['name'] . '的VIP服务';
                 break;
         }
         return false;

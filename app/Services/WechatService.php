@@ -39,7 +39,7 @@ class WechatService
         return new Application($this->_options);
     }
 
-    public function createOrder($body,$detail,$out_trade_no,$total_fee,$trade_type='JSAPI',$notify_url=null)
+    public function createOrder($body,$detail,$out_trade_no,$total_fee,$openid,$trade_type='JSAPI',$notify_url=null)
     {
         $attributes = [
             'trade_type'       => $trade_type, // JSAPI，NATIVE，APP...
@@ -47,6 +47,7 @@ class WechatService
             'detail'           => $detail,
             'out_trade_no'     => $out_trade_no,
             'total_fee'        => $total_fee,
+            'openid'           => $openid,
         ];
         if($notify_url){
             $attributes['notify_url'] = $notify_url;
