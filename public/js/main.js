@@ -73,8 +73,9 @@ var getNoreadcount = function(){
 					$('.weui_tabbar a').first().append('<div class="point"></div>');
 				}
 				$('.news-tip').show();
+				$('.weui_tabbar a').first().find('.point').show();
 				$('#home_noreadcount').text(data.count + '条未读').show();
-			}else if(data.count && data.count==0){
+			}else {
 				$('.weui_tabbar a').first().find('.point').hide();
 				$('.news-tip').hide();
 			}

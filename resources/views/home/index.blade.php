@@ -11,13 +11,6 @@
         <a href="{{url('/user')}}" class="weui_navbar_item">名师</a>
     </div>
 
-    <!-- 新的消息提示栏 -->
-    <div class="news-tip" >
-        <a href="/my/message?type=noread">
-            <img src="/img/bell.svg" alt="">
-            <span id="home_noreadcount">3条新消息</span>
-        </a>
-    </div>
 
     <!-- "关注"列表 -->
     <div id="wrapper">
@@ -26,6 +19,14 @@
                 <span class="pullDownIcon"></span>
                 <span class="pullDownLabel">下拉刷新</span>
             </div>
+            <!-- 新的消息提示栏 -->
+            <div class="news-tip" style="display: none">
+                <a href="/my/message?type=noread">
+                    <img src="/img/bell.svg" alt="">
+                    <span id="home_noreadcount">新消息</span>
+                </a>
+            </div>
+
             <ul id="thelist"></ul>
             <div id="pullUp" data-url="/ajax/status?order=1&type={{$type}}">
                 <span class="pullUpIcon"></span>
