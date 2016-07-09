@@ -35,6 +35,17 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
     });
     Route::get('my', 'My\IndexController@index');
     Route::Resource('user', 'UserController');
+    Route::group(['prefix' => 'my', 'namespace' => 'My', 'middleware' => 'oauth:1'], function () {
+        Route::Resource('user', 'UserController');
+        Route::Resource('strategy', 'StrategyController');
+        Route::Resource('status', 'StatusController');
+        Route::Resource('track', 'TrackController');
+        Route::Resource('vip/provided', 'Vip\ProvidedController');
+
+
+        Route::Resource('answer', 'AnswerController');
+        Route::Resource('train', 'TrainController');
+    });
     Route::group(['prefix' => 'my', 'namespace' => 'My', 'middleware' => 'oauth'], function () {
 
         Route::get('info', 'InfoController@index');
@@ -66,19 +77,7 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
         });
 
     });
-    Route::group(['prefix' => 'my', 'namespace' => 'My', 'middleware' => 'oauth:1'], function () {
-        Route::Resource('user', 'UserController');
-        Route::Resource('strategy', 'StrategyController');
-        Route::Resource('status', 'StatusController');
-        Route::Resource('track', 'TrackController');
-        Route::Resource('vip/provided', 'Vip\ProvidedController');
 
-
-        Route::Resource('answer', 'AnswerController');
-    });
-    Route::group(['prefix' => 'my', 'namespace' => 'My', 'middleware' => 'oauth:1'], function () {
-        Route::Resource('train', 'TrainController');
-    });
 });
 Route::controller('admin/export', 'Admin\ExportController');
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'oauth.admin'], function () {

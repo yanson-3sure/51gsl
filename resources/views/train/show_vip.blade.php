@@ -25,9 +25,7 @@
     <p class="yellow">新用户优惠：</p>
     <p>点击免费试用即可获得一个月的VIP服务</p>
     <button class="btn-lg free" data-product-id="{{$model->uid}}">免费试用</button>
-    <button class="btn-lg">
-        <a href="/my/order/create?product_id={{$model->uid}}">开通VIP</a>
-    </button>
+    <a href="/my/order/create?product_id={{$model->uid}}"><button class="btn-lg">开通VIP</button></a>
 </div>
 
 <!-- 开通免费试用提示框 -->

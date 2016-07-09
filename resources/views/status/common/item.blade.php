@@ -86,7 +86,7 @@
                                 <span class="tip">VIP</span>
                             @endif
                             <span>{{$model['forward']['title']}}</span>
-                            <p>摘要：{{$model['forward']['intro']}}</p>
+                            <p>摘要：{{mb_substr($model['forward']['intro'],0,50)}}</p>
                         </a>
                     </div>
                 </a>

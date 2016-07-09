@@ -2,7 +2,8 @@ $(document).ready(function(){
 
 	//, textStatus, errorThrown
 	var ajaxError = function(XMLHttpRequest,callback422) {
-		if (XMLHttpRequest.status == 0) {
+		//if (XMLHttpRequest.status == 0) {
+		if(false){
 			layer.closeAll();
 			layer.msg('请检查你的网络');
 		} else if (XMLHttpRequest.status == 401) {
@@ -31,8 +32,8 @@ $(document).ready(function(){
 			layer.closeAll();
 			layer.msg(XMLHttpRequest.responseText);
 		}  else {
-			layer.closeAll();
-			layer.msg('未知错误.\n' + XMLHttpRequest.responseText);
+			//layer.closeAll();
+			//layer.msg('未知错误.\n' + XMLHttpRequest.responseText);
 		}
 	}
 	$.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});

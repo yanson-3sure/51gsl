@@ -36,7 +36,7 @@
 <!-- 大按钮 -->
 <div class="btn-lg-wrap">
     <button class="btn-lg free" data-product-id="{{$model->uid}}">免费试用</button>
-    <button class="btn-lg"><a href="/my/order/create?product_id={{$model->uid}}">开通VIP</a></button>
+    <a href="/my/order/create?product_id={{$model->uid}}"><button class="btn-lg">开通VIP</button></a>
     <p class="red">风险提示：{{$model->risk}}</p>
 </div>
 
