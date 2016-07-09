@@ -37,7 +37,7 @@ class IndexController extends Controller
             return '失败';
         }
     }
-
+    //http://m2.51gsl.com/admin/index/update-all-vod-list
     public function getUpdateAllVodList()
     {
         $page = Input::get('page',1);

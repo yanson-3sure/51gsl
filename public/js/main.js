@@ -3,13 +3,17 @@ $(document).ready(function(){
 	//, textStatus, errorThrown
 	var ajaxError = function(XMLHttpRequest,callback422) {
 		if (XMLHttpRequest.status == 0) {
+			layer.closeAll();
 			layer.msg('请检查你的网络');
 		} else if (XMLHttpRequest.status == 401) {
+			layer.closeAll();
 			layer.msg('登录超时,请重新登录',function(){location.href='/auth/login';});
 		} else if (XMLHttpRequest.status == 403) {
+			layer.closeAll();
 			layer.msg('您没有权限',function(){location.href='/';});
 		}else if (XMLHttpRequest.status == 422) {
 			if(callback422){
+				layer.closeAll();
 				callback422(JSON.parse(XMLHttpRequest.responseText));
 				return;
 			}
@@ -18,12 +22,16 @@ $(document).ready(function(){
 			$.each(data,function(name,value) {
 				errorMsg += value + '<br>';
 			});
+			layer.closeAll();
 			layer.msg(errorMsg);
 		} else if (XMLHttpRequest.status == 500) {
+			layer.closeAll();
 			layer.msg('服务器错误');
 		} else if (XMLHttpRequest.status == 501) {
+			layer.closeAll();
 			layer.msg(XMLHttpRequest.responseText);
 		}  else {
+			layer.closeAll();
 			layer.msg('未知错误.\n' + XMLHttpRequest.responseText);
 		}
 	}

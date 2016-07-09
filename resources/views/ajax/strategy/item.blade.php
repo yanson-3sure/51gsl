@@ -40,7 +40,7 @@
                 @endif
             </span>
         </p>
-        <p class="mb6">简介信息简介信息简介信息简介信息简介信息简介信息简介信息简介信息</p>
+        <p class="mb6">{{$model->intro}}</p>
     </div>
 @endif
     <div class="bottom">

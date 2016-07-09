@@ -19,7 +19,7 @@
     <i class="handle"></i>
     @else
     <a href="/user/{{$model->uid}}" class="home" >
-        <img src="/img/zhuye.svg">
+        <img src="/img/zhuye.svg"  alt="" width="22px">
     </a>
     @endif
 </div>

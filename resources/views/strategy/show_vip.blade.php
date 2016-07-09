@@ -13,9 +13,14 @@
         <span class="999">{{ smarty_modifier_time_ago(strtotime($model['updated_at']) )}}</span>
         <span class="view">阅读：{{$model->views}}</span>
     </div>
+    <!-- 对于讲师，显示i隐藏a；对于普通用户，显示a隐藏i; -->
+    @if(isAnalyst($user['role']) && $uid == $model->uid)
+        <i class="handle"></i>
+    @else
     <a href="/user/{{$model->uid}}" class="home">
         <img src="/img/zhuye.svg" alt="" width="22px">
     </a>
+    @endif
 </div>
 
 <!-- 文章摘要 -->
