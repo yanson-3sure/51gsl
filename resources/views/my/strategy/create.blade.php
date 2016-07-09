@@ -27,7 +27,7 @@
             <script id="container" name="content" type="text/plain"></script>
         {{--<textarea placeholder="请输入" role="content" name="content"></textarea>--}}
 
-        <input type="text" placeholder="风险提示：不可为空" name="risk">
+        <input type="text" placeholder="风险提示：不可为空" name="risk" maxlength="40">
         </form>
     </div>
 @endsection

@@ -50,7 +50,7 @@ class StrategyController extends Controller
             'title'=>'required',
             'intro'=>'required',
             'content'=>'required',
-            'risk'=>'required',
+            'risk'=>'required|max:40',
         ];
         $this->validate($request,$rules);
         $title = Input::get('title','');
