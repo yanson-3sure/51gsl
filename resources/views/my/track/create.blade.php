@@ -47,10 +47,12 @@
     <script>
         $(function(){
             $('#sendMsg').click(function(){
-                layer.msg('发送中...');
+                layer.load();
                 $('#myForm').ajaxSubmit({
                     success: function(data) {
-                        layer.msg(data.result,function(){location.href="/strategy/{{$strategy->id}}";});
+                        //layer.msg(data.result,function(){location.href="/strategy/{{$strategy->id}}";});
+                        layer.closeAll();
+                        weDialog.saveOk(function(){location.href="/strategy/{{$strategy->id}}";});
                     }
                 });
             });

@@ -90,6 +90,25 @@ class MessageService extends AbstractService
 //        return 0;
 //    }
 
+    public function delete($uid,$id){
+        $message = $this->find($id);
+        if($message){
+            //非消息发布者本人,不能删除 .管理员除外
+            if($message['to_uid'] != $uid && !isAdmin($uid)){
+                return false;
+            }
+            if($message->delete()){//软删除
+                //只删除评论的
+                if($message->event_type=='comment'){
+                    $commentService = new CommentService();
+                    $commentService->delete($uid,$message->event_id);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function getNoreadBefore($uid)
     {
         $count = $this->getNoreadCount($uid);

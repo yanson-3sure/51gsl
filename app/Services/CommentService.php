@@ -163,4 +163,31 @@ class CommentService extends AbstractService
         }
         return $cacheModel;
     }
+
+    public function delete($uid,$id)
+    {
+
+        $comment = $this->find($id);
+        if($comment){
+            $object_uid = $this->getObjectUid($comment->object_type,$comment->object_id);
+            $userService = new UserService();
+            //分析师 .管理员除外
+            if(!isAdmin($uid) && !($userService->isAnalyst($uid) && $uid==$object_uid)){
+                return false;
+            }
+            if($comment->delete()){//软删除
+                $key = $this->getKey($comment->object_id,$comment->object_type);
+                Redis::pipeline(function ($pipe)use($key,$object_uid,$comment) {
+                    //添加到对象评论列表
+                    $pipe->ZREM($key,$comment->id);
+                    //对象的评论数量+1
+                    $pipe->HINCRBY($comment->object_type . ':' . $comment->object_id, 'comments', -1);
+                    //对象所属人,总评论数+1
+                    $pipe->HINCRBY('user:' . $object_uid, 'comments', -1);
+                });
+                return true;
+            }
+        }
+        return false;
+    }
 }

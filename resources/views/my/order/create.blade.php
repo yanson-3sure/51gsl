@@ -99,8 +99,8 @@
                     signType: data.signType,
                     paySign: data.paySign, // 支付签名
                     success: function (res) {
-
                         layer.msg('支付成功');
+                        location.href = '/my/order/'+data.order_id;
                     }
                 });
             });

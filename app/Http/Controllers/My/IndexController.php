@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Services\MessageService;
 
 class IndexController extends Controller
 {
@@ -19,8 +20,8 @@ class IndexController extends Controller
     {
         if (Auth::check()) {
             $this->data['noreadcount'] = 0;
-            //$messageService = new MessageService();
-            //$this->data['noreadcount'] = $messageService->getNoreadCount($this->userid);
+            $messageService = new MessageService();
+            $this->data['noreadcount'] = $messageService->getNoreadCount($this->uid);
             //var_dump($this->data);
         } else {
             $this->data['noreadcount'] = 0;

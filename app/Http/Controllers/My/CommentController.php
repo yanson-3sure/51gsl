@@ -146,6 +146,15 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comment = $this->service->find($id);
+        if($comment) {
+            $object_uid = $this->service->getObjectUid($comment->object_type, $comment->object_id);
+            $userService = new UserService();
+            //分析师 .管理员除外
+            if (!isAdmin($this->uid) && !($userService->isAnalyst($this->uid) && $this->uid == $object_uid)) {
+                return false;
+            }
+            //未处理完.................
+        }
     }
 }

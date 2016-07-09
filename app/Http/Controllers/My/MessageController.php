@@ -112,4 +112,12 @@ class MessageController extends Controller
         $count = $this->service->getNoreadCount($this->uid);
         return ['count' => $count];
     }
+
+    public function destroy($id)
+    {
+        if($this->service->delete($this->uid,$id)){
+            return ['success'=>'删除成功'];
+        }
+        return response('删除失败',501);
+    }
 }

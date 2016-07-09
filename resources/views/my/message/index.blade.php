@@ -11,10 +11,18 @@
             </div>
         </div>
     </div>
+    <!-- 删除成功提示 -->
+    <img src="/img/yishanchu.svg" id="deleteSuccess">
+    @if(isAdmin($uid) || isAnalyst($role))
+        @include('my.message.common.actionsheet')
+    @endif
 @endsection
 @section('footer')
     @include('layouts.script_iscroll')
     @include('layouts.script_fancybox')
+    @if(isAdmin($uid) || isAnalyst($role))
+        <script src="/js/jquery.actionsheet.js"></script>
+    @endif
     <script>
         function pullUpAction() {
             scroll_lock = true;
@@ -23,7 +31,10 @@
         }
         function callback(){
             fancybox();
-        }
+            @if(isAdmin($uid) || isAnalyst($role))
+                $('.body').actionsheet({op:'message'});
+            @endif
+    }
         pullUpAction();
         //iscrollInit();
         $(function(){

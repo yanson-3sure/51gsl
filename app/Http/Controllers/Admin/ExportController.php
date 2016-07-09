@@ -41,49 +41,65 @@ class ExportController extends Controller
         switch($step){
             case 1:
                 //处理用户
-                $this->users();
+                $this->users(0,2000);
                 break;
             case 2:
-                //处理微信UNIONID对应关系
-                $this->user_wechat_ids();
+                //处理用户
+                $this->users(2000,4000);
                 break;
             case 3:
+                //处理用户
+                $this->users(4000,9000);
+                break;
+            case 20:
+                //处理微信UNIONID对应关系
+                $this->user_wechat_ids(0,2000);
+                break;
+            case 21:
+                //处理微信UNIONID对应关系
+                $this->user_wechat_ids(2000,4000);
+                break;
+            case 22:
+                //处理微信UNIONID对应关系
+                $this->user_wechat_ids(4000,9000);
+                break;
+            case 30:
                 //处理申请表
                 $this->applies();
 
                 //处理分析师表
                 $this->analysts();
                 break;
-            case 4:
+            case 40:
                 //处理直播
                 $this->statuses();
                 break;
-            case 5:
+            case 50:
                 //赞
                 $this->praises();
                 break;
-            case 6:
+            case 60:
                 //评论
                 $this->comments();
 
                 break;
-            case 7:
+            case 70:
                 //关注
                 $this->follows();
                 break;
-            case 8:
+            case 80:
                 //消息
                 $this->messages();
                 break;
-            case 9:
+            case 90:
                 //处理头像,迁移到OSS
                 $this->avatars1();
                 break;
-            case 10:
+            case 100:
                 //处理status image
                 $this->status_images1();
                 break;
-            case 11:
+            case 110:
                 //处理头像,迁移到OSS
                 $this->avatars2();
 
@@ -92,58 +108,12 @@ class ExportController extends Controller
                 break;
 
         }
-        if (false) {
-            //处理用户
-            $this->users();
-
-            //处理微信UNIONID对应关系
-            $this->user_wechat_ids();
-
-            //处理申请表
-            $this->applies();
-
-            //处理分析师表
-            $this->analysts();
-
-            //处理直播
-            $this->statuses();
-
-            //处理 图片
-            //$this->images();
-
-            //赞
-            $this->praises();
-
-            //评论
-            $this->comments();
-
-            //关注
-            $this->follows();
-
-            //消息
-            $this->messages();
-
-
-        }
-        if (false) {
-            //处理头像,迁移到OSS
-            $this->avatars1();
-
-            //处理status image
-            $this->status_images1();
-
-            //处理头像,迁移到OSS
-            $this->avatars2();
-
-            //处理status image
-            $this->status_images2();
-        }
     }
 
-    protected function users()
+    protected function users($begin ,$end)
     {
-        $users = collect(DB::connection('mysql2')->select('select * from users'));
-        $user_profiles = collect(DB::connection('mysql2')->select('select * from user_profiles'));
+        $users = collect(DB::connection('mysql2')->select('select * from users where userid>'.$begin . ' and userid<=' . $end));
+        $user_profiles = collect(DB::connection('mysql2')->select('select * from user_profiles  where userid>'.$begin . ' and userid<=' . $end));
         //dd($user_profiles);
         //处理users
         $all_user = [];
@@ -168,9 +138,9 @@ class ExportController extends Controller
         $userService->setCacheModels($all_user);
     }
 
-    public function user_wechat_ids()
+    public function user_wechat_ids($begin ,$end)
     {
-        $user_wechat_ids = collect(DB::connection('mysql2')->select('select * from user_wechat_ids'));
+        $user_wechat_ids = collect(DB::connection('mysql2')->select('select * from user_wechat_ids  where userid>'.$begin . ' and userid<=' . $end));
         //dd($user_wechat_ids);
         foreach ($user_wechat_ids as $k => $v) {
             $user_wechat = new UserWechat();
@@ -228,9 +198,9 @@ class ExportController extends Controller
         }
     }
 
-    public function statuses()
+    public function statuses($begin ,$end)
     {
-        $statuses = collect(DB::connection('mysql2')->select('select * from status'));
+        $statuses = collect(DB::connection('mysql2')->select('select * from status where statusid>'.$begin .' and statusid<='.$end));
         $forwards = collect(DB::connection('mysql2')->select('select * from forwards'));
         ///dd($forwards);
         $statusService = new StatusService();

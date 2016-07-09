@@ -42,23 +42,57 @@
                             url: '/status/' + that.parents(".msg-container").attr('data-id'),
                             data: {},
                             success: function (data) {
-                                var h = document.body.scroolTop;
                                 hideActionSheet(weuiActionsheet, mask);
-                                $("#deleteSuccess").css({"top": h + 50 + "px"})
-                                    .fadeIn("fast")
-                                    .delay(1000)
-                                    .fadeOut("fast", function () {
-                                        that.parents(".msg-container").slideUp("slow", function () {
-                                            $(this).remove();
-                                        });
+                                weDialog.deleteOk(function () {
+                                    that.parents(".msg-container").slideUp("slow", function () {
+                                        $(this).remove();
                                     });
+                                });
                             }
                         });
-
                     });
                 }
-                if(options.op=='strategy'){
-
+                if(options.op=='message'){
+                    // 点击删除
+                    $("#actionsheet_deleteMsg").unbind("click").bind("click", function () {
+                        $.ajax({
+                            type: "DELETE",
+                            url: '/my/message/' + that.parents(".msg-container").attr('data-id'),
+                            data: {},
+                            success: function (data) {
+                                hideActionSheet(weuiActionsheet, mask);
+                                weDialog.deleteOk(function () {
+                                            that.parents(".msg-container").slideUp("slow", function () {
+                                                $(this).remove();
+                                            });
+                                        });
+                            }
+                        });
+                    });
+                    var actionsheet_viewMsg = $('#actionsheet_viewMsg');
+                    if(that.find('p').eq(1).find('a').length==1){
+                        actionsheet_viewMsg.find('a').attr('href',that.find('p').eq(1).find('a').attr('href'));
+                        actionsheet_viewMsg.show();
+                    }else{
+                        actionsheet_viewMsg.hide();
+                    }
+                    var userid = that.parents(".msg-container").attr('data-user-id');
+                    var actionsheet_shield = $('#actionsheet_shield');
+                    if(userid){
+                        actionsheet_shield.show();
+                        actionsheet_shield.unbind("click").bind("click", function () {
+                            $.ajax({
+                                type: "DELETE",
+                                url: '/my/user/' + userid,
+                                data: {},
+                                success: function (data) {
+                                    layer.msg('已经屏蔽');
+                                }
+                            });
+                        });
+                    }else{
+                        actionsheet_shield.hide();
+                    }
                 }
             });
         });

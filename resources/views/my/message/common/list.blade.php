@@ -1,7 +1,7 @@
 @foreach($messages as $message)
     <li>
         <!-- 消息框:主贴 -->
-        <div class="msg-container">
+        <div class="msg-container" data-id="{{$message['id']}}" @if(!isAdmin($message['from_user']['id']) && !isAnalyst($message['from_user']['role'])) data-user-id="{{$message['from_user']['id']}}" @endif>
             <div class="header">
                 <div class="pub-header" style="background-image:url({{ getAvatar($message['from_user']['avatar'])  }})">
                     @if(isAnalyst($message['from_user']['role']))

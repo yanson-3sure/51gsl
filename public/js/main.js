@@ -83,3 +83,33 @@ var getNoreadcount = function(){
 	});
 	setTimeout(getNoreadcount,1000*10);
 }
+var weDialog = {
+	msg: function(content, options, end){
+		return layer.msg(content, options, end);
+	},
+	show:function(img,id,callback){
+		if($('#'+id).length==0){
+			$('body').append('<image src="'+img+'" id="'+id+'" style="display: none">');
+		}
+		var h = document.body.scroolTop;
+		$('#'+id).css({"top": h + 50 + "px"})
+				.fadeIn("fast")
+				.delay(1000)
+				.fadeOut("fast", callback);
+	},
+	deleteOk:function(callback){
+		var img = '/img/yishanchu.svg';
+		var id = 'deleteSuccess';
+		this.show(img,id,callback);
+	},
+	saveOk:function(callback){
+		var img = '/img/yibaocun.svg';
+		var id = 'saveSuccess';
+		this.show(img,id,callback);
+	},
+	sendOk:function(callback){
+		var img = '/img/yifasong.svg';
+		var id = 'sendSuccess';
+		this.show(img,id,callback);
+	}
+};

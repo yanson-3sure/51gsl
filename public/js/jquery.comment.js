@@ -40,6 +40,7 @@
             return ;
         };
         btn_post.click(function(){
+            div.fadeOut();
             form.ajaxSubmit({
                 success: function(data) {
                     var object_id = $('#comment_object_id').val();
@@ -61,7 +62,8 @@
                         count = parseInt(count);
                     }
                     $("#plcount_"+object_id).text(count+1);
-                    div.fadeOut();
+                    weDialog.sendOk();
+                    //div.fadeOut();
                 }
             });
         });

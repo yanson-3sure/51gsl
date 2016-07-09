@@ -47,10 +47,12 @@
                     layer.msg("发表内容不能为空");
                     return false;
                 }
-                layer.msg('发送中...');
+                layer.load();
                 $('#myForm').ajaxSubmit({
                     success: function(data) {
-                        layer.msg(data.result,function(){location.href="/my";});
+                        layer.closeAll();
+                        //layer.msg(data.result,function(){location.href="/my";});
+                        weDialog.saveOk(function(){location.href="/my";});
                     }
                 });
             });

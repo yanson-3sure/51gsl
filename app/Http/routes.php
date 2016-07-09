@@ -44,7 +44,9 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
         Route::post('follow/un-focus', 'FollowController@postUnFocus');
         Route::Resource('follow', 'FollowController');
         Route::get('message', 'MessageController@index');
-        Route::controller('message', 'MessageController');
+        Route::get('message/noreadcount', 'MessageController@getNoreadcount');
+        Route::get('message/rev-list', 'MessageController@getRevList');
+        Route::Resource('message', 'MessageController');
         Route::Resource('praise', 'PraiseController');
         Route::Resource('comment', 'CommentController');
         Route::Resource('question', 'QuestionController');
@@ -65,6 +67,7 @@ Route::group([ 'middleware' => 'oauth.wechat'], function () {
 
     });
     Route::group(['prefix' => 'my', 'namespace' => 'My', 'middleware' => 'oauth:1'], function () {
+        Route::Resource('user', 'UserController');
         Route::Resource('strategy', 'StrategyController');
         Route::Resource('status', 'StatusController');
         Route::Resource('track', 'TrackController');

@@ -85,6 +85,7 @@ class OrderController extends Controller
                     $app = $wechatService->getApp();
                     $payment = $app->payment;
                     $config = $payment->configForJSSDKPayment($prepayId);
+                    $config['order_id'] = $order->id;
                     $this->data['config'] = $config;
                     return $config;
                 }

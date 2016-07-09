@@ -171,6 +171,15 @@ class UserService extends AbstractService
                 return $model;
             }
         }
-        return null;
+        return false;
+    }
+    //目前只能屏蔽普通用户
+    public function shield($uid)
+    {
+        $user = $this->get($uid);
+        if($user && $user['role']==0 && !isAdmin($uid)) {
+            return $this->chgRoleById($uid, -1);
+        }
+        return false;
     }
 }
