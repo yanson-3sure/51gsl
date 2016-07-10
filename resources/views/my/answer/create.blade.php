@@ -39,7 +39,7 @@
                 $('#myForm').ajaxSubmit({
                     success: function(data) {
                         layer.closeAll();
-                        weDialog.sendOk(function(){location.href="/my";});
+                        weDialog.sendOk(function(){location.href="/my/vip/provided?show=2";});
                     }
                 });
             });

@@ -68,7 +68,6 @@
             $('.load-more-btn[data-append-object="#qa1"]').loadmore({callback:function(data){
                 $('.appreciate').praise();
             }});
-            $('.load-more-btn').first().click();
             /* tab-change切换 */
             $('div.weui_navbar a').click(function () {
                 var _this = $(this);
@@ -90,6 +89,12 @@
                     _this.parent().parent().find('.load-more-btn').eq(ind).click();
                 }
             });
+            var show = getUrlParameter('show');
+            if(!show) show = 0;
+            if(show!=0 && show!=1 && show!=2){
+                show = 0;
+            }
+            $('div.weui_navbar a').eq(show).click();
 
 
         });
