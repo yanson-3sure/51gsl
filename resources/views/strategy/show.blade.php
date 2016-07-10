@@ -72,7 +72,7 @@
                     <input type="text" name="object_type" value="strategy">
                     <input type="text" name="object_id" value="{{$model->id}}">
                 </div>
-                <textarea name="content" placeholder="描述您的问题并以“？”结尾。您可以在VIP服务中查看您的问题"></textarea>
+                <textarea name="content" id="content" placeholder="描述您的问题并以“？”结尾。您可以在VIP服务中查看您的问题"></textarea>
                 <input type="submit" value="提问" class="fasong">
             </form>
         </div>
@@ -147,9 +147,18 @@
                 });
             });
             $('.fasong').click(function(){
+                var content = $('#content').val();
+                if(content==""){
+                    layer.msg('提示不能为空');
+                    return false;
+                }
+                if(!/.*[\?？]$/.test(content)){
+                    layer.msg('提问失败');
+                    return false;
+                }
                 $('#question_form').ajaxForm({
                     success: function (data) {
-                        layer.msg('成功');
+                        weDialog.sendOk();
                         $('#question_form')[0].reset();
                     }
                 });

@@ -51,8 +51,7 @@
                 $('#myForm').ajaxSubmit({
                     success: function(data) {
                         layer.closeAll();
-                        //layer.msg(data.result,function(){location.href="/my";});
-                        weDialog.saveOk(function(){location.href="/my";});
+                        weDialog.sendOk(function(){location.href="/my";});
                     }
                 });
             });

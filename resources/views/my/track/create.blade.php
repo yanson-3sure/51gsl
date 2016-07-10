@@ -52,7 +52,7 @@
                     success: function(data) {
                         //layer.msg(data.result,function(){location.href="/strategy/{{$strategy->id}}";});
                         layer.closeAll();
-                        weDialog.saveOk(function(){location.href="/strategy/{{$strategy->id}}";});
+                        weDialog.sendOk(function(){location.href="/strategy/{{$strategy->id}}";});
                     }
                 });
             });

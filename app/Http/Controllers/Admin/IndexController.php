@@ -48,10 +48,11 @@ class IndexController extends Controller
         //$service->updateVodList($startTime,$endTime,$page);
     }
 
-    public function getPingbi()
+    public function getRole()
     {
         $uid = Input::get('uid');
+        $role = Input::get('role',-1);
         $service = new UserService();
-        $service->chgRoleById($uid,-1);
+        $service->chgRoleById($uid,$role);
     }
 }
