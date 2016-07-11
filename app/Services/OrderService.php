@@ -80,7 +80,7 @@ class OrderService
             return $this->result('用户不存在',501);
         }
         if(!$user['mobile']){
-            return $this->result('请先绑定手机号',501);
+            return $this->result('请先绑定手机号',400);
         }
         //验证产品,是否存在
         if(!$this->chkProduct($product_id,$product_type)){

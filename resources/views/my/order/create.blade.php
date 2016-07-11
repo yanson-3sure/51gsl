@@ -92,7 +92,10 @@
             $.post('/my/order',
                     {type:type,product_id:product_id,product_type:product_type,month:month},
                     function (data) {
-
+                    if(data.result && data.result=='no_mobile'){
+                        layer.msg('请先绑定手机号',function(){location.href = '/my/info';});
+                        return;
+                    }
                 wx.chooseWXPay({
                     timestamp: data.timestamp,
                     nonceStr: data.nonceStr,

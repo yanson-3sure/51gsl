@@ -91,6 +91,9 @@ class OrderController extends Controller
                 }
                 return response('生成微信订单失败',501);
             }
+            if($result['status']==400){
+                return response(['result'=>'no_mobile']);
+            }
             return response($result['content'],$result['status']);
         }
     }
