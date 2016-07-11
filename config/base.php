@@ -50,6 +50,7 @@ return [
     'dyxc'=>[
         'debug' => env('DYXC_DEBUG',true),
         'url'=> env('DYXC_URL',''),
+        'order_url'=>env('DYXC_ORDER_URL',''),
         'image_uploadurl'=> env('DYXC_IMAGE_UPLOADURL',''),
         'image_prefix'=>'',
         'key'=>'dyxc',

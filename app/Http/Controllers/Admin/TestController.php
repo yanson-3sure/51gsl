@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Services\AnalystService;
+use App\Services\API\DyxcService;
 use App\Services\AvatarService;
 use App\Services\StatusService;
 use App\Services\UserService;
@@ -121,5 +122,11 @@ class TestController extends Controller
         $avatarService = new AvatarService();
         $result = $avatarService->saveWechat($headimgurl);
         return '<img src="'.getAvatar($result).'" >';
+    }
+
+    public function getDyxcOrder()
+    {
+        $service = new DyxcService();
+        dd($service->getOrder('13141469448','13141469448'));
     }
 }

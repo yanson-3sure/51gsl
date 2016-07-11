@@ -3,6 +3,7 @@ namespace App\Services;
 
 
 use App\Models\Order;
+use App\Services\API\DyxcService;
 use App\Services\MyTraits\Common;
 use Carbon\Carbon;
 
@@ -67,6 +68,21 @@ class OrderService
         $model->status = 'paid';
         $model->price_pay = $model->price;
         $model->transaction_id = $transaction_id;
+
+
+        /////////////////////////////////////
+        /*
+         * 同步第一现场,订单
+         */
+        $userService = new UserService();
+        $user = $userService->find($model->uid);
+
+        $dyxcService = new DyxcService();
+        $center_order_id = $dyxcService->getOrder($user->mobile,$user->mobile,$model->number);
+        if($center_order_id){
+            $model->center_order_id = $center_order_id;
+        }
+        ///////////////////////////////////////
         if($model->save()){
             return $this->result($model);
         }

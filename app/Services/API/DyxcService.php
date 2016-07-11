@@ -17,6 +17,7 @@ class DyxcService
 
     protected $debug = true;
     protected $url;
+    protected $order_url;
     protected $image_uploadurl;
     protected $image_prefix;
     protected $key;
@@ -103,5 +104,30 @@ class DyxcService
                 //throw  new \Exception;
             }
         }
+    }
+
+    public function getOrder($uname,$mobile,$buynum=1,$syscode='gsl')
+    {
+        $response = Curl::to($this->order_url)
+            ->withData([
+                'uname' => $uname,
+                'mobile' => $mobile,
+                'buynum'=>$buynum,
+                'syscode' => $syscode,
+            ])
+            ->asJson()
+            ->post();
+        if($response){
+            Log::info('获取订单成功');
+            if($response->result=='ok'){
+                return $response->text;
+            }else{
+                Log::info('获取订单失败,原因:'.$response->text);
+            }
+
+        }else{
+            Log::info('获取订单失败');
+        }
+        return false;
     }
 }
