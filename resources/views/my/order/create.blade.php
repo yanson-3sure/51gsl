@@ -77,6 +77,7 @@
     </script>
 
     <script type="text/javascript" charset="utf-8">
+        @if($isWechat)
         wx.config(<?php echo $js->config(array('chooseWXPay'), false) ?>);
         $('#weipay').click(function(){
             var _this = $(this);
@@ -105,5 +106,8 @@
                 });
             });
         });
+        @else
+            $('#weipay').click(function(){layer.msg('电脑端不支付微信支付');});
+        @endif
     </script>
 @endsection

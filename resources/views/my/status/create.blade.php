@@ -32,9 +32,6 @@
             <a href="/my/strategy/create" class="xinzeng">新增策略</a>
         </div>
     </form>
-
-    <!-- 发送成功提示 -->
-    <img src="img/2016/yifasong.svg" id="sendSuccess">
 @endsection
 @section('footer')
     @parent

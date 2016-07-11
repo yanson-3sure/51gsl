@@ -56,6 +56,7 @@ abstract class Controller extends BaseController
 
         $agent = new Agent();
         $this->isWechat = $agent->match('.*MicroMessenger.*');
+        $this->data['isWechat'] = $this->isWechat;
 
         //$jssdk = new JSSDK();
         //$this->data['jssdk_token'] = $jssdk->getSignPackage();
