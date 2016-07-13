@@ -81,14 +81,14 @@
         </a>
         @endif
     </div>
-    {{--<div class="weui_cells weui_cells_access">--}}
-        {{--<a href="kefu.html" class="weui_cell">--}}
-            {{--<div class="weui_cell_hd">--}}
-                {{--<img src="/img/kefu.svg" alt="" width="16px" class="db mr6">--}}
-            {{--</div>--}}
-            {{--<div class="weui_cell_bd weui_cell_primary">客服反馈</div>--}}
-            {{--<div class="weui_cell_ft"></div>--}}
-        {{--</a>--}}
-    {{--</div>--}}
+    <div class="weui_cells weui_cells_access">
+        <a href="/my/feedback" class="weui_cell">
+            <div class="weui_cell_hd">
+                <img src="/img/kefu.svg" alt="" width="16px" class="db mr6">
+            </div>
+            <div class="weui_cell_bd weui_cell_primary">客服反馈</div>
+            <div class="weui_cell_ft"></div>
+        </a>
+    </div>
 </div>
 @endsection

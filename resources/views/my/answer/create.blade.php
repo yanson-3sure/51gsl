@@ -31,7 +31,7 @@
     <script>
         $(function(){
             $('#sendMsg').click(function(){
-                if($('#message')==""){
+                if($('#content')==""){
                     layer.msg("发表内容不能为空");
                     return false;
                 }
